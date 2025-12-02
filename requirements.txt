@@ -1,0 +1,15 @@
+# LLM & Agents
+openai
+langchain
+crewai
+python-dotenv
+
+# Testing Tools (Target del progetto)
+pytest
+pytest-cov
+mutmut
+
+# Data Analysis
+pandas
+matplotlib
+tqdm
