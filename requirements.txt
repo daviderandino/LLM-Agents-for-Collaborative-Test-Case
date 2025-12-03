@@ -1,15 +1,14 @@
-# LLM & Agents
-openai
+# LLM Management
 langchain
-crewai
+langchain-groq
+langchain-community
 python-dotenv
 
-# Testing Tools (Target del progetto)
+# Testing Tools 
 pytest
-pytest-cov
-mutmut
+pytest-cov       # Coverage
+mutmut           # Mutation testing
 
-# Data Analysis
+# Utilities
 pandas
-matplotlib
-tqdm
+tqdm             # Progress bar for long tests
