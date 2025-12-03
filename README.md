@@ -1,3 +1,30 @@
+
+## HOW TO RUN
+
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### API_KEY
+
+Go to https://console.groq.com/keys and generate an API_KEY, then put in on the .env file
+```bash
+GROQ_API_KEY = my_key
+```
+
+
+###
+
+Run 
+```bash
+test_setup.py
+```
+
+
+
+
 ![alt text](image.png)
 
 ### A. LLM and Agent Management
