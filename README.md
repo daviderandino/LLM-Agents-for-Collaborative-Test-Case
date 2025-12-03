@@ -1,82 +1,82 @@
 ![alt text](image.png)
 
-### A. Gestione LLM e Agenti
+### A. LLM and Agent Management
 
-Framework per l'orchestrazione degli agenti. CrewAI ottimo per definire "ruoli" specifici (es. Generator vs Reviewer), richiesti esplicitamente.
+Framework for agent orchestration. CrewAI excellent for defining specific "roles" (e.g. Generator vs Reviewer), explicitly required.
 
-langchain / langchain-openai: Per l'interazione base con gli LLM.
+langchain / langchain-openai: For base interaction with LLMs.
 
-python-dotenv: Per gestire le chiavi API in sicurezza.
+python-dotenv: To securely manage API keys.
 
-### B. Testing e Valutazione (Requisiti Minimi)
+### B. Testing and Evaluation (Minimum Requirements)
 
-pytest: Il framework standard per eseguire i test generati.
+pytest: The standard framework for running generated tests.
 
-pytest-cov: Plugin per calcolare la line/branch coverage.
+pytest-cov: Plugin to calculate line/branch coverage.
 
-mutmut o cosmic-ray: Per il mutation testing (verificare se i test "uccidono" i mutanti, ovvero se trovano bug introdotti artificialmente).
+mutmut or cosmic-ray: For mutation testing (verify if tests "kill" mutants, i.e., if they find artificially introduced bugs).
 
-### C. Analisi Dati
-pandas: Per organizzare i risultati delle metriche.
+### C. Data Analysis
+pandas: To organize metric results.
 
-matplotlib / seaborn: Per creare i grafici da inserire nel report
+matplotlib / seaborn: To create graphs for the report
 
 --------------
 
-## 1. L'Obiettivo Scientifico
-Rispondere a queste domande di ricerca:
+## 1. The Scientific Objective
+Answer these research questions:
 
-- Gli agenti AI collaborativi generano test più completi e vari rispetto a un singolo LLM? 
+- Do collaborative AI agents generate more complete and varied tests compared to a single LLM? 
 
-- Quali "pattern" di collaborazione funzionano meglio (es. amici che si aiutano vs. critici severi)? 
+- Which collaboration "patterns" work best (e.g. helpful friends vs. harsh critics)? 
 
-## 2. Il Software
-Implementare due sistemi distinti per confrontarli:
+## 2. The Software
+Implement two distinct systems to compare them:
 
-### A. La Baseline (Single-Agent) (È uno script semplice):
+### A. The Baseline (Single-Agent) (It's a simple script):
 
-- Prende in input una funzione (es. validate_email).
+- Takes a function as input (e.g. validate_email).
 
-- Chiede a un LLM (es. GPT-4o-mini): "Scrivi i test unitari per questa funzione".
+- Asks an LLM : "Write unit tests for this function".
 
-- Salva il risultato così com'è.
+- Saves the result as is.
 
-### B. Il Sistema Multi-Agent. Un sistema con almeno 2 ruoli distinti che interagiscono. Testare diversi "pattern":
+### B. The Multi-Agent System. A system with at least 2 distinct roles that interact. Test different "patterns":
 
 
-- Collaborativo: Agente A scrive il test, Agente B suggerisce miglioramenti ("Potresti aggiungere un test per le stringhe vuote?"), Agente A corregge.
+- Collaborative: Agent A writes the test, Agent B suggests improvements ("Could you add a test for empty strings?"), Agent A corrects.
 
-- Competitivo (Opzionale ma consigliato): Agente A scrive il test, Agente B cerca attivamente di trovare errori nel test o casi non coperti, sfidando l'Agente A.
+- Competitive (Optional but recommended): Agent A writes the test, Agent B actively seeks to find errors in the test or uncovered cases, challenging Agent A.
 
-## 3. I Dati (Code Under Test)
-- Selezionare 10-20 funzioni da dataset pubblici o snippet open-source.
+## 3. The Data (Code Under Test)
+- Select 10-20 functions from public datasets or open-source snippets.
 
-- Non devi scrivere il codice da testare (quello lo scarichi/trovi).
+- You don't have to write the code to test (you download/find that).
 
-- Il sistema deve generare i test per quel codice.
+- The system must generate tests for that code.
 
-## 4. La Valutazione (Come prendi i punti)
-- Non basta generare codice; bisogna dimostrare che funziona. Il documento richiede almeno uno di questi metodi:
+## 4. The Evaluation (How you score points)
+- It's not enough to generate code; you must demonstrate that it works. The document requires at least one of these methods:
 
-    - Test Coverage: Eseguire i test generati e misurare quanta parte del codice originale hanno toccato (Line Coverage o Branch Coverage).
+    - Test Coverage: Run the generated tests and measure how much of the original code they touched (Line Coverage or Branch Coverage).
 
-    - Mutation Testing: Usanre un tool (come mutmut) che inserisce bug finti nel codice originale. Se i test degli agenti falliscono, significa che sono buoni (hanno "catturato" il bug). Se passano comunque, i test sono deboli.
+    - Mutation Testing: Use a tool (like mutmut) that inserts fake bugs in the original code. If the agents' tests fail, it means they're good (they "caught" the bug). If they still pass, the tests are weak.
 
-## In sintesi:
-- Input: Prendi una funzione Python (es. calcola_sconto).
+## In summary:
+- Input: Take a Python function (e.g. calculate_discount).
 
-- Esecuzione Baseline: L'LLM singolo genera test_sconto_v1.py.
+- Baseline Execution: The single LLM generates test_discount_v1.py.
 
-- Esecuzione Multi-Agent:
+- Multi-Agent Execution:
 
-    - Tester Agent genera una bozza.
+    - Tester Agent generates a draft.
 
-    - Reviewer Agent dice: "Manca il caso dello sconto negativo".
+    - Reviewer Agent says: "Missing the negative discount case".
 
-    - Tester Agent genera test_sconto_final.py.
+    - Tester Agent generates test_discount_final.py.
 
-    Confronto:
+    Comparison:
 
-    - Lanci pytest --cov su entrambi i file.
+    - Run pytest --cov on both files.
 
-    - Se il Multi-Agent ha il 100% di coverage e la Baseline l'80%, hai vinto (e dimostrato la tesi).
+    - If the Multi-Agent has 100% coverage and the Baseline 80%, you've won (and proven the thesis).
