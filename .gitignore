@@ -1,1 +1,6 @@
 .env
+*.pdf
+__pycache__
+venv/
+report_template/
+.DS_Store

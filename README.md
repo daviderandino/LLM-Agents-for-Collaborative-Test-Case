@@ -31,22 +31,22 @@ test_setup.py
 
 Framework for agent orchestration. CrewAI excellent for defining specific "roles" (e.g. Generator vs Reviewer), explicitly required.
 
-langchain / langchain-openai: For base interaction with LLMs.
+**langchain** / **langchain-openai**: For base interaction with LLMs.
 
-python-dotenv: To securely manage API keys.
+**python-dotenv**: To securely manage API keys.
 
 ### B. Testing and Evaluation (Minimum Requirements)
 
-pytest: The standard framework for running generated tests.
+**pytest**: The standard framework for running generated tests.
 
-pytest-cov: Plugin to calculate line/branch coverage.
+**pytest-cov**: Plugin to calculate line/branch coverage.
 
-mutmut or cosmic-ray: For mutation testing (verify if tests "kill" mutants, i.e., if they find artificially introduced bugs).
+**mutmut** or **cosmic-ray**: For mutation testing (verify if tests "kill" mutants, i.e., if they find artificially introduced bugs).
 
 ### C. Data Analysis
-pandas: To organize metric results.
+**pandas**: To organize metric results.
 
-matplotlib / seaborn: To create graphs for the report
+**matplotlib** / **seaborn**: To create graphs for the report
 
 --------------
 
@@ -71,9 +71,9 @@ Implement two distinct systems to compare them:
 ### B. The Multi-Agent System. A system with at least 2 distinct roles that interact. Test different "patterns":
 
 
-- Collaborative: Agent A writes the test, Agent B suggests improvements ("Could you add a test for empty strings?"), Agent A corrects.
+- **Collaborative**: Agent A writes the test, Agent B suggests improvements ("Could you add a test for empty strings?"), Agent A corrects.
 
-- Competitive (Optional but recommended): Agent A writes the test, Agent B actively seeks to find errors in the test or uncovered cases, challenging Agent A.
+- **Competitive** (Optional but recommended): Agent A writes the test, Agent B actively seeks to find errors in the test or uncovered cases, challenging Agent A.
 
 ## 3. The Data (Code Under Test)
 - Select 10-20 functions from public datasets or open-source snippets.
@@ -85,9 +85,9 @@ Implement two distinct systems to compare them:
 ## 4. The Evaluation (How you score points)
 - It's not enough to generate code; you must demonstrate that it works. The document requires at least one of these methods:
 
-    - Test Coverage: Run the generated tests and measure how much of the original code they touched (Line Coverage or Branch Coverage).
+    - **Test Coverage**: Run the generated tests and measure how much of the original code they touched (Line Coverage or Branch Coverage).
 
-    - Mutation Testing: Use a tool (like mutmut) that inserts fake bugs in the original code. If the agents' tests fail, it means they're good (they "caught" the bug). If they still pass, the tests are weak.
+    - **Mutation Testing**: Use a tool (like **mutmut**) that inserts fake bugs in the original code. If the agents' tests fail, it means they're good (they "caught" the bug). If they still pass, the tests are weak.
 
 ## In summary:
 - Input: Take a Python function (e.g. calculate_discount).

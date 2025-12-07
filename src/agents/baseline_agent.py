@@ -1,3 +1,7 @@
+"""
+Intended for the simple, single-agent system
+"""
+
 from src.llm_factory import get_llm
 from langchain.prompts import PromptTemplate
 

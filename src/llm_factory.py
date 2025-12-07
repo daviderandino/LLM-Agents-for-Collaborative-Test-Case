@@ -1,17 +1,26 @@
+"""
+Centralizza e semplifica la creazione delle istanze dei modelli LLM.
+Segue un Factory Pattern.
+"""
+
 import os
 from langchain_groq import ChatGroq
 from langchain_community.llms import HuggingFacePipeline # O Ollama, o LlamaCPP
 
-def get_llm(model_type="groq"):
+
+def get_llm(provider="groq", model_name="llama3-70b-8192", temperature=0):
     """
     Factory function per cambiare modello facilmente.
-    Questo dimostra che il tuo sistema non è 'bloccato' su Groq.
+    Questo dimostra che il sistema non è vincolato ad usare solo Groq.
+
+    Note: 'llama3-70b-8192' è molto potente, ha una context window di >8000 token.
     """
-    if model_type == "groq":
+
+    if provider == "groq":
         return ChatGroq(
-            temperature=0,
-            model_name="llama3-70b-8192",
+            temperature=temperature,
+            model_name=model_name,
             api_key=os.getenv("GROQ_API_KEY")
         )
-    elif model_type == "local_colab":
+    elif provider == "local_colab":
         pass

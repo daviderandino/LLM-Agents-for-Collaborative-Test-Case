@@ -1,7 +1,10 @@
+"""
+A class that will be target of an LLM to generate test cases for.
+"""
+
 class BankAccount:
     """
     A simple bank account system.
-    Target for LLM test generation.
     """
     
     def __init__(self, initial_balance=0):
