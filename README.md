@@ -14,15 +14,20 @@ Go to https://console.groq.com/keys and generate an API_KEY, then put in on the 
 GROQ_API_KEY = my_key
 ```
 
-
-###
-
+### HOW TO RUN
 Run 
 ```bash
-test_setup.py
+baseline_agent.py
 ```
 
+The agent will generate a file with tests for bank_account, the tests can be run with
 
+
+```bash
+python -m pytest data/output_tests/baseline/test_bank_account.py 
+```
+
+## PROJECT STRUCTURE
 
 
 ![alt text](image.png)
