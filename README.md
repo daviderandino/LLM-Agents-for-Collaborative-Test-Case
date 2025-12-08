@@ -67,6 +67,9 @@ Implement two distinct systems to compare them:
 - Asks an LLM : "Write unit tests for this function".
 
 - Saves the result as is.
+```bash
+python -m pytest data/output_tests/baseline/test_bank_account.py 
+```
 
 ### B. The Multi-Agent System. A system with at least 2 distinct roles that interact. Test different "patterns":
 
