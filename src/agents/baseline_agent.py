@@ -4,6 +4,11 @@ from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate # permette di dividere system prompt e user message
 #from langchain_core.prompts import PromptTemplate # se vogliamo un unico raw message
 
+# QUANDO L'AGENTE DOVRA' ESEGUIRE IN LOOP LA GENERAZIONE FINO A RAGGIUNGERE COVERAGE X% POTREMMO USARE
+# 'ShellTool' (che è compreso in LangChain).
+# Esso permette all'agente di interagire con la shell e di settare l'argomento ask_human=True cosicchè
+# evitiamo che l'agente faccia tutto da solo combinando guai nel sistema.
+
 
 # ========== SETUP ENVIRONMENT & PATHS ==========
 current_dir = os.path.dirname(os.path.abspath(__file__))
