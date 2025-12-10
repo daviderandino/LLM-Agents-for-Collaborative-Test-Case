@@ -32,7 +32,8 @@ python -m pytest data/output_tests/baseline/test_bank_account.py
 
 ![alt text](image.png)
 
-### A. LLM and Agent Management
+## Packages Overview
+### LLM and Agent Management
 
 Framework for agent orchestration. CrewAI excellent for defining specific "roles" (e.g. Generator vs Reviewer), explicitly required.
 
@@ -40,7 +41,7 @@ Framework for agent orchestration. CrewAI excellent for defining specific "roles
 
 **python-dotenv**: To securely manage API keys.
 
-### B. Testing and Evaluation (Minimum Requirements)
+### Testing and Evaluation (Minimum Requirements)
 
 **pytest**: The standard framework for running generated tests.
 
@@ -48,7 +49,7 @@ Framework for agent orchestration. CrewAI excellent for defining specific "roles
 
 **mutmut** or **cosmic-ray**: For mutation testing (verify if tests "kill" mutants, i.e., if they find artificially introduced bugs).
 
-### C. Data Analysis
+### Data Analysis
 **pandas**: To organize metric results.
 
 **matplotlib** / **seaborn**: To create graphs for the report
