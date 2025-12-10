@@ -1,7 +1,8 @@
 import os
 import sys
 from dotenv import load_dotenv
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
+
 
 # --- 1. SETUP ENVIRONMENT & PATHS ---
 
@@ -15,21 +16,22 @@ dotenv_path = os.path.join(project_root, '.env')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
 
+
 from llm_factory import get_llm
 
 
 # --- 2. INITIALIZE LLM ---
 
-llm = get_llm(provider="groq", model_name="llama-3.1-8b-instant", temperature=0)
+#llm = get_llm(provider="groq", model_name="llama-3.1-8b-instant", temperature=0)
+llm = get_llm()
 
 # --- 3. HELPER FUNCTIONS ---
 
-'''
-This function uses a regex to extract only what is
-between the backticks ```python ... ``` and discards the rest..
-'''
-
 def clean_code_output(text: str) -> str:
+    """
+    This function uses a regex to extract only what is
+    between the backticks ```python ... ``` and discards the rest..
+    """
     cleaned = text.strip()
     if cleaned.startswith("```"):
         lines = cleaned.split("\n", 1)
@@ -39,9 +41,10 @@ def clean_code_output(text: str) -> str:
         cleaned = cleaned.rsplit("\n", 1)[0]
     return cleaned.strip()
 
+
 def run_baseline_agent(input_path: str, output_path: str):
     
-    # 1. Read the Input Code
+    # 1. Read the Input Code, per cui vanno generati i test
     full_input_path = os.path.join(project_root, input_path)
     if not os.path.exists(full_input_path):
         print(f"Error: Input file not found at {full_input_path}")
@@ -55,23 +58,24 @@ def run_baseline_agent(input_path: str, output_path: str):
     file_name = os.path.basename(input_path)       # bank_account.py
     base_name = os.path.splitext(file_name)[0]     # bank_account
     # We assume files are always in 'input_code'
-    target_module = f"input_code.{base_name}"
+    target_module = f"data.input_code.{base_name}"
 
     # 3. Define the Prompt
+    # Attenzione agli spazi/tabulazioni quando si usa """ ... """ in Python.
     template = """
-    You are an expert Software Engineer in Test (SDET).
+You are an expert Software Engineer in Test (SDET).
     
-    Your goal is to write a high-quality unit test suite using 'pytest' for the Python code provided below.
+Your goal is to write a high-quality unit test suite using 'pytest' for the target Python code provided below.
     
-    Instructions:
-    - **IMPORTANT**: Import the class or functions to test specifically from the module `{target_module}`. 
-      (Example: `from {target_module} import ...`)
-    - Write test cases for success scenarios, edge cases, and error handling.
-    - Output ONLY the raw Python code. Do not include markdown formatting or explanations.
+Instructions:
+- **IMPORTANT**: Import the class or functions to test specifically from the module `{target_module}`. 
+    (Example: `from {target_module} import ...`)
+- Write test cases for success scenarios, edge cases, and error handling.
+- Output ONLY the raw Python code. Do not include markdown formatting or explanations.
     
-    Target Code:
-    {code} 
-    """
+Target Python code:
+{code} 
+"""
     
     prompt = PromptTemplate(
         input_variables=["code", "target_module"],
@@ -82,7 +86,7 @@ def run_baseline_agent(input_path: str, output_path: str):
     print(f"Generating tests for {input_path} (Module: {target_module})...")
     chain = prompt | llm  # Take the prompt output and pass it as input to the LLM
     
-    # Pass both the code and module name to the prompt
+    # Pass both the code and module name to the prompt.
     # LangChain take the dictionary and fill the PromptTemplate
     # And it calls the API (Groq server)
     response = chain.invoke({

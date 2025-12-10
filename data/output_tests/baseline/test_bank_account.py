@@ -1,21 +1,25 @@
-# tests/test_bank_account.py
-
+from data.input_code.bank_account import BankAccount
 import pytest
-from input_code.bank_account import BankAccount
 
-def test_init_success():
+def test_init_default_balance():
+    account = BankAccount()
+    assert account.balance == 0
+    assert account.is_active
+
+def test_init_positive_balance():
     account = BankAccount(100)
     assert account.balance == 100
-    assert account.is_active is True
+    assert account.is_active
 
 def test_init_negative_balance():
     with pytest.raises(ValueError):
         BankAccount(-100)
 
-def test_deposit_success():
+def test_deposit_positive_amount():
     account = BankAccount(100)
     new_balance = account.deposit(50)
     assert new_balance == 150
+    assert account.balance == 150
 
 def test_deposit_zero_amount():
     account = BankAccount(100)
@@ -27,10 +31,11 @@ def test_deposit_negative_amount():
     with pytest.raises(ValueError):
         account.deposit(-50)
 
-def test_withdraw_success():
+def test_withdraw_positive_amount():
     account = BankAccount(100)
     new_balance = account.withdraw(50)
     assert new_balance == 50
+    assert account.balance == 50
 
 def test_withdraw_zero_amount():
     account = BankAccount(100)
@@ -50,21 +55,21 @@ def test_withdraw_insufficient_funds():
 def test_freeze_account():
     account = BankAccount(100)
     account.freeze_account()
-    assert account.is_active is False
+    assert not account.is_active
 
 def test_unfreeze_account():
     account = BankAccount(100)
     account.freeze_account()
     account.unfreeze_account()
-    assert account.is_active is True
+    assert account.is_active
 
-def test_deposit_after_freeze():
+def test_deposit_frozen_account():
     account = BankAccount(100)
     account.freeze_account()
     with pytest.raises(ValueError):
         account.deposit(50)
 
-def test_withdraw_after_freeze():
+def test_withdraw_frozen_account():
     account = BankAccount(100)
     account.freeze_account()
     with pytest.raises(ValueError):
