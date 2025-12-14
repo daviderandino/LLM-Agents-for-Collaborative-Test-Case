@@ -1,10 +1,11 @@
 """
-Prova di funzionamento API di Groq
+Prova di funzionamento API di Groq.
 """
 
 import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
+
 
 # 1. Carica le chiavi dal file .env
 load_dotenv()
