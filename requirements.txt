@@ -3,6 +3,7 @@ langchain
 langchain-groq
 langchain-community
 python-dotenv
+langgraph
 
 # Testing Tools 
 pytest

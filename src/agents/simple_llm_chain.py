@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate # permette di dividere system prompt e user message
 #from langchain_core.prompts import PromptTemplate # se vogliamo un unico raw message
@@ -31,17 +32,23 @@ llm = get_llm()
 # ========== HELPER FUNCTIONS ==========
 def clean_code_output(text: str) -> str:
     """
-    This function uses a regex to extract only what is
-    between the backticks ```python ... ``` and discards the rest..
+    Estrae il codice Python dai blocchi Markdown usando Regex.
+    Rimuove tutto il testo prima e dopo il blocco di codice.
     """
-    cleaned = text.strip()
-    if cleaned.startswith("```"):
-        lines = cleaned.split("\n", 1)
-        if len(lines) > 1:
-            cleaned = lines[1]
-    if cleaned.endswith("```"):
-        cleaned = cleaned.rsplit("\n", 1)[0]
-    return cleaned.strip()
+    # Pattern che cerca ```python (opzionale) ...contenuto... ```
+    # re.DOTALL permette al punto (.) di includere anche le nuove righe
+    pattern = r"```(?:python)?\s*(.*?)```"
+    match = re.search(pattern, text, re.DOTALL)
+    
+    if match:
+        # Se trova i backtick, restituisce SOLO il contenuto dentro
+        return match.group(1).strip()
+    else:
+        # Fallback: se l'LLM non ha messo i backtick, prova a pulire il testo grezzo
+        # Rimuoviamo eventuali righe che non sembrano codice (es. "Here is the code:")
+        lines = text.strip().split('\n')
+        code_lines = [line for line in lines if not line.strip().lower().startswith(("here", "sure", "i have"))]
+        return '\n'.join(code_lines).strip()
 
 
 def run_baseline_agent(input_path: str, output_path: str):
