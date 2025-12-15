@@ -7,20 +7,19 @@ from langgraph.graph import StateGraph, END
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 
-# Otteniamo la cartella corrente (src/agents)
+# ottengo la cartella corrente (src/agents)
 current_dir = os.path.dirname(os.path.abspath(__file__))
-# Risaliamo di due livelli per trovare la root (LLM-AGENTS-...)
+# risalgo di due livelli per trovare la root
 project_root = os.path.abspath(os.path.join(current_dir, "../../"))
 
-# Aggiungiamo la root al system path così Python trova i moduli ovunque
+# aggiungo la root al system path così Python trova i moduli ovunque
 if project_root not in sys.path:
     sys.path.append(project_root)
 
-# Carichiamo il .env dalla root
 load_dotenv(os.path.join(project_root, '.env'))
 
-# --- IMPORT LOCALI ---
-# Essendo nella stessa cartella (src/agents), questi import funzionano direttamente
+# === IMPORT LOCALI ===
+# essendo nella stessa cartella (src/agents), questi import funzionano direttamente
 try:
     from llm_factory import get_llm
     from simple_llm_chain import clean_code_output
@@ -30,11 +29,10 @@ except ImportError:
     from src.agents.simple_llm_chain import clean_code_output
 
 
-# --- CONFIGURAZIONE LLM ---
-# Usiamo temperature bassa per avere codice più deterministico
+# === CONFIGURAZIONE LLM ===
 llm = get_llm(temperature=0.1)
 
-# --- 1. DEFINIZIONE DELLO STATO (The Agent's Memory) ---
+# === DEFINIZIONE DELLO STATO (The Agent's Memory) ===
 class AgentState(TypedDict):
     input_file_path: str      # Path del file originale
     target_module: str        # Nome del modulo per l'import (es: data.input_code.bank)
@@ -50,7 +48,7 @@ class AgentState(TypedDict):
     iterations: int           # Contatore per evitare loop infiniti
 
 
-# --- 2. DEFINIZIONE DEI NODI ---
+# === DEFINIZIONE DEI NODI ===
 def plan_node(state: AgentState):
     """
     Analizza il codice e crea un piano di test.
@@ -58,7 +56,7 @@ def plan_node(state: AgentState):
     """
     print(f"\n--- STEP 1: PLANNING (Iteration {state['iterations'] + 1}) ---")
     
-    # Costruiamo il contesto: è il primo giro o stiamo correggendo errori?
+    # costruisco il contesto: è il primo giro o stiamo correggendo errori?
     context = ""
     if state.get("test_output"):
         context = f"""
@@ -94,7 +92,7 @@ def plan_node(state: AgentState):
         "context": context
     })
     
-    # Aggiorniamo lo stato con il nuovo piano e incrementiamo il contatore
+    # aggiorno lo stato con il nuovo piano e incrementiamo il contatore
     return {"test_plan": response.content, "iterations": state["iterations"] + 1}
 
 
@@ -141,7 +139,6 @@ def generation_node(state: AgentState):
         "code": state["code_under_test"]
     })
     
-    # Puliamo l'output per avere solo codice
     cleaned_code = clean_code_output(response.content)
     
     return {"generated_tests": cleaned_code}
@@ -153,19 +150,19 @@ def execution_node(state: AgentState):
     """
     print("--- STEP 3: EXECUTING PYTEST ---")
     
-    # 1. Salviamo il file di test temporaneo
-    # Nota: Lo salviamo nella root per semplicità di import
+    # Salvo il file di test temporaneo
+    # Nota: Lo salvo nella root per semplicità di import
     test_filename = "temp_test_execution.py"
     test_file_path = os.path.join(project_root, test_filename)
     
     with open(test_filename, "w") as f:
         f.write(state["generated_tests"])
     
-    # 2. Eseguiamo Pytest
+    # Eseguo Pytest
     cmd = [
         "pytest", 
         test_filename, 
-        f"--cov={state['target_module']}",  # <--- MODIFICA QUI: Usa il nome del modulo (con i punti)
+        f"--cov={state['target_module']}",
         "--cov-report=term-missing"
     ]
     
@@ -185,7 +182,6 @@ def execution_node(state: AgentState):
         # --- DEBUG PRINT ---
         if is_error:
             print("\n!!! PYTEST FAILURE OUTPUT !!!")
-            # Stampiamo solo le ultime 10 righe dell'errore per non intasare la console
             print('\n'.join(output.splitlines()[-15:]))
             print("!!! END FAILURE OUTPUT !!!\n")
 
@@ -194,16 +190,13 @@ def execution_node(state: AgentState):
         is_error = True
         print(f"EXCEPTION DURING EXECUTION: {e}")
 
-    # 3. Parsing della Coverage
-    # Cerchiamo la riga finale di report coverage, es: "TOTAL 20 5 75%"
-    # Regex cerca un numero percentuale alla fine della riga che inizia con TOTAL
-    # Nota: l'output varia leggermente in base alla versione, questa regex è generica
+    #parsing della Coverage
     cov_match = re.search(r"TOTAL.*?(\d+)%", output)
     coverage = int(cov_match.group(1)) if cov_match else 0
     
     print(f"--- EXECUTION RESULT: Errors={is_error}, Coverage={coverage}% ---")
     
-    # (Opzionale) Rimuovi il file temporaneo se vuoi pulizia
+    # rimuovo il file temporaneo se vuoi pulizia
     if os.path.exists(test_file_path):
         os.remove(test_file_path) 
 
@@ -214,7 +207,7 @@ def execution_node(state: AgentState):
     }
 
 
-# --- 3. LOGICA CONDIZIONALE (ROUTER) ---
+# === LOGICA CONDIZIONALE (ROUTER) ===
 def router(state: AgentState):
     """
     Decide se finire o tornare indietro.
@@ -225,21 +218,21 @@ def router(state: AgentState):
         print(f"--- STOPPING: Reached max iterations ({MAX_ITERATIONS}) ---")
         return "end"
     
-    # Se i test passano (no errori) e la coverage è 100%, abbiamo finito
+    # Se i test passano (no errori) e la coverage è 100%, l'agente termina
     if not state["error_occurred"] and state["coverage_percent"] == 100:
         print("--- SUCCESS: 100% Coverage achieved! ---")
         return "end"
     
-    # Altrimenti, rigeneriamo il piano
+    # altrimenti, si rigenera il piano
     print("--- DECISION: Re-planning (Low coverage or Errors) ---")
     return "re-plan"
 
 
-# --- 4. COSTRUZIONE DEL GRAFO ---
+# === COSTRUZIONE DEL GRAFO ===
 def build_graph():
     workflow = StateGraph(AgentState)
     
-    # Aggiungi nodi
+    # Aggiungo nodi
     workflow.add_node("planner", plan_node)
     workflow.add_node("generator", generation_node)
     workflow.add_node("executor", execution_node)
@@ -264,15 +257,13 @@ def build_graph():
     return workflow.compile()
 
 
-# --- 5. MAIN ---
 if __name__ == "__main__":
     
     # ESEMPIO DI SETUP
-    # Assicurati che questo file esista!
     input_file_rel = "data/input_code/bank_account.py"
     input_file_abs = os.path.join(project_root, input_file_rel)
     
-    # Il nome del modulo Python per l'import statement
+    # Il nome del modulo Python per l'import statement.
     # Se il file è in data/input_code/bank_account.py, l'import è data.input_code.bank_account
     target_module = "data.input_code.bank_account"
     
@@ -281,11 +272,11 @@ if __name__ == "__main__":
         print(f"ERRORE: File non trovato: {input_file_abs}")
         exit()
 
-    # Leggiamo il codice
+    # Leggo il codice
     with open(input_file_abs, "r") as f:
         code = f.read()
         
-    # Stato iniziale
+    # Stato iniziale da cui l'agent parte
     initial_state = {
         "input_file_path": input_file_abs,
         "target_module": target_module,
@@ -308,7 +299,6 @@ if __name__ == "__main__":
     output_filename = f"test_{os.path.basename(input_file_rel)}"
     output_path = os.path.join(project_root, "data/output_tests", output_filename)
     
-    # Assicurati che la cartella esista
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     
     with open(output_path, "w") as f:

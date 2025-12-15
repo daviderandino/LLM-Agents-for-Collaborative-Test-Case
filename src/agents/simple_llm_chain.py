@@ -3,12 +3,6 @@ import sys
 import re
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate # permette di dividere system prompt e user message
-#from langchain_core.prompts import PromptTemplate # se vogliamo un unico raw message
-
-# QUANDO L'AGENTE DOVRA' ESEGUIRE IN LOOP LA GENERAZIONE FINO A RAGGIUNGERE COVERAGE X% POTREMMO USARE
-# 'ShellTool' (che è compreso in LangChain).
-# Esso permette all'agente di interagire con la shell e di settare l'argomento ask_human=True cosicchè
-# evitiamo che l'agente faccia tutto da solo combinando guai nel sistema.
 
 
 # ========== SETUP ENVIRONMENT & PATHS ==========
@@ -26,7 +20,6 @@ if os.path.exists(dotenv_path):
 # ========== INITIALIZE LLM ==========
 from llm_factory import get_llm
 llm = get_llm()
-#llm = get_llm(provider="groq", model_name="llama-3.1-8b-instant", temperature=0)
 
 
 # ========== HELPER FUNCTIONS ==========
@@ -71,7 +64,6 @@ def run_baseline_agent(input_path: str, output_path: str):
 
     # Definiamo il template: di fatto è il prompt con placeholders, quando li riempiremo sarà
     # più corretto chiamarlo prompt.
-    # Attenzione!!! agli spazi/tabulazioni quando si usa """ ... """ in Python.
     template = ChatPromptTemplate.from_messages([
         (
             "system", 
