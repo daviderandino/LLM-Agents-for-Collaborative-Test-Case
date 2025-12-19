@@ -22,11 +22,11 @@ load_dotenv(os.path.join(project_root, '.env'))
 # essendo nella stessa cartella (src/agents), questi import funzionano direttamente
 try:
     from llm_factory import get_llm
-    from simple_llm_chain import clean_code_output
+    from agents.single_agent.simple_llm_chain import clean_code_output
 except ImportError:
     # Fallback se eseguiamo lo script in modo diverso (es. come modulo)
     from src.agents.llm_factory import get_llm
-    from src.agents.simple_llm_chain import clean_code_output
+    from agents.single_agent.simple_llm_chain import clean_code_output
 
 
 # === CONFIGURAZIONE LLM ===
