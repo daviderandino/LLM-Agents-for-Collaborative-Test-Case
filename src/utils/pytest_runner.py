@@ -49,9 +49,9 @@ def run_pytest(target_module, generated_tests):
         stderr = result.stderr
         exit_code = result.returncode
         
-        results = analyze_pytest_output(stdout, stderr, exit_code)
+        report = analyze_pytest_output(stdout, stderr, exit_code)
 
-        return results
+        return report
 
     finally:
         os.remove("tmp_test.py")
@@ -63,24 +63,24 @@ def analyze_pytest_output(stdout, stderr, exit_code):
         "coverage": 0,
         "passed": 0,
         "failed": 0,
-        "failed_tests_list": [],     # Lista di stringhe "FAILED nome - errore"
-        "error_summary": ""          # Usato solo se status == crash
+        "failed_tests_infos": '',     # Lista di stringhe "FAILED nome - errore"
+        "error_summary": ''          # Usato solo se status == crash
     }
 
-    # controlliamo se compare la coverage in stdout -> pytest è stato eseguito con successo
-    cov_match = re.search(r"^TOTAL\s+.*?\s+(\d+)%\s*$", stdout, re.MULTILINE)
-
-    # pytest è crashato
-    if not cov_match:
+    if exit_code > 1:
         report["crash"] = "yes"
         report["error_summary"] = stderr
         return report
+
+    # coverage in stdout -> pytest è stato eseguito con successo
+    cov_match = re.search(r"^TOTAL\s+.*?\s+(\d+)%\s*$", stdout, re.MULTILINE)
     
     # pytest è stato eseguito correttamente
     report["coverage"] = int(cov_match.group(1))
 
     # estraiamo i test falliti
     fail_pattern = r"FAILED\s+(?:.*?)::(\w+)\s+(?:-\s+)?(.*)"
+    failed_tests = []
     for line in stdout.splitlines():
         if line.startswith("FAILED"):
             match = re.search(fail_pattern, line)
@@ -88,7 +88,10 @@ def analyze_pytest_output(stdout, stderr, exit_code):
                 test_name = match.group(1)
                 error_msg = match.group(2)
                 # Formattazione richiesta: "FAILED nome_test - errore"
-                report["failed_tests_list"].append(f"FAILED {test_name} - {error_msg}")
+                failed_tests.append(f"FAILED {test_name} - {error_msg}")
+
+    # concateno in un'unica stringa che contiene i test non passati
+    report["failed_tests_infos"] = "\n".join(failed_tests)
 
     # conteggio test passati/falliti
     passed_m = re.search(r"(\d+) passed", stdout)

@@ -1,8 +1,16 @@
- 
+from src.agents.multi_agent_collaborative.MultiAgentCollaborativeGraph import MultiAgentCollaborativeGraph 
+from src.agents.llm_factory import get_llm
 
-def run_collaborative_agents(input_file_abs, input, planner_name, generator_name):
-    project_root = project_root = os.path.abspath(os.path.join(current_dir, "../../"))
+def run_collaborative_agents(input_file_path, planner_model, generator_model): 
 
-    code = 
+    llm_planner = get_llm(provider='groq', model_name=planner_model)
+    llm_generator = get_llm(provider='groq', model_name=generator_model)
 
-    return
+    agents = MultiAgentCollaborativeGraph(input_file_path, llm_planner, llm_generator)
+
+    final_state = agents.invoke()
+
+    ### è da estrarre coverage etc e ritornarle
+    return {
+        "...": 0
+    }

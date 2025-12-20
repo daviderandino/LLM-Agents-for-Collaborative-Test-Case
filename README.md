@@ -15,13 +15,10 @@ GROQ_API_KEY = my_key
 ```
 
 ### HOW TO RUN
-Run 
-```bash
-baseline_agent.py
-```
 
-The agent will generate a file with tests for bank_account, the tests can be run with
+Run the experimets .py files from the project root (cwd should be that).
 
+You can also run the generated tests by yourself with:
 
 ```bash
 python -m pytest data/output_tests/baseline/test_bank_account.py 
