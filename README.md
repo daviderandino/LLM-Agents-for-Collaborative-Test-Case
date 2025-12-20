@@ -21,7 +21,7 @@ Run the experimets .py files from the project root (cwd should be that).
 You can also run the generated tests by yourself with:
 
 ```bash
-python -m pytest data/output_tests/baseline/test_bank_account.py 
+python -m pytest data/output_tests/multi_agent_collaborative/test_bank_account.py 
 ```
 
 ## PROJECT STRUCTURE
