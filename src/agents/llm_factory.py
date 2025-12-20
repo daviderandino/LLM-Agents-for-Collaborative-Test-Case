@@ -5,7 +5,6 @@ Segue un Factory Pattern.
 
 import os
 from langchain_groq import ChatGroq
-from langchain_community.llms import HuggingFacePipeline # O Ollama, o LlamaCPP
 
 
 def get_llm(provider="groq", model_name="llama-3.1-8b-instant", temperature=0):
