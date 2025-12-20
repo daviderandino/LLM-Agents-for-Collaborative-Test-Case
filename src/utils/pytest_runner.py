@@ -59,14 +59,15 @@ def run_pytest(target_module, generated_tests):
 
 def analyze_pytest_output(stdout, stderr, exit_code):
     report = {
-        "crash": "no",               # yes | no
+        "crash": "no",                # yes | no
         "coverage": 0,
         "passed": 0,
         "failed": 0,
         "failed_tests_infos": '',     # Lista di stringhe "FAILED nome - errore"
-        "error_summary": ''          # Usato solo se status == crash
+        "error_summary": ''           # Usato solo se status == crash
     }
 
+    # è difficile che pytest proprio crashi
     if exit_code > 1:
         report["crash"] = "yes"
         report["error_summary"] = stderr

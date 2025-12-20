@@ -94,7 +94,7 @@ class MultiAgentCollaborativeGraph:
     def _plan_node(self, state: AgentState):
         """
         Analizza il codice e crea un piano per generare i test.
-        Se arriva da un fallimento (retry), legge l'errore precedente.
+        Se arriva da un fallimento (retry), fa re-planning.
         """
         print(f"\n--- STEP 1: PLANNING (Iteration {state['iterations'] + 1}) ---")
         
@@ -263,7 +263,7 @@ Generate the full test file content in order to achieve the highest coverage pos
     def _route_to(self, state: AgentState):
         """
         Funzione decisionale che determina se dopo l'esecuzione
-        dei test generati possiamo chiudere il processo oppure o
+        dei test generati possiamo chiudere il processo oppure
         tornare in planning.
         """
         

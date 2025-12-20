@@ -10,7 +10,7 @@ def run_collaborative_agents(input_file_path, planner_model, generator_model):
 
     final_state = agents.invoke()
 
-    ### è da estrarre coverage etc e ritornarle
+    ### è da estrarre coverage, iterations etc e ritornarle se si vogliono fare statistiche nell'esperimento
     return {
         "...": 0
     }
