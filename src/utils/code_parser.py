@@ -30,4 +30,4 @@ def syntax_check(code: str) -> tuple[bool, str]:
         ast.parse(code)
         return True, ""
     except SyntaxError as e:
-        return False, f"SyntaxError at line {e.lineno}: {e.msg}"
+        return False, f"SyntaxError: {e.msg}"

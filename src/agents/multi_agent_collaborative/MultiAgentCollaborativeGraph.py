@@ -7,7 +7,9 @@ from langgraph.graph import StateGraph, END
 from langchain_core.prompts import ChatPromptTemplate
 
 from src.utils.file_manager import obtain_import_module_str, read_text
-from src.utils.code_parser import clean_llm_python
+from src.utils.code_parser import clean_llm_python, syntax_check
+from src.utils.pytest_runner import run_pytest
+
 
 # === DEFINIZIONE DELLO STATO DEL GRAFO ===
 class AgentState(TypedDict):
@@ -19,13 +21,19 @@ class AgentState(TypedDict):
     test_plan: str            # il piano generato (to-do list) dal nodo planner
     generated_tests: str      # il codice pytest generato dal nodo generator
     
-    test_output: str          # output della console di pytest a seguito dell'esecuzione dei test generati
+    error: str
+    failed_tests_infos: str   # elenco di test failati nel formato 'FAILED nome_test - errore' (uno sotto l'altro)
     coverage_percent: int     # percentuale di coverage raggiunta con i test generati (0-100)
-    error_occurred: bool      # flag: ci sono stati errori di sintassi/runtime?
-    
-    iterations: int           # contatore per evitare loop infiniti tra gli agenti
-    max_iterations: int
+    n_passed_tests: int       # numero di test che passano
+    n_failed_tests: int       # numero di test che failano
 
+    iterations: int           # contatore per evitare loop infiniti tra gli agenti
+    max_iterations: int       # numero massimo di iterazioni prima di finire il processo
+
+
+# AGGIUNGERE UN REASONER/REVIEWER che, anche dopo che i test generati hanno coverage massima
+# e passano tutti, ragioni sui test generati ad esempio se l'LLM sta barando facendo asserzioni
+# del tipo "assert True". Ha senso ??? 
 
 class MultiAgentCollaborativeGraph:
     def __init__(self, project_root, rel_input_file_path, llm_planner, llm_generator):
@@ -45,11 +53,15 @@ class MultiAgentCollaborativeGraph:
             "input_file_path": rel_input_file_path,
             "target_module": obtain_import_module_str(rel_input_file_path),
             "code_under_test": code,
+
             "test_plan": '',
             "generated_tests": '',
-            "test_output": '',
+
+            "error": '',
+            "failed_tests_infos": '',
             "coverage_percent": 0,
-            "error_occurred": False,
+            "n_passed_tests": 0,
+            "n_failed_tests": 0,
             "iterations": 0,
             "max_iterations": 5
         }
@@ -62,9 +74,9 @@ class MultiAgentCollaborativeGraph:
 
         workflow = StateGraph(AgentState)
 
-        workflow.add_node("planner", self.plan_node)
-        workflow.add_node("generator", self.generation_node)
-        workflow.add_node("executor", self.execution_node)
+        workflow.add_node("planner", self._plan_node)
+        workflow.add_node("generator", self._generation_node)
+        workflow.add_node("executor", self._execution_node)
         
         workflow.set_entry_point("planner")
         
@@ -72,7 +84,7 @@ class MultiAgentCollaborativeGraph:
         workflow.add_edge("generator", "executor") # arco generator -> executor
         workflow.add_conditional_edges( # arco condizionale executor -> (planner, END)
             "executor",
-            self.route_to,
+            self._route_to,
             {
                 "re-plan": "planner", # se router ritorna 're-plan', l'arco è executor -> planner
                 "end": END # se router ritorna 'end', l'arco è executor -> END
@@ -82,7 +94,7 @@ class MultiAgentCollaborativeGraph:
         return workflow.compile()
         
 
-    def plan_node(self, state: AgentState):
+    def _plan_node(self, state: AgentState):
         """
         Analizza il codice e crea un piano di test.
         Se arriva da un fallimento (retry), legge l'errore precedente.
@@ -92,15 +104,25 @@ class MultiAgentCollaborativeGraph:
         # costruisco il contesto: è la prima volta che facciamo planning o dobbiamo
         # correggere errori/aumentare la coverage?
         context = ""
-        if state.get("test_output"):
+        if state["generated_tests"]:
             context = f"""
-            WARNING: PREVIOUS TEST EXECUTION FAILED or HAD LOW COVERAGE.
-            Current Coverage: {state.get('coverage_percent', 0)}%
+            WARNING: PREVIOUS TEST EXECUTION FAILED, HAD LOW COVERAGE or SOME TEST FAILED TO PASS.
+
+            Current Plan:
+            {state['test_plan']}
+
+            Current Generated Tests:
+            {state['generated_tests']}
+
+            Current Coverage: {state['coverage_percent']}%
             
-            Previous Output/Errors:
-            {state['test_output']}
+            Failed Tests:
+            {state['failed_tests_infos']}
             
-            INSTRUCTION: Refine the plan to specifically fix these errors and cover missing lines.
+            Current Errors:
+            {state['error']}
+
+            INSTRUCTION: Refine the plan to specifically fix errors and failed tests.
             """
 
         prompt = ChatPromptTemplate.from_messages([
@@ -133,7 +155,7 @@ class MultiAgentCollaborativeGraph:
         }
     
 
-    def generation_node(self, state: AgentState):
+    def _generation_node(self, state: AgentState):
         """
         Scrive il codice Python dei test basandosi sul piano.
         """
@@ -143,7 +165,8 @@ class MultiAgentCollaborativeGraph:
             (
                 "system",
                 """You are a Python Testing Expert (pytest).
-                Write a complete test suite based on the plan provided.
+                Write a complete test suite based on the plan provided. You have to reach the
+                highest test coverage possible for the provided code.
                 
                 CRITICAL RULES:
                 1. **ALWAYS start the file with `import pytest`**. This is mandatory.
@@ -161,7 +184,7 @@ class MultiAgentCollaborativeGraph:
                 Plan:
                 {plan}
                 
-                Original Code:
+                Code to be tested:
                 {code}
                 
                 Generate the full test file content.
@@ -183,61 +206,28 @@ class MultiAgentCollaborativeGraph:
         }
 
 
-    def execution_node(self, state: AgentState):
+    def _execution_node(self, state: AgentState):
         """
-        Salva il file, esegue pytest e legge la coverage.
+        Salva il file, esegue pytest e ne processa l'output.
         """
         print("--- STEP 3: EXECUTING PYTEST ---")
         
-        # Salvo il file di test temporaneo
-        # Nota: Lo salvo nella root per semplicità di import
-        test_filename = "temp_test_execution.py"
-        test_file_path = os.path.join(state.get('project_root'), test_filename)
-        
-        with open(test_file_path, "w") as f:
-            f.write(state["generated_tests"])
-        
-        # Eseguo Pytest
-        cmd = [
-            "pytest", 
-            test_filename, 
-            f"--cov={state['target_module']}",
-            "--cov-report=term-missing"
-        ]
-        
-        try:
-            print(f"Running command: {' '.join(cmd)}")
-            result = subprocess.run(
-                cmd,
-                cwd=project_root, 
-                capture_output=True,
-                text=True,
-                timeout=30
-            )
-            output = result.stdout + result.stderr
-            # Se il returncode non è 0, pytest ha fallito (test rossi o errore sintassi)
-            is_error = result.returncode != 0
+        ok, err = syntax_check(state["generated_tests"])
 
-            # --- DEBUG PRINT ---
-            if is_error:
-                print("\n!!! PYTEST FAILURE OUTPUT !!!")
-                print('\n'.join(output.splitlines()[-15:]))
-                print("!!! END FAILURE OUTPUT !!!\n")
+        if not ok:
+            print(f"--- EXECUTION RESULT: Syntax Error ---")
+            return {
+                "error": err,
+                "failed_tests_infos": '',
+                "coverage_percent": 0,
+                "n_passed_tests": 0,
+                "n_failed_tests": 0,
+            }
 
-        except Exception as e:
-            output = str(e)
-            is_error = True
-            print(f"EXCEPTION DURING EXECUTION: {e}")
-
-        #parsing della Coverage
-        cov_match = re.search(r"TOTAL.*?(\d+)%", output)
-        coverage = int(cov_match.group(1)) if cov_match else 0
+        test_results = run_pytest(state["target_module"], state["generated_tests"])
         
-        print(f"--- EXECUTION RESULT: Errors={is_error}, Coverage={coverage}% ---")
-        
-        # rimuovo il file temporaneo se vuoi pulizia
-        if os.path.exists(test_file_path):
-            os.remove(test_file_path) 
+        print(f"--- EXECUTION RESULT: Coverage={coverage}% ---")
+         
 
         return {
             "test_output": output,
@@ -246,24 +236,36 @@ class MultiAgentCollaborativeGraph:
         }
     
 
-    def route_to(self, state: AgentState):
+    def _route_to(self, state: AgentState):
         """
         Funzione decisionale che determina se dopo l'esecuzione
         dei test generati possiamo chiudere il processo oppure o
         tornare in planning.
         """
         
-        max_iterations = state.get('max_iterations', 20)
+        max_iterations = state['max_iterations']
 
         if state["iterations"] >= max_iterations:
-            print(f"--- STOPPING: Reached max iterations ({max_iterations}) ---")
+            print(f"--- STOPPING: Reached Max Iterations ({max_iterations}) ---")
             return "end"
         
         # Se i test passano (no errori) e la coverage è 100%, l'agente termina
         if not state["error_occurred"] and state["coverage_percent"] == 100:
-            print("--- SUCCESS: 100% Coverage achieved! ---")
+            print("--- SUCCESS: 100% Coverage & Pass rate ---")
             return "end"
         
         # altrimenti, si rigenera il piano
         print("--- DECISION: Re-planning (Low coverage or Errors) ---")
         return "re-plan"
+
+
+    def invoke(self):
+        final_state = self.graph.invoke(self.initial_state)
+
+        output_filename = f"test_{os.path.basename(input_file_rel)}"
+        output_path = os.path.join(project_root, "data/output_tests", output_filename)
+        
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        
+        with open(output_path, "w") as f:
+            f.write(final_state["generated_tests"])

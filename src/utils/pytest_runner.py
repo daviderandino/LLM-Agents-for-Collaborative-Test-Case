@@ -3,20 +3,10 @@ from __future__ import annotations
 import re
 import sys
 import subprocess
-from dataclasses import dataclass
-from typing import Optional
-
-
-@dataclass
-class PytestRunResult:
-    output: str
-    returncode: int
-    coverage_percent: int
-    error_occurred: bool
+import os
 
 
 def parse_coverage_percent(output: str) -> int:
-    
     # Estrae la coverage percent dall'output di pytest-cov.
     # Regex cerca un numero percentuale alla fine della riga che inizia con TOTAL, poi fallback
     # Nota: l'output varia leggermente in base alla versione, questa regex è generica
@@ -34,60 +24,78 @@ def parse_coverage_percent(output: str) -> int:
     return int(m2.group(1)) if m2 else 0
 
 
-def run_pytest_with_coverage(
-    *,
-    project_root: str,
-    test_filename: str,
-    cov_target: str,
-    timeout: int = 30,
-    extra_args: Optional[list[str]] = None,
-) -> PytestRunResult:
-    
-    # Esegue pytest con coverage usando lo stesso interprete Python dell'agent.
-    #  - project_root: cwd del subprocess
-    #  - test_filename: nome o path relativo al cwd (es: "temp_test_execution.py")
-    #  - cov_target: modulo (es: "data.input_code.bank_account")
-    
+def run_pytest(target_module, generated_tests):
+
+    with open("tmp_test.py", "w") as f:
+        f.write(generated_tests)
+
     cmd = [
         sys.executable, "-m", "pytest",
-        test_filename,
-        f"--cov={cov_target}",
-        "--cov-report=term-missing",
-        "--cov-report=html",
+        "tmp_test.py",
+        f"--cov={target_module}",
+        "-q",
+        "--tb=line",
+        "--color=no"
     ]
-    if extra_args:
-        cmd.extend(extra_args)
 
     try:
-        r = subprocess.run(
+        result = subprocess.run(
             cmd,
-            cwd=project_root,
             capture_output=True,
-            text=True,
-            timeout=timeout,
+            text=True
         )
-        output = (r.stdout or "") + (r.stderr or "")
-        is_error = r.returncode != 0
-        cov = parse_coverage_percent(output)
 
-        # --- DEBUG PRINT ---
-        if is_error:
-            print("\n!!! PYTEST FAILURE OUTPUT !!!")
-            # Stampiamo solo le ultime 10 righe dell'errore per non intasare la console
-            print('\n'.join(output.splitlines()[-15:]))
-            print("!!! END FAILURE OUTPUT !!!\n")
+        stdout = result.stdout
+        stderr = result.stderr
+        exit_code = result.returncode
+        
+        results = analyze_pytest_output(stdout, stderr, exit_code)
 
-        return PytestRunResult(
-            output=output,
-            returncode=r.returncode,
-            coverage_percent=cov,
-            error_occurred=is_error,
-        )
-    except Exception as e:
-        output = f"EXCEPTION DURING EXECUTION: {e}"
-        return PytestRunResult(
-            output=output,
-            returncode=999,
-            coverage_percent=0,
-            error_occurred=True,
-        )
+        return results
+
+    finally:
+        os.remove("tmp_test.py")
+
+
+def analyze_pytest_output(stdout, stderr, exit_code):
+    report = {
+        "crash": "no",               # yes | no
+        "coverage": 0,
+        "passed": 0,
+        "failed": 0,
+        "failed_tests_list": [],     # Lista di stringhe "FAILED nome - errore"
+        "error_summary": ""          # Usato solo se status == crash
+    }
+
+    # controlliamo se compare la coverage in stdout -> pytest è stato eseguito con successo
+    cov_match = re.search(r"^TOTAL\s+.*?\s+(\d+)%\s*$", stdout, re.MULTILINE)
+
+    # pytest è crashato
+    if not cov_match:
+        report["crash"] = "yes"
+        report["error_summary"] = stderr
+        return report
+    
+    # pytest è stato eseguito correttamente
+    report["coverage"] = int(cov_match.group(1))
+
+    # estraiamo i test falliti
+    fail_pattern = r"FAILED\s+(?:.*?)::(\w+)\s+(?:-\s+)?(.*)"
+    for line in stdout.splitlines():
+        if line.startswith("FAILED"):
+            match = re.search(fail_pattern, line)
+            if match:
+                test_name = match.group(1)
+                error_msg = match.group(2)
+                # Formattazione richiesta: "FAILED nome_test - errore"
+                report["failed_tests_list"].append(f"FAILED {test_name} - {error_msg}")
+
+    # conteggio test passati/falliti
+    passed_m = re.search(r"(\d+) passed", stdout)
+    failed_m = re.search(r"(\d+) failed", stdout)
+    error_m = re.search(r"(\d+) error", stdout)
+
+    report["passed"] = int(passed_m.group(1)) if passed_m else 0
+    report["failed"] = int(failed_m.group(1)) if failed_m else 0 + int(error_m.group(1)) if error_m else 0
+
+    return report
