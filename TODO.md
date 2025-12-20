@@ -1,14 +1,11 @@
 ## COME FUNZIONA FINORA
 
-Runnare 
-```bash
-baseline_agent.py
-```
+Runnare gli esperimenti dalla root del progetto, gli agenti genereranno i test nelle rispetive cartelle in data/output_tests a partire da un file dentro data/input_code.
 
-L'agente genererà un file con i test per bank_account, i test si possono runnare con
+Si può poi eseguire manualmente i test con:
 
 ```bash
-python -m pytest data/output_tests/baseline/test_bank_account.py 
+python -m pytest data/output_tests/ARCHITETTURA_AGENTICA/test_XYZ.py 
 ```
 
 ## AGGIUNGERE DATASET E FARE LOOP SUL DATASET
