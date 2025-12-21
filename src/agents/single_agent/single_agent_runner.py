@@ -1,4 +1,4 @@
-from src.agents.single_agent.single_agent import SingleAgentChain
+from src.agents.single_agent.SingleAgentChain import SingleAgentChain
 from src.agents.llm_factory import get_llm
 
 def run_single_agent(input_file_path, model): 
