@@ -1,6 +1,5 @@
 from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
-import os
 
 from src.utils.code_parser import clean_llm_python, syntax_check
 from src.utils.pytest_runner import run_pytest
@@ -89,9 +88,9 @@ While generating the output, you have to follow those three instructions:
         chain_result = self._feed_the_chain()
 
         output_filename = f"test_{Path(self.input_file_path).stem}.py"
-        output_file_path = os.path.join("data", "output_tests", "single_agent", output_filename)
+        output_file_path = Path("data") / "output_tests" / "single_agent" / output_filename
         
-        with open(output_file_path, "w") as f:
+        with open(str(output_file_path), "w") as f:
             f.write(self.cleaned_tests)
 
         return chain_result

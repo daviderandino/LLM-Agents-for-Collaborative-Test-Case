@@ -3,7 +3,7 @@ from src.agents.single_agent.single_agent_runner import run_single_agent
 
 if __name__ == '__main__':
     # Constructing the path with pathlib
-    input_file_path = Path("data") / "input_code" / "bank_account.py"
+    input_file_path = Path("data") / "input_code" / "library.py"
 
     # Running the agent by converting the path to a string
     results = run_single_agent(

@@ -1,4 +1,3 @@
-import os
 from typing import TypedDict
 from langgraph.graph import StateGraph, END
 from langchain_core.prompts import ChatPromptTemplate
@@ -286,9 +285,9 @@ Generate the full test file content in order to achieve the highest coverage pos
         final_state = self.graph.invoke(self.initial_state)
 
         output_filename = f"test_{Path(final_state['input_file_path']).stem}.py"
-        output_file_path = os.path.join("data", "output_tests", "multi_agent_collaborative", output_filename)
+        output_file_path = Path("data") / "output_tests" / "multi_agent_collaborative" / output_filename
         
-        with open(output_file_path, "w") as f:
+        with open(str(output_file_path), "w") as f:
             f.write(final_state["generated_tests"])
 
         return final_state

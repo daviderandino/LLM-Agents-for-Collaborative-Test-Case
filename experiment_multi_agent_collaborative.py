@@ -9,6 +9,6 @@ if __name__ == '__main__':
     # since internal utilities often work with strings
     results = run_collaborative_agents(
         input_file_path=str(input_file_path),
-        planner_model='openai/gpt-oss-20b',
+        planner_model='llama-3.3-70b-versatile',
         generator_model='openai/gpt-oss-20b'
     )
