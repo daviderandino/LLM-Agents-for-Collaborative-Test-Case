@@ -33,9 +33,9 @@ def run_pytest(target_module, generated_tests):
         sys.executable, "-m", "pytest",
         "tmp_test.py",
         f"--cov={target_module}",
-        "-q",
         "--tb=line",
-        "--color=no"
+        "--color=no",
+        "-vv"
     ]
 
     try:
