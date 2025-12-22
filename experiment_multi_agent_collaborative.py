@@ -9,7 +9,7 @@ if __name__ == '__main__':
     # since internal utilities often work with strings
     results = run_collaborative_agents(
         input_file_path=str(input_file_path),
-        planner_model='llama-3.1-8b-instant',
+        planner_model='meta-llama/llama-4-scout-17b-16e-instruct',
         generator_model='meta-llama/llama-4-maverick-17b-128e-instruct',
-        verbose= False
+        verbose= True
     )
