@@ -29,18 +29,23 @@ def color_text(text: str, color: str = "reset") -> str:
 
 # === DEFINIZIONE DELLO STATO DEL GRAFO ===
 class AgentState(TypedDict):
-    input_file_path: str      # path del file .py per cui generare i test (è relativo alla root del progetto, dato che gli esperimenti partono da lì)
-    target_module: str        # nome del modulo per l'import (es: data.input_code.bank_account se ho data/input_code/bank_account.py)
-    code_under_test: str      # contenuto del file .py che dobbiamo testare
-    
-    test_plan: str            # il piano generato (to-do list) dal nodo planner
-    generated_tests: str      # il codice pytest generato dal nodo generator
-    
-    error: str                # errore d'esecuzione di pytest (sono quelli gravi, ad esempio crash, non i singoli errori dei test case che li fanno failare)
-    failed_tests_infos: str   # elenco di test failati nel formato 'FAILED nome_test - errore' (uno sotto l'altro)
-    coverage_percent: int     # percentuale di coverage raggiunta con i test generati (0-100)
-    n_passed_tests: int       # numero di test generati che passano
-    n_failed_tests: int       # numero di test generati che failano
+    input_file_path: str  # path del file .py per cui generare i test (è relativo alla root del progetto, dato che gli esperimenti partono da lì)
+    target_module: str  # nome del modulo per l'import (es: data.input_code.bank_account se ho data/input_code/bank_account.py)
+    code_under_test: str  # contenuto del file .py che dobbiamo testare
+
+    test_plan: str  # il piano generato (to-do list) dal nodo planner
+    generated_tests: str  # il codice pytest generato dal nodo generator
+
+    error: str  # errore d'esecuzione di pytest (sono quelli gravi, ad esempio crash, non i singoli errori dei test case che li fanno failare)
+    syntax_error: bool
+    pytest_error: bool
+    failed_tests_infos: str  # elenco di test failati nel formato 'FAILED nome_test - errore' (uno sotto l'altro)
+    coverage_percent: (
+        int  # percentuale di coverage raggiunta con i test generati (0-100)
+    )
+
+    n_passed_tests: int  # numero di test generati che passano
+    n_failed_tests: int  # numero di test generati che failano
 
     iterations: int           # contatore per evitare loop infiniti tra gli agenti
     max_iterations: int       # numero massimo di iterazioni prima di finire il processo
