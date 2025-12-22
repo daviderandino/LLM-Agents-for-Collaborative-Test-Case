@@ -6,7 +6,12 @@ def run_collaborative_agents(input_file_path, planner_model, generator_model, ve
     llm_planner = get_llm(provider='groq', model_name=planner_model)
     llm_generator = get_llm(provider='groq', model_name=generator_model)
 
-    agents = MultiAgentCollaborativeGraph(input_file_path, llm_planner, llm_generator, verbose)
+    agents = MultiAgentCollaborativeGraph(
+        input_file_path,
+        llm_planner,
+        llm_generator,
+        verbose
+    )
 
     final_state = agents.invoke()
 

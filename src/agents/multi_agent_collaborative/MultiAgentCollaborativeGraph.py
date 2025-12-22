@@ -97,14 +97,14 @@ class MultiAgentCollaborativeGraph:
 
         workflow.add_edge("planner", "developer")  # arco planner -> developer
         workflow.add_edge("developer", "executor")  # arco developer -> executor
-        workflow.add_conditional_edges(  # arco condizionale executor -> (planner, END)
+        workflow.add_conditional_edges(  # arco condizionale executor -> ( developer OR planner OR end )
             "executor",
             self._route_to,
             {
                 "fix-tests": "developer",  # ci sono dei test che falliscono
                 "replan": "planner",  # la coverage è troppo bassa
-                "end": END,  # se router ritorna 'end', l'arco è executor -> END
-            },
+                "end": END,
+            }
         )
 
         return workflow.compile()
@@ -158,7 +158,10 @@ class MultiAgentCollaborativeGraph:
                     "]",
                 ),
                 # INPUT REALE: Solo il codice sorgente
-                ("human", "Analyze the following Python code:\n{code}"),
+                (
+                    "human",
+                    "Analyze the following Python code:\n{code}"
+                )
             ]
 
             # Argomenti per Scenario 1
@@ -173,15 +176,16 @@ class MultiAgentCollaborativeGraph:
                 print(color_text(f"RESPONSE: {response.content}", "magenta"))
             
             # Ritorna direttamente il piano (è il primo)
-            return {"test_plan": response.content}
+            return {
+                "test_plan": response.content
+            }
 
         # SCENARIO 2: RE-PLANNING (Gap Filling con Context)
         else:
             cov = state.get("coverage_percent", 0)
-            print(
-                color_text(
+            print(color_text(
                     f"--- STEP 1.2: RE-PLANNING (Current Coverage: {cov}%) ---",
-                    "yellow",
+                    "yellow"
                 )
             )
 
@@ -227,7 +231,7 @@ class MultiAgentCollaborativeGraph:
                     "SOURCE CODE:\n{code}\n\n"
                     "EXISTING TESTS (Do not regenerate these):\n{current_tests}\n\n"
                     "Identify the missing gaps and generate the JSON Plan for NEW tests only.",
-                ),
+                )
             ]
 
             # Argomenti per Scenario 2 (Include generated_tests)
@@ -312,7 +316,10 @@ class MultiAgentCollaborativeGraph:
                     "ai",
                     "```python\nimport pytest\nfrom calc import div\n\n@pytest.mark.parametrize('a, b, expected', [\n    (10, 2, 5)\n])\ndef test_div_success(a, b, expected):\n    assert div(a, b) == expected\n\ndef test_div_error():\n    with pytest.raises(ZeroDivisionError):\n        div(5, 0)\n```",
                 ),
-                ("human", "Plan: {plan}\nCode to test: {code}"),
+                (
+                    "human", 
+                    "Plan: {plan}\nCode to test: {code}"
+                )
             ]
             invoke_args = {
                 "target_module": state["target_module"],
@@ -346,7 +353,7 @@ class MultiAgentCollaborativeGraph:
                     "Current Test Code:{previous_test_code}"
                     "Pytest Failure Report:{test_report}"
                     "Fix the assertions in the test code so they match the Source Code logic and PASS.",
-                ),
+                )
             ]
             invoke_args = {
                 "code": state["code_under_test"],
@@ -375,7 +382,7 @@ class MultiAgentCollaborativeGraph:
                 (
                     "human",
                     "The previous test code failed to execute.\nFAILED CODE: {previous_test_code}\nERROR TRACEBACK:{error}\nPlease provide the CORRECTED full test file code.",
-                ),
+                )
             ]
             invoke_args = {
                 "previous_test_code": state["generated_tests"],
@@ -403,7 +410,7 @@ class MultiAgentCollaborativeGraph:
                 (
                     "human",
                     "Source Code:\n{code}\n\nExisting Test Code:\n{previous_test_code}\n\nNew Test Plan (Cases to ADD):\n{plan}\n\nGenerate ONLY the python code for the NEW tests to be appended.",
-                ),
+                )
             ]
             invoke_args = {
                 "target_module": state["target_module"],
@@ -479,10 +486,9 @@ class MultiAgentCollaborativeGraph:
                 "iterations": state["iterations"] + 1,
             }
 
-        print(
-            color_text(
+        print(color_text(
                 f"--- EXECUTION RESULT: Coverage={report['coverage']}% {report['passed']} Passed {report['failed']} Failed ---",
-                "green",
+                "green"
             )
         )
         if self.verbose:
@@ -512,11 +518,7 @@ class MultiAgentCollaborativeGraph:
 
         # 1. PRIORITÀ AL FIX: Se c'è un errore tecnico (Crash) o logico (Fail)
         # DEVE tornare al GENERATOR per correggere il codice esistente.
-        if (
-            state["pytest_error"]
-            or state["syntax_error"]
-            or state["n_failed_tests"] > 0
-        ):
+        if (state["pytest_error"] or state["syntax_error"] or state["n_failed_tests"] > 0):
             return "fix-tests"  # -> Vai a GENERATOR
 
         # 2. PRIORITÀ ALLA COVERAGE: Solo se i test passano (quindi error="" e failed=0)
