@@ -47,8 +47,8 @@ class AgentState(TypedDict):
     n_passed_tests: int  # numero di test generati che passano
     n_failed_tests: int  # numero di test generati che failano
 
-    iterations: int           # contatore per evitare loop infiniti tra gli agenti
-    max_iterations: int       # numero massimo di iterazioni prima di finire il processo
+    iterations: int  # contatore per evitare loop infiniti tra gli agenti
+    max_iterations: int  # numero massimo di iterazioni prima di finire il processo
 
 
 # AGGIUNGERE UN REASONER/REVIEWER che, anche dopo che i test generati hanno coverage massima
@@ -72,18 +72,18 @@ class MultiAgentCollaborativeGraph:
             "input_file_path": input_file_path,
             "target_module": obtain_import_module_str(input_file_path),
             "code_under_test": code,
-
-            "test_plan": '',
-            "generated_tests": '',
-
-            "error": '',
-            "failed_tests_infos": '',
+            "test_plan": "",
+            "generated_tests": "",
+            "error": "",
+            "syntax_error": False,
+            "pytest_error": False,
+            "failed_tests_infos": "",
             "coverage_percent": 0,
             "n_passed_tests": 0,
             "n_failed_tests": 0,
 
             "iterations": 0,
-            "max_iterations": 5
+            "max_iterations": 3,
         }
 
 
@@ -95,22 +95,23 @@ class MultiAgentCollaborativeGraph:
         workflow = StateGraph(AgentState)
 
         workflow.add_node("planner", self._plan_node)
-        workflow.add_node("generator", self._generation_node)
+        workflow.add_node("developer", self._generation_node)
         workflow.add_node("executor", self._execution_node)
-        
+
         workflow.set_entry_point("planner")
-        
-        workflow.add_edge("planner", "generator") # arco planner -> generator
-        workflow.add_edge("generator", "executor") # arco generator -> executor
-        workflow.add_conditional_edges( # arco condizionale executor -> (planner, END)
+
+        workflow.add_edge("planner", "developer")  # arco planner -> developer
+        workflow.add_edge("developer", "executor")  # arco developer -> executor
+        workflow.add_conditional_edges(  # arco condizionale executor -> (planner, END)
             "executor",
             self._route_to,
             {
-                "re-plan": "planner", # se to_route() ritorna 're-plan', l'arco è executor -> planner
-                "end": END # se router ritorna 'end', l'arco è executor -> END
-            }
+                "fix-tests": "developer",  # ci sono dei test che falliscono
+                "replan": "planner",  # la coverage è troppo bassa
+                "end": END,  # se router ritorna 'end', l'arco è executor -> END
+            },
         )
-        
+
         return workflow.compile()
         
 
