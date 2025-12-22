@@ -52,13 +52,14 @@ class AgentState(TypedDict):
 
 
 class MultiAgentCollaborativeGraph:
-    def __init__(self, input_file_path, llm_planner, llm_generator):
+    def __init__(self, input_file_path, llm_planner, llm_generator, verbose = True):
         """
         Inizializza il grafo di nodi, ad ogni nodo si può associare un llm
         differente.
         """
         self.llm_planner = llm_planner
         self.llm_generator = llm_generator
+        self.verbose = verbose
 
         self.graph = self._build_graph()
 
@@ -78,7 +79,7 @@ class MultiAgentCollaborativeGraph:
             "n_passed_tests": 0,
             "n_failed_tests": 0,
             "iterations": 0,
-            "max_iterations": 3,
+            "max_iterations": 10,
         }
 
     def _build_graph(self):
@@ -163,6 +164,17 @@ class MultiAgentCollaborativeGraph:
             # Argomenti per Scenario 1
             invoke_args = {"code": state["code_under_test"]}
 
+            # Esecuzione Scenario 1
+            prompt = ChatPromptTemplate.from_messages(messages=messages)
+            chain = prompt | self.llm_planner
+            response = chain.invoke(invoke_args)
+
+            if self.verbose: 
+                print(color_text(f"RESPONSE: {response.content}", "magenta"))
+            
+            # Ritorna direttamente il piano (è il primo)
+            return {"test_plan": response.content}
+
         # SCENARIO 2: RE-PLANNING (Gap Filling con Context)
         else:
             cov = state.get("coverage_percent", 0)
@@ -225,16 +237,41 @@ class MultiAgentCollaborativeGraph:
                 "current_cov": cov,
             }
 
-        # Costruzione e Invocazione
-        prompt = ChatPromptTemplate.from_messages(messages=messages)
-        chain = prompt | self.llm_planner
+            # Esecuzione Scenario 2
+            prompt = ChatPromptTemplate.from_messages(messages=messages)
+            chain = prompt | self.llm_planner
+            response = chain.invoke(invoke_args)
 
-        # Usiamo invoke_args che è stato popolato dinamicamente
-        response = chain.invoke(invoke_args)
+            # --- LOGICA DI APPEND (Merge dei JSON) ---
+            import json
+            
+            new_plan_str = response.content
+            updated_full_plan = ""
 
-        print(color_text(f"RESPONSE JSON: {response.content}", "magenta"))
+            try:
+                # 1. Carichiamo il piano precedente (o lista vuota se errore)
+                old_plan_list = json.loads(state.get("test_plan", "[]"))
+                
+                # 2. Carichiamo i nuovi casi generati
+                new_cases_list = json.loads(new_plan_str)
+                
+                print(color_text(f"  > Merging {len(new_cases_list)} new cases into existing plan...", "magenta"))
+                
+                # 3. Appendiamo i nuovi ai vecchi
+                full_plan_list = old_plan_list + new_cases_list
+                
+                # 4. Serializziamo di nuovo in stringa
+                updated_full_plan = json.dumps(full_plan_list, indent=2)
+                
+            except json.JSONDecodeError as e:
+                print(color_text(f"JSON MERGE ERROR: {e}. Keeping new plan only.", "red"))
+                # Fallback: se il JSON è rotto, salviamo quello nuovo sperando che il fix node lo ripari
+                updated_full_plan = new_plan_str
 
-        return {"test_plan": response.content}
+            if self.verbose:
+                print(color_text(f"RESPONSE: {response.content}", "magenta"))
+
+            return {"test_plan": updated_full_plan}
 
     def _generation_node(self, state: AgentState):
         """
@@ -393,11 +430,11 @@ class MultiAgentCollaborativeGraph:
         final_test_code = ""
 
         if is_append_mode:
-            print(color_text(f"APPENDING FRAGMENT:\n{cleaned_tests}", "magenta"))
+            if self.verbose:             print(color_text(f"APPENDING FRAGMENT:\n{cleaned_tests}", "magenta"))
             # Concatena: Vecchio + \n\n + Nuovo
             final_test_code = state["generated_tests"] + "\n\n" + cleaned_tests
         else:
-            print(color_text(f"GENERATED CODE:\n{cleaned_tests}", "magenta"))
+            if self.verbose : print(color_text(f"GENERATED CODE:\n{cleaned_tests}", "magenta"))
             # Sovrascrive
             final_test_code = cleaned_tests
 
@@ -413,7 +450,7 @@ class MultiAgentCollaborativeGraph:
 
         if not ok:
             print(color_text(f"--- EXECUTION RESULT: Syntax Error ---", "red"))
-            print(err)
+            if self.verbose: print(err)
             return {
                 "error": err,
                 "syntax_error": True,
@@ -429,7 +466,7 @@ class MultiAgentCollaborativeGraph:
 
         if report["crash"] == "yes":
             print(color_text(f"--- EXECUTION RESULT: Pytest Crash ---", "red"))
-            print(report["error_summary"])
+            if self.verbose: print(report["error_summary"])
             return {
                 "error": report["error_summary"],
                 "syntax_error": False,
@@ -443,10 +480,12 @@ class MultiAgentCollaborativeGraph:
 
         print(
             color_text(
-                f"--- EXECUTION RESULT: Coverage={report['coverage']}% {report['passed']} Passed {report['failed']} Failed --- {report.get('failed_tests_infos','')}",
+                f"--- EXECUTION RESULT: Coverage={report['coverage']}% {report['passed']} Passed {report['failed']} Failed ---",
                 "green",
             )
         )
+        if self.verbose:
+            print(f"{report.get('failed_tests_infos','')}")
 
         return {
             "error": "",
