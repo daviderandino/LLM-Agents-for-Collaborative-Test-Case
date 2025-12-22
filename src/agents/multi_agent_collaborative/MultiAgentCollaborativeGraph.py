@@ -242,34 +242,35 @@ class MultiAgentCollaborativeGraph:
             chain = prompt | self.llm_planner
             response = chain.invoke(invoke_args)
 
-            # --- LOGICA DI APPEND (Merge dei JSON) ---
-            import json
+            # --- LOGICA DI APPEND PURA (String Manipulation) ---
+            new_plan_fragment = response.content.strip()
             
-            new_plan_str = response.content
-            updated_full_plan = ""
+            # Pulizia di sicurezza: se l'LLM ha messo comunque le quadre (per abitudine), le togliamo
+            if new_plan_fragment.startswith("["):
+                new_plan_fragment = new_plan_fragment[1:]
+            if new_plan_fragment.endswith("]"):
+                new_plan_fragment = new_plan_fragment[:-1]
+            
+            new_plan_fragment = new_plan_fragment.strip()
 
-            try:
-                # 1. Carichiamo il piano precedente (o lista vuota se errore)
-                old_plan_list = json.loads(state.get("test_plan", "[]"))
-                
-                # 2. Carichiamo i nuovi casi generati
-                new_cases_list = json.loads(new_plan_str)
-                
-                print(color_text(f"  > Merging {len(new_cases_list)} new cases into existing plan...", "magenta"))
-                
-                # 3. Appendiamo i nuovi ai vecchi
-                full_plan_list = old_plan_list + new_cases_list
-                
-                # 4. Serializziamo di nuovo in stringa
-                updated_full_plan = json.dumps(full_plan_list, indent=2)
-                
-            except json.JSONDecodeError as e:
-                print(color_text(f"JSON MERGE ERROR: {e}. Keeping new plan only.", "red"))
-                # Fallback: se il JSON è rotto, salviamo quello nuovo sperando che il fix node lo ripari
-                updated_full_plan = new_plan_str
+            # Recuperiamo il piano precedente
+            old_plan = state.get("test_plan", "[]").strip()
+            
+            # Togliamo la quadra di chiusura del vecchio piano ']'
+            if old_plan.endswith("]"):
+                old_plan_base = old_plan[:-1].strip()
+            else:
+                old_plan_base = old_plan # Caso edge, non dovrebbe capitare
+
+            # Gestione della virgola: se il vecchio piano era vuoto "[]", old_plan_base è "[".
+            # Non vogliamo "[ , {nuovo} ]", ma "[ {nuovo} ]".
+            if old_plan_base == "[":
+                updated_full_plan = old_plan_base + new_plan_fragment + "]"
+            else:
+                updated_full_plan = old_plan_base + ", " + new_plan_fragment + "]"
 
             if self.verbose:
-                print(color_text(f"RESPONSE: {response.content}", "magenta"))
+                print(color_text(f"RESPONSE FRAGMENT: {new_plan_fragment}", "magenta"))
 
             return {"test_plan": updated_full_plan}
 
