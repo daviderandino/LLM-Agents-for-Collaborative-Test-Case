@@ -51,10 +51,6 @@ class AgentState(TypedDict):
     max_iterations: int  # numero massimo di iterazioni prima di finire il processo
 
 
-# AGGIUNGERE UN REASONER/REVIEWER che, anche dopo che i test generati hanno coverage massima
-# e passano tutti, ragioni sui test generati ad esempio se l'LLM sta barando facendo asserzioni
-# del tipo "assert True". Ha senso ??? 
-
 class MultiAgentCollaborativeGraph:
     def __init__(self, input_file_path, llm_planner, llm_generator):
         """
@@ -81,11 +77,9 @@ class MultiAgentCollaborativeGraph:
             "coverage_percent": 0,
             "n_passed_tests": 0,
             "n_failed_tests": 0,
-
             "iterations": 0,
             "max_iterations": 3,
         }
-
 
     def _build_graph(self):
         """
@@ -113,7 +107,6 @@ class MultiAgentCollaborativeGraph:
         )
 
         return workflow.compile()
-        
 
     def _plan_node(self, state: AgentState):
         """
@@ -245,135 +238,268 @@ class MultiAgentCollaborativeGraph:
 
     def _generation_node(self, state: AgentState):
         """
-        Scrive il codice Python dei test basandosi sul piano generato dal planner.
+        Scrive o corregge il codice Python dei test.
         """
-        print("--- STEP 2: GENERATING TESTS ---")
-        
-        prompt = ChatPromptTemplate.from_messages([
-            (
-                "system",
-"""
-You are a Python Testing Expert (pytest).
-Your goal is to write or modify a test suite to achieve 100% coverage and fix any existing errors.
-                
-**CRITICAL INSTRUCTIONS FOR TEST GENERATION**:
-- ALWAYS start the file with `import pytest`. This is mandatory.
-- Import the module exactly using: `from {target_module} import ...`.
-- ALWAYS include all the necessary imports that appears in the code to be tested, at the top of the generated tests code.
-- Use standard `pytest` syntax (fixtures, raises, marks).
+        messages = []
+        invoke_args = {}
+        step_name = ""
+        color = "white"
+        is_append_mode = False
 
-**CRITICAL INSTRUCTIONS IF PREVIOUS TESTS ARE PROVIDED**:
-- Analyze the previous tests if provided, do NOT rewrite the whole file from scratch unless necessary.
-- Fix or delete and replace failing tests.
+        # ---------------------------------------------------------
+        # 1. SELEZIONE STRATEGIA (Prompt Originali Intatti)
+        # ---------------------------------------------------------
 
-**OUTPUT FORMAT**:
-- Output ONLY raw python code inside backticks (```python ... ```).
-- Do NOT include explanations.
-- NO TEXT AFTER THE CODE. Do not write "Here is the code" or "This covers X".
-"""
-            ),
-            (
-                "human",
-"""
-**Plan**:
-{plan}
+        # CASO 1: Prima iterazione (Generazione da zero)
+        if state["iterations"] == 0:
+            step_name = "--- STEP 2.1: GENERATING TESTS FROM SCRATCH---"
+            color = "cyan"
+            messages = [
+                (
+                    "system",
+                    "Role: Senior Pytest Engineer."
+                    "Task: Convert JSON Test Plan into a production-grade test suite."
+                    "Strict Rules:"
+                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
+                    "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
+                    "- 3. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
+                    "- 4. Classes: If target is `Class.method`, instantiate the class first."
+                    "- 5. Output: Start output with exactly: ```python, and end output with exactly: ```. No text.",
+                ),
+                (
+                    "human",
+                    "Plan: [{{'target': 'div', 'input': {{'a': 10, 'b': 2}}, 'expected': 5}}, {{'target': 'div', 'input': {{'a': 5, 'b': 0}}, 'expected': 'ZeroDivisionError'}}]\nCode: def div(a,b): return a/b",
+                ),
+                (
+                    "ai",
+                    "```python\nimport pytest\nfrom calc import div\n\n@pytest.mark.parametrize('a, b, expected', [\n    (10, 2, 5)\n])\ndef test_div_success(a, b, expected):\n    assert div(a, b) == expected\n\ndef test_div_error():\n    with pytest.raises(ZeroDivisionError):\n        div(5, 0)\n```",
+                ),
+                ("human", "Plan: {plan}\nCode to test: {code}"),
+            ]
+            invoke_args = {
+                "target_module": state["target_module"],
+                "plan": state["test_plan"],
+                "code": state["code_under_test"],
+            }
 
-**Code to test**:
-{code}
-                
-**Previous tests for the code**:
-{tests}
+        # CASO 2: I test girano ma falliscono (Assertion Errors)
+        elif state["n_failed_tests"] != 0:
+            step_name = "--- STEP 2.2: FIXING FAILED TESTS ---"
+            color = "yellow"
+            messages = [
+                (
+                    "system",
+                    "Role: Senior Pytest Debugger."
+                    "Task: Fix only the failing tests to achieve 100% pass rate."
+                    "Strategy:"
+                    "- 1. Analyze the Pytest failure report."
+                    "- 2. Compare expectations vs actual Source Code behavior."
+                    "- 3. ADJUST the test assertions/setup to match the Source Code reality."
+                    "Strict Rules:"
+                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
+                    "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
+                    "- 3. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
+                    "- 4. Classes: If target is `Class.method`, instantiate the class first."
+                    "- 5. Output: Start output with exactly: ```python, and end output with exactly: ```. No text.",
+                ),
+                (
+                    "human",
+                    "Source Code (Truth):{code}"
+                    "Current Test Code:{previous_test_code}"
+                    "Pytest Failure Report:{test_report}"
+                    "Fix the assertions in the test code so they match the Source Code logic and PASS.",
+                ),
+            ]
+            invoke_args = {
+                "code": state["code_under_test"],
+                "target_module": state["target_module"],
+                "previous_test_code": state["generated_tests"],
+                "test_report": state["failed_tests_infos"],
+            }
 
-Generate the full test file content in order to achieve the highest coverage possible.
-"""
-            )
-        ])
-        
+        # CASO 3: Errore di Sintassi / Esecuzione
+        # Nota: Ho mantenuto la logica "OR" sulle chiavi, usando .get per sicurezza
+        elif state.get("syntax_error") or state.get("pytest_error"):
+            step_name = "--- STEP 2.3: FIXING SYNTAX/PYTEST ERROR ---"
+            color = "yellow"
+            messages = [
+                (
+                    "system",
+                    "Role: Python Code Fixer."
+                    "Task: Fix the syntax/runtime error in the provided test file."
+                    "Strict Rules:"
+                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
+                    "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
+                    "- 3. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
+                    "- 4. Classes: If target is `Class.method`, instantiate the class first."
+                    "- 5. Output: Start output with exactly: ```python, and end output with exactly: ```. No text.",
+                ),
+                (
+                    "human",
+                    "The previous test code failed to execute.\nFAILED CODE: {previous_test_code}\nERROR TRACEBACK:{error}\nPlease provide the CORRECTED full test file code.",
+                ),
+            ]
+            invoke_args = {
+                "previous_test_code": state["generated_tests"],
+                "target_module": state["target_module"],
+                "error": state["error"],
+            }
+
+        # CASO 4: Aggiunta nuovi test (Expansion Mode)
+        else:
+            step_name = "--- STEP 2.4: APPENDING NEW TESTS ---"
+            color = "cyan"
+            is_append_mode = True
+            messages = [
+                (
+                    "system",
+                    "Role: Senior Pytest Engineer (Extension Mode)."
+                    "Task: Write ONLY the NEW test functions defined in the JSON Plan to append to the existing suite."
+                    "Strict Rules:"
+                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
+                    "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
+                    "- 3. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
+                    "- 4. Classes: If target is `Class.method`, instantiate the class first."
+                    "- 5. Output: Start output with exactly: ```python, and end output with exactly: ```. No text.",
+                ),
+                (
+                    "human",
+                    "Source Code:\n{code}\n\nExisting Test Code:\n{previous_test_code}\n\nNew Test Plan (Cases to ADD):\n{plan}\n\nGenerate ONLY the python code for the NEW tests to be appended.",
+                ),
+            ]
+            invoke_args = {
+                "target_module": state["target_module"],
+                "plan": state["test_plan"],
+                "code": state["code_under_test"],
+                "previous_test_code": state["generated_tests"],
+            }
+
+        # ---------------------------------------------------------
+        # 2. ESECUZIONE (Logica Unificata)
+        # ---------------------------------------------------------
+        print(color_text(step_name, color))
+
+        prompt = ChatPromptTemplate.from_messages(messages=messages)
         chain = prompt | self.llm_generator
-        response = chain.invoke({
-            "target_module": state["target_module"],
-            "plan": state["test_plan"],
-            "code": state["code_under_test"],
-            "tests": state["generated_tests"] or 'None'
-        })
-        
+
+        # Invoca l'LLM con gli argomenti specifici del caso selezionato
+        response = chain.invoke(invoke_args)
+
         cleaned_tests = clean_llm_python(response.content)
 
-        return {
-            "generated_tests": cleaned_tests
-        }
+        # ---------------------------------------------------------
+        # 3. MERGE / UPDATE
+        # ---------------------------------------------------------
+        final_test_code = ""
 
+        if is_append_mode:
+            print(color_text(f"APPENDING FRAGMENT:\n{cleaned_tests}", "magenta"))
+            # Concatena: Vecchio + \n\n + Nuovo
+            final_test_code = state["generated_tests"] + "\n\n" + cleaned_tests
+        else:
+            print(color_text(f"GENERATED CODE:\n{cleaned_tests}", "magenta"))
+            # Sovrascrive
+            final_test_code = cleaned_tests
+
+        return {"generated_tests": final_test_code}
 
     def _execution_node(self, state: AgentState):
         """
         Salva il file, esegue pytest e ne processa l'output.
         """
-        print("--- STEP 3: EXECUTING PYTEST ---")
-        
+        print(color_text("--- STEP 3: EXECUTING PYTEST ---", "cyan"))
+
         ok, err = syntax_check(state["generated_tests"])
 
         if not ok:
-            print(f"--- EXECUTION RESULT: Syntax Error ---")
+            print(color_text(f"--- EXECUTION RESULT: Syntax Error ---", "red"))
+            print(err)
             return {
                 "error": err,
-                "failed_tests_infos": '',
+                "syntax_error": True,
+                "pytest_error": False,
+                "failed_tests_infos": "",
                 "coverage_percent": 0,
                 "n_passed_tests": 0,
                 "n_failed_tests": 0,
+                "iterations": state["iterations"] + 1,
             }
 
         report = run_pytest(state["target_module"], state["generated_tests"])
 
-        if report["crash"] == 'yes':
-            print(f"--- EXECUTION RESULT: Pytest Crash ---")
-
+        if report["crash"] == "yes":
+            print(color_text(f"--- EXECUTION RESULT: Pytest Crash ---", "red"))
+            print(report["error_summary"])
             return {
                 "error": report["error_summary"],
-                "failed_tests_infos": '',
+                "syntax_error": False,
+                "pytest_error": True,
+                "failed_tests_infos": "",
                 "coverage_percent": 0,
                 "n_passed_tests": 0,
-                "n_failed_tests": 0
+                "n_failed_tests": 0,
+                "iterations": state["iterations"] + 1,
             }
-        
-        print(f"--- EXECUTION RESULT: Coverage={report['coverage']}% {report['passed']} Passed {report['failed']} Failed ---")
-        
+
+        print(
+            color_text(
+                f"--- EXECUTION RESULT: Coverage={report['coverage']}% {report['passed']} Passed {report['failed']} Failed --- {report.get('failed_tests_infos','')}",
+                "green",
+            )
+        )
+
         return {
-            "error": '',
+            "error": "",
+            "syntax_error": False,
+            "pytest_error": False,
             "failed_tests_infos": report["failed_tests_infos"],
             "coverage_percent": report["coverage"],
             "n_passed_tests": report["passed"],
-            "n_failed_tests": report["failed"]
+            "n_failed_tests": report["failed"],
+            "iterations": state["iterations"] + 1,
         }
-    
 
     def _route_to(self, state: AgentState):
         """
         Funzione decisionale che determina se dopo l'esecuzione
         dei test generati possiamo chiudere il processo oppure
-        tornare in planning.
+        tornare in planning o coding.
         """
-        
-        max_iterations = state['max_iterations']
 
-        if state["iterations"] >= max_iterations:
-            print(f"--- STOPPING: Reached Max Iterations ({max_iterations}) ---")
+        # 0. Safety Check: Uscita di emergenza per loop infiniti
+        if state["iterations"] > state["max_iterations"]:
             return "end"
-        
-        if state["n_failed_tests"] == 0 and state["coverage_percent"] == 100:
-            print(f"--- SUCCESS: Task Completed in {state['iterations']} iteration ---")
-            return "end"
-        
-        # altrimenti, si rigenera il piano
-        print("--- DECISION: Re-planning ---")
-        return "re-plan"
 
+        # 1. PRIORITÀ AL FIX: Se c'è un errore tecnico (Crash) o logico (Fail)
+        # DEVE tornare al GENERATOR per correggere il codice esistente.
+        if (
+            state["pytest_error"]
+            or state["syntax_error"]
+            or state["n_failed_tests"] > 0
+        ):
+            return "fix-tests"  # -> Vai a GENERATOR
+
+        # 2. PRIORITÀ ALLA COVERAGE: Solo se i test passano (quindi error="" e failed=0)
+        # controlliamo se abbiamo coperto tutto il codice.
+        # Se la coverage è sotto la soglia (es. 100%), torniamo al PLANNER.
+        current_cov = state.get("coverage_percent", 0)
+        if current_cov < 100:
+            return "replan"  # -> Vai a PLANNER
+
+        # 3. SUCCESSO: Test passati e Coverage 100%
+        return "end"
 
     def invoke(self):
-        final_state = self.graph.invoke(self.initial_state)
+        final_state = self.graph.invoke(self.initial_state)  # type: ignore
 
         output_filename = f"test_{Path(final_state['input_file_path']).stem}.py"
-        output_file_path = Path("data") / "output_tests" / "multi_agent_collaborative" / output_filename
-        
+        output_file_path = (
+            Path("data")
+            / "output_tests"
+            / "multi_agent_collaborative"
+            / output_filename
+        )
+
         with open(str(output_file_path), "w") as f:
             f.write(final_state["generated_tests"])
 
