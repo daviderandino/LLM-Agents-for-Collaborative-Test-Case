@@ -117,69 +117,131 @@ class MultiAgentCollaborativeGraph:
 
     def _plan_node(self, state: AgentState):
         """
-        Analizza il codice e crea un piano per generare i test.
-        Se arriva da un fallimento (retry), fa re-planning.
+        Nodo Planner Intelligente.
+        - Se iterations == 0: Genera il piano base (Strategia: Full Scan).
+        - Se iterations > 0: Genera casi addizionali per alzare la coverage (Strategia: Gap Filling).
         """
-        print(f"\n--- STEP 1: PLANNING (Iteration {state['iterations'] + 1}) ---")
-        
-        # costruisco il contesto: è la prima volta che facciamo planning o dobbiamo
-        # correggere errori/aumentare la coverage?
-        context = ""
-        if state["generated_tests"]:
-            context = f"""
-**WARNING**: PREVIOUS TEST EXECUTION FAILED, HAD LOW COVERAGE or SOME TESTS FAILED TO PASS.
+        current_iter = state["iterations"]
+        messages = []
+        invoke_args = {}  # Dizionario per gli argomenti dinamici
 
-**Current Generated Tests**:
-{state['generated_tests'] or 'None'}
+        # SCENARIO 1: PRIMA GENERAZIONE (Cold Start)
+        if current_iter == 0:
+            print(color_text(f"\n--- STEP 1.1: PLANNING FROM SCRATCH ---", "cyan"))
 
-**Current Coverage**: {state['coverage_percent']}%
-            
-**Failed Tests**:
-{state['failed_tests_infos'] or 'None'}
-            
-**Current PyTest Errors**:
-{state['error'] or 'None'}
-"""
+            messages = [
+                (
+                    "system",
+                    "Role: Senior Python QA Engineer obsessed with 100% Code Coverage.\n"
+                    "Task: Dissect the provided code and generate a surgical JSON test plan.\n\n"
+                    "Strategy for Max Coverage:\n"
+                    "1. Branch Analysis: Generate a test for every `if`, `elif`, `else` and loop entry/exit.\n"
+                    "2. Boundary Values: Test MIN, MAX, MIN-1, MAX+1, ZERO, NONE.\n"
+                    '3. Data Types: Test empty lists `[]`, empty strings `""`, and `None`.\n'
+                    "4. Exceptions: Trigger every `raise` statement.\n\n"
+                    "Output Format:\n"
+                    "Return a strictly valid JSON array where each object contains:\n"
+                    '- "id": Unique identifier.\n'
+                    '- "rationale": Explanation of coverage (CRITICAL).\n'
+                    '- "target": Class.method or function name.\n'
+                    '- "input": Arguments dictionary.\n'
+                    '- "expected": Expected value or Exception name.\n\n'
+                    "Strict Rules:\n"
+                    "1. Output ONLY valid JSON.\n"
+                    "2. Start response with `[` and end with `]`.\n"
+                    "3. No markdown blocks, no explanations.",
+                ),
+                # FEW-SHOT (Input Code -> Output JSON)
+                (
+                    "human",
+                    "Analyze:\ndef div(a, b):\n    if b == 0: raise ValueError()\n    return a / b",
+                ),
+                (
+                    "ai",
+                    "[\n"
+                    '  {{"id": "T1_OK", "target": "div", "input": {{"a": 10, "b": 2}}, "expected": 5.0, "rationale": "Happy path"}},\n'
+                    '  {{"id": "T2_ERR", "target": "div", "input": {{"a": 5, "b": 0}}, "expected": "ValueError", "rationale": "Zero division catch"}}\n'
+                    "]",
+                ),
+                # INPUT REALE: Solo il codice sorgente
+                ("human", "Analyze the following Python code:\n{code}"),
+            ]
 
-        prompt = ChatPromptTemplate.from_messages([
-            (
-                "system",
-"""
-You are a QA Lead. Analyze the code and create a detailed step-by-step testing plan. Your goal is to guide the developer to fix failures and reach 100% coverage.
+            # Argomenti per Scenario 1
+            invoke_args = {"code": state["code_under_test"]}
 
-**RE-PLANNING INSTRUCTION**:
-- Analyze the failed tests carefully if they are present.
-- Refine the plan to specifically fix errors and modify or replace the failing tests with other tests.
-- If a test failed due to logic, instruct to modify the assertion values.
-"""
-            ),
-            (
-                "human",
-"""
-**Code to test**:
-{code}
-                
-{context}
-                
-Return ONLY the textual plan, that is a concise TODO list of scenarios to test.
-"""
+        # SCENARIO 2: RE-PLANNING (Gap Filling con Context)
+        else:
+            cov = state.get("coverage_percent", 0)
+            print(
+                color_text(
+                    f"--- STEP 1.2: RE-PLANNING (Current Coverage: {cov}%) ---",
+                    "yellow",
+                )
             )
-        ])
 
-        print(prompt.format(code=state["code_under_test"], context=context))
+            messages = [
+                (
+                    "system",
+                    "Role: Python Coverage Specialist.\n"
+                    "Context: The previous test suite failed to achieve 100% coverage.\n"
+                    "Objective: Analyze the Source Code AND the Existing Tests to find MISSED logical paths.\n"
+                    "Task: Generate ONLY the new test cases needed to fill the gaps.\n\n"
+                    "Strategy for Gap Filling:\n"
+                    "1. Deep Analysis: Compare Source Code vs Existing Tests to spot skipped branches.\n"
+                    "2. Complex Logic: Focus on compound conditions (AND/OR) and edge boundaries missed by current tests.\n"
+                    "3. No Duplicates: Do NOT regenerate tests that already exist.\n\n"
+                    "Output Format:\n"
+                    "Return a strictly valid JSON array where each object contains:\n"
+                    '- "id": Unique identifier (e.g., T_MISSING_1).\n'
+                    '- "rationale": Specific explanation of the gap this test covers.\n'
+                    '- "target": Class.method or function name.\n'
+                    '- "input": Arguments dictionary.\n'
+                    '- "expected": Expected value or Exception name.\n\n'
+                    "Strict Rules:\n"
+                    "1. Output ONLY valid JSON.\n"
+                    "2. Start response with `[` and end with `]`.\n"
+                    "3. No markdown blocks, no explanations.",
+                ),
+                # FEW-SHOT (Re-planning example)
+                (
+                    "human",
+                    "Analyze code:\ndef check(x):\n    if x > 0 and x < 10:\n        return True\n    return False",
+                ),
+                (
+                    "ai",
+                    "[\n"
+                    '  {{"id": "T_MISSING_EDGE", "target": "check", "input": {{"x": 10}}, "expected": false, "rationale": "Boundary value 10 was missed"}},\n'
+                    '  {{"id": "T_MISSING_NEG", "target": "check", "input": {{"x": -1}}, "expected": false, "rationale": "Negative value path"}}\n'
+                    "]",
+                ),
+                # INPUT REALE: Codice Sorgente + Test Esistenti
+                (
+                    "human",
+                    "Previous coverage was insufficient ({current_cov}%).\n\n"
+                    "SOURCE CODE:\n{code}\n\n"
+                    "EXISTING TESTS (Do not regenerate these):\n{current_tests}\n\n"
+                    "Identify the missing gaps and generate the JSON Plan for NEW tests only.",
+                ),
+            ]
 
+            # Argomenti per Scenario 2 (Include generated_tests)
+            invoke_args = {
+                "code": state["code_under_test"],
+                "current_tests": state["generated_tests"],
+                "current_cov": cov,
+            }
+
+        # Costruzione e Invocazione
+        prompt = ChatPromptTemplate.from_messages(messages=messages)
         chain = prompt | self.llm_planner
-        response = chain.invoke({
-            "code": state["code_under_test"],
-            "context": context
-        })
-        
-        # si aggiornano questi campi dello stato
-        return {
-            "test_plan": response.content,
-            "iterations": state["iterations"] + 1
-        }
-    
+
+        # Usiamo invoke_args che è stato popolato dinamicamente
+        response = chain.invoke(invoke_args)
+
+        print(color_text(f"RESPONSE JSON: {response.content}", "magenta"))
+
+        return {"test_plan": response.content}
 
     def _generation_node(self, state: AgentState):
         """
