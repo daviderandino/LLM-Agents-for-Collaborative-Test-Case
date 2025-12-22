@@ -8,6 +8,25 @@ from src.utils.code_parser import clean_llm_python, syntax_check
 from src.utils.pytest_runner import run_pytest
 
 
+# Simple ANSI color helper for terminal prints
+_ANSI_COLORS = {
+    "reset": "\033[0m",
+    "red": "\033[31m",
+    "green": "\033[32m",
+    "yellow": "\033[33m",
+    "blue": "\033[34m",
+    "magenta": "\033[35m",
+    "cyan": "\033[36m",
+    "bold": "\033[1m",
+}
+
+
+def color_text(text: str, color: str = "reset") -> str:
+    code = _ANSI_COLORS.get(color, "")
+    reset = _ANSI_COLORS["reset"]
+    return f"{code}{text}{reset}"
+
+
 # === DEFINIZIONE DELLO STATO DEL GRAFO ===
 class AgentState(TypedDict):
     input_file_path: str      # path del file .py per cui generare i test (è relativo alla root del progetto, dato che gli esperimenti partono da lì)
