@@ -34,8 +34,12 @@ class AgentState(TypedDict):
     code_under_test: str  # contenuto del file .py che dobbiamo testare
 
     test_plan: str  # il piano generato (to-do list) dal nodo planner
-    generated_tests: str  # il codice pytest generato dal nodo generator
+    generated_tests: str  # il codice pytest migliore tra i due developer ad ogni iterazione
 
+    candidate_tests_1: str
+    candidate_tests_2: str
+
+    # report del vincitore
     error: str  # errore d'esecuzione di pytest (sono quelli gravi, ad esempio crash, non i singoli errori dei test case che li fanno failare)
     syntax_error: bool
     pytest_error: bool
@@ -43,7 +47,6 @@ class AgentState(TypedDict):
     coverage_percent: (
         int  # percentuale di coverage raggiunta con i test generati (0-100)
     )
-
     n_passed_tests: int  # numero di test generati che passano
     n_failed_tests: int  # numero di test generati che failano
 
@@ -51,14 +54,15 @@ class AgentState(TypedDict):
     max_iterations: int  # numero massimo di iterazioni prima di finire il processo
 
 
-class MultiAgentCollaborativeGraph:
-    def __init__(self, input_file_path, llm_planner, llm_generator, verbose = True):
+class MultiAgentCompetitiveGraph:
+    def __init__(self, input_file_path, llm_planner, llm_generator_1, llm_generator_2, verbose = True):
         """
         Inizializza il grafo di nodi, ad ogni nodo si può associare un llm
         differente.
         """
         self.llm_planner = llm_planner
-        self.llm_generator = llm_generator
+        self.llm_generator_1 = llm_generator_1
+        self.llm_generator_2 = llm_generator_2
         self.verbose = verbose
 
         self.graph = self._build_graph()
@@ -71,6 +75,8 @@ class MultiAgentCollaborativeGraph:
             "code_under_test": code,
             "test_plan": "",
             "generated_tests": "",
+            "candidate_tests_1": "",
+            "candidate_tests_2": "",
             "error": "",
             "syntax_error": False,
             "pytest_error": False,
@@ -85,26 +91,26 @@ class MultiAgentCollaborativeGraph:
     def _build_graph(self):
         """
         Configura e compila il grafo di LangGraph.
+
+        Planner -> (Dev1 // Dev2) -> Executor
         """
 
         workflow = StateGraph(AgentState)
 
         workflow.add_node("planner", self._plan_node)
-        workflow.add_node("developer", self._generation_node)
+        workflow.add_node("developer_1", self._gen_wrapper_1)
+        workflow.add_node("developer_2", self._gen_wrapper_2)
         workflow.add_node("executor", self._execution_node)
 
         workflow.set_entry_point("planner")
 
-        workflow.add_edge("planner", "developer")  # arco planner -> developer
-        workflow.add_edge("developer", "executor")  # arco developer -> executor
-        workflow.add_conditional_edges(  # arco condizionale executor -> ( developer OR planner OR end )
+        workflow.add_edge("planner", "developer_1")
+        workflow.add_edge("planner", "developer_2")
+        workflow.add_edge("developer_1", "executor")
+        workflow.add_edge("developer_2", "executor")
+        workflow.add_conditional_edges(
             "executor",
-            self._route_to,
-            {
-                "fix-tests": "developer",  # ci sono dei test che falliscono
-                "replan": "planner",  # la coverage è troppo bassa
-                "end": END,
-            }
+            self._route_to
         )
 
         return workflow.compile()
@@ -276,11 +282,27 @@ class MultiAgentCollaborativeGraph:
             if self.verbose:
                 print(color_text(f"RESPONSE FRAGMENT: {new_plan_fragment}", "magenta"))
 
-            return {"test_plan": updated_full_plan}
+            return {
+                "test_plan": updated_full_plan
+            }
 
-    def _generation_node(self, state: AgentState):
+    def _gen_wrapper_1(self, state: AgentState):
+        print(color_text("--- DEV 1 WORKING ---", "cyan"))
+        result_code = self._generation_logic(state, self.llm_generator_1, "DEV 1")
+        return {
+            "candidate_tests_1": result_code
+        }
+    
+    def _gen_wrapper_2(self, state: AgentState):
+        print(color_text("--- DEV 2 WORKING ---", "cyan"))
+        result_code = self._generation_logic(state, self.llm_generator_2, "DEV 2")
+        return {
+            "candidate_tests_2": result_code
+        }
+
+    def _generation_logic(self, state: AgentState, llm, agent_name: str):
         """
-        Scrive o corregge il codice Python dei test.
+        Funzione helper usata da entrambi i Developer.
         """
         messages = []
         invoke_args = {}
@@ -288,13 +310,19 @@ class MultiAgentCollaborativeGraph:
         color = "white"
         is_append_mode = False
 
+        iter_num = state["iterations"]
+        n_failed = state["n_failed_tests"]
+        syntax_err = state["syntax_error"]
+        pytest_err = state["pytest_error"]
+        base_code = state["generated_tests"]
+
         # ---------------------------------------------------------
         # 1. SELEZIONE STRATEGIA (Prompt Originali Intatti)
         # ---------------------------------------------------------
 
         # CASO 1: Prima iterazione (Generazione da zero)
-        if state["iterations"] == 0:
-            step_name = "--- STEP 2.1: GENERATING TESTS FROM SCRATCH---"
+        if iter_num == 0:
+            step_name = f"--- STEP 2.1: {agent_name} GENERATING TESTS FROM SCRATCH---"
             color = "cyan"
             messages = [
                 (
@@ -328,8 +356,8 @@ class MultiAgentCollaborativeGraph:
             }
 
         # CASO 2: I test girano ma falliscono (Assertion Errors)
-        elif state["n_failed_tests"] != 0:
-            step_name = "--- STEP 2.2: FIXING FAILED TESTS ---"
+        elif n_failed != 0:
+            step_name = f"--- STEP 2.2: {agent_name} FIXING FAILED TESTS ---"
             color = "yellow"
             messages = [
                 (
@@ -358,13 +386,13 @@ class MultiAgentCollaborativeGraph:
             invoke_args = {
                 "code": state["code_under_test"],
                 "target_module": state["target_module"],
-                "previous_test_code": state["generated_tests"],
+                "previous_test_code": base_code,
                 "test_report": state["failed_tests_infos"],
             }
 
         # CASO 3: Errore di Sintassi / Esecuzione
         # Nota: Ho mantenuto la logica "OR" sulle chiavi, usando .get per sicurezza
-        elif state.get("syntax_error") or state.get("pytest_error"):
+        elif syntax_err or pytest_err:
             step_name = "--- STEP 2.3: FIXING SYNTAX/PYTEST ERROR ---"
             color = "yellow"
             messages = [
@@ -385,7 +413,7 @@ class MultiAgentCollaborativeGraph:
                 )
             ]
             invoke_args = {
-                "previous_test_code": state["generated_tests"],
+                "previous_test_code": base_code,
                 "target_module": state["target_module"],
                 "error": state["error"],
             }
@@ -416,7 +444,7 @@ class MultiAgentCollaborativeGraph:
                 "target_module": state["target_module"],
                 "plan": state["test_plan"],
                 "code": state["code_under_test"],
-                "previous_test_code": state["generated_tests"],
+                "previous_test_code": base_code
             }
 
         # ---------------------------------------------------------
@@ -425,7 +453,7 @@ class MultiAgentCollaborativeGraph:
         print(color_text(step_name, color))
 
         prompt = ChatPromptTemplate.from_messages(messages=messages)
-        chain = prompt | self.llm_generator
+        chain = prompt | llm
 
         # Invoca l'LLM con gli argomenti specifici del caso selezionato
         response = chain.invoke(invoke_args)
@@ -440,70 +468,112 @@ class MultiAgentCollaborativeGraph:
         if is_append_mode:
             if self.verbose: print(color_text(f"APPENDING FRAGMENT:\n{cleaned_tests}", "magenta"))
             # Concatena: Vecchio + \n\n + Nuovo
-            final_test_code = state["generated_tests"] + "\n\n" + cleaned_tests
+            final_test_code = base_code + "\n\n" + cleaned_tests
         else:
             if self.verbose: print(color_text(f"GENERATED CODE:\n{cleaned_tests}", "magenta"))
             # Sovrascrive
             final_test_code = cleaned_tests
 
-        return {"generated_tests": final_test_code}
+        return final_test_code
 
     def _execution_node(self, state: AgentState):
         """
-        Salva il file, esegue pytest e ne processa l'output.
+        Esegue entrambi i codici candidati.
+        Sceglie il migliore basandosi sulla Coverage.
+        Aggiorna 'generated_tests' con il vincitore.
         """
-        print(color_text("--- STEP 3: EXECUTING PYTEST ---", "cyan"))
+        print(color_text("--- STEP 3: EXECUTING PYTEST & COMPARING CANDIDATES---", "cyan"))
 
-        ok, err = syntax_check(state["generated_tests"])
-
-        if not ok:
-            print(color_text(f"--- EXECUTION RESULT: Syntax Error ---", "red"))
-            if self.verbose: print(err)
+        # Helper interno per eseguire un singolo test
+        def evaluate_candidate(code_str):
+            ok, err = syntax_check(code_str)
+            if not ok:
+                return {
+                    "valid": False, "crash": False, "error": err, 
+                    "coverage": 0, "passed": 0, "failed": 9999, "infos": ""
+                }
+            
+            report = run_pytest(state["target_module"], code_str)
+            if report["crash"] == "yes":
+                return {
+                    "valid": False, "crash": True, "error": report["error_summary"], 
+                    "coverage": 0, "passed": 0, "failed": 9999, "infos": ""
+                }
+            
             return {
-                "error": err,
-                "syntax_error": True,
-                "pytest_error": False,
-                "failed_tests_infos": "",
-                "coverage_percent": 0,
-                "n_passed_tests": 0,
-                "n_failed_tests": 0,
-                "iterations": state["iterations"] + 1,
+                "valid": True, "crash": False, "error": "",
+                "coverage": report["coverage"],
+                "passed": report["passed"],
+                "failed": report["failed"],
+                "infos": report["failed_tests_infos"]
             }
+        
+        # valutazione parallela (simulata sequenziale qui, ma concettualmente parallela)
+        res1 = evaluate_candidate(state["candidate_tests_1"])
+        res2 = evaluate_candidate(state["candidate_tests_2"])
 
-        report = run_pytest(state["target_module"], state["generated_tests"])
+        print(f"Dev 1 -> Valid: {res1['valid']}, Cov: {res1['coverage']}%, Fail: {res1['failed']}")
+        print(f"Dev 2 -> Valid: {res2['valid']}, Cov: {res2['coverage']}%, Fail: {res2['failed']}")
 
-        if report["crash"] == "yes":
-            print(color_text(f"--- EXECUTION RESULT: Pytest Crash ---", "red"))
-            if self.verbose: print(report["error_summary"])
-            return {
-                "error": report["error_summary"],
-                "syntax_error": False,
-                "pytest_error": True,
-                "failed_tests_infos": "",
-                "coverage_percent": 0,
-                "n_passed_tests": 0,
-                "n_failed_tests": 0,
-                "iterations": state["iterations"] + 1,
-            }
+        # si sceglie il test con la coverage più alta a prescindere dai test non-passati
+        winner_code = ""
+        winner_res = {}
+        winner_name = ""
 
-        print(color_text(
-                f"--- EXECUTION RESULT: Coverage={report['coverage']}% {report['passed']} Passed {report['failed']} Failed ---",
-                "green"
-            )
-        )
-        if self.verbose:
-            print(f"{report.get('failed_tests_infos','')}")
+        # Priorità: Validità tecnica > Coverage > Minor numero di fallimenti
+        
+        # Se entrambi sono invalidi, prendo il primo (a caso, tanto fallirà nel routing)
+        if not res1["valid"] and not res2["valid"]:
+            winner_code = state["candidate_tests_1"]
+            winner_res = res1
+            winner_name = "None (Both Crashed)"
+        
+        # Se uno solo è valido, vince lui
+        elif res1["valid"] and not res2["valid"]:
+            winner_code = state["candidate_tests_1"]
+            winner_res = res1
+            winner_name = "Dev 1 (Dev 2 Crashed)"
+        elif not res1["valid"] and res2["valid"]:
+            winner_code = state["candidate_tests_2"]
+            winner_res = res2
+            winner_name = "Dev 2 (Dev 1 Crashed)"
+            
+        # Entrambi validi: confronto Coverage
+        else:
+            if res1["coverage"] > res2["coverage"]:
+                winner_code = state["candidate_tests_1"]
+                winner_res = res1
+                winner_name = "Dev 1 (Better Coverage)"
+            elif res2["coverage"] > res1["coverage"]:
+                winner_code = state["candidate_tests_2"]
+                winner_res = res2
+                winner_name = "Dev 2 (Better Coverage)"
+            else:
+                # Coverage pari: guardiamo chi ha meno fail
+                if res1["failed"] <= res2["failed"]:
+                    winner_code = state["candidate_tests_1"]
+                    winner_res = res1
+                    winner_name = "Dev 1 (Tie-Break Failures)"
+                else:
+                    winner_code = state["candidate_tests_2"]
+                    winner_res = res2
+                    winner_name = "Dev 2 (Tie-Break Failures)"
 
+        print(color_text(f"🏆 WINNER: {winner_name}", "green"))
+
+        # update dello stato col vincitore
         return {
-            "error": "",
-            "syntax_error": False,
-            "pytest_error": False,
-            "failed_tests_infos": report["failed_tests_infos"],
-            "coverage_percent": report["coverage"],
-            "n_passed_tests": report["passed"],
-            "n_failed_tests": report["failed"],
+            "generated_tests": winner_code, # IL VINCITORE DIVENTA LA BASE
+            "error": winner_res["error"],
+            "syntax_error": not winner_res["valid"] and not winner_res["crash"],
+            "pytest_error": winner_res["crash"],
+            "failed_tests_infos": winner_res["infos"],
+            "coverage_percent": winner_res["coverage"],
+            "n_passed_tests": winner_res["passed"],
+            "n_failed_tests": winner_res["failed"],
             "iterations": state["iterations"] + 1,
         }
+
 
     def _route_to(self, state: AgentState):
         """
@@ -514,22 +584,22 @@ class MultiAgentCollaborativeGraph:
 
         # 0. Safety Check: Uscita di emergenza per loop infiniti
         if state["iterations"] > state["max_iterations"]:
-            return "end"
+            return END
 
         # 1. PRIORITÀ AL FIX: Se c'è un errore tecnico (Crash) o logico (Fail)
         # DEVE tornare al GENERATOR per correggere il codice esistente.
         if (state["pytest_error"] or state["syntax_error"] or state["n_failed_tests"] > 0):
-            return "fix-tests"  # -> Vai a GENERATOR
+            return ["developer_1", "developer_2"]
 
         # 2. PRIORITÀ ALLA COVERAGE: Solo se i test passano (quindi error="" e failed=0)
         # controlliamo se abbiamo coperto tutto il codice.
         # Se la coverage è sotto la soglia (es. 100%), torniamo al PLANNER.
         current_cov = state.get("coverage_percent", 0)
         if current_cov < 100:
-            return "replan"  # -> Vai a PLANNER
+            return "planner"  # -> Vai a PLANNER
 
         # 3. SUCCESSO: Test passati e Coverage 100%
-        return "end"
+        return END
 
     def invoke(self):
         final_state = self.graph.invoke(self.initial_state)  # type: ignore
@@ -538,7 +608,7 @@ class MultiAgentCollaborativeGraph:
         output_file_path = (
             Path("data")
             / "output_tests"
-            / "multi_agent_collaborative"
+            / "multi_agent_competitive"
             / output_filename
         )
 
