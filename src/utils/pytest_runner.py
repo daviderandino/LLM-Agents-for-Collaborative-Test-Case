@@ -34,6 +34,7 @@ def run_pytest(target_module, generated_tests):
         "tmp_test.py",
         f"--cov={target_module}",
         "--tb=line",
+        "--cov-report=term-missing",
         "--color=no",
         "-vv"
     ]
@@ -64,7 +65,8 @@ def analyze_pytest_output(stdout, stderr, exit_code):
         "passed": 0,
         "failed": 0,
         "failed_tests_infos": '',     # Lista di stringhe "FAILED nome - errore"
-        "error_summary": ''           # Usato solo se status == crash
+        "error_summary": '' ,          # Usato solo se status == crash
+        "missing_lines": ""            # linee mancanti nella coverage
     }
 
     # è difficile che pytest proprio crashi
@@ -113,5 +115,12 @@ def analyze_pytest_output(stdout, stderr, exit_code):
 
     report["passed"] = int(passed_m.group(1)) if passed_m else 0
     report["failed"] = int(failed_m.group(1)) if failed_m else 0 + int(error_m.group(1)) if error_m else 0
+
+
+    # estraiamo le linee mancanti nella coverage
+    missing_match = re.search(r"^(?!\s*TOTAL).+?\s+(\d+)%\s+(.+)$", stdout, re.MULTILINE)
+    if missing_match:
+        # group(2) contains the missing lines part (e.g. "5, 12-15")
+        report["missing_lines"] = missing_match.group(2).strip()
 
     return report

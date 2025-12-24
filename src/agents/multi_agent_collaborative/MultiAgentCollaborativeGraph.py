@@ -46,6 +46,7 @@ class AgentState(TypedDict):
 
     n_passed_tests: int  # numero di test generati che passano
     n_failed_tests: int  # numero di test generati che failano
+    missing_lines: str  # linee di codice non coperte dai test generati
 
     iterations: int  # contatore per evitare loop infiniti tra gli agenti
     max_iterations: int  # numero massimo di iterazioni prima di finire il processo
@@ -76,10 +77,11 @@ class MultiAgentCollaborativeGraph:
             "pytest_error": False,
             "failed_tests_infos": "",
             "coverage_percent": 0,
+            "missing_lines": "",
             "n_passed_tests": 0,
             "n_failed_tests": 0,
             "iterations": 0,
-            "max_iterations": 10,
+            "max_iterations": 200,
         }
 
     def _build_graph(self):
@@ -183,6 +185,7 @@ class MultiAgentCollaborativeGraph:
         # SCENARIO 2: RE-PLANNING (Gap Filling con Context)
         else:
             cov = state.get("coverage_percent", 0)
+            missing = state.get("missing_lines", "Unknown")
             print(color_text(
                     f"--- STEP 1.2: RE-PLANNING (Current Coverage: {cov}%) ---",
                     "yellow"
@@ -230,6 +233,7 @@ class MultiAgentCollaborativeGraph:
                     "Previous coverage was insufficient ({current_cov}%).\n\n"
                     "SOURCE CODE:\n{code}\n\n"
                     "EXISTING TESTS (Do not regenerate these):\n{current_tests}\n\n"
+                    "MISSING LINES: {missing_lines}\n\n"
                     "Identify the missing gaps and generate the JSON Plan for NEW tests only.",
                 )
             ]
@@ -239,6 +243,7 @@ class MultiAgentCollaborativeGraph:
                 "code": state["code_under_test"],
                 "current_tests": state["generated_tests"],
                 "current_cov": cov,
+                "missing_lines": missing
             }
 
             # Esecuzione Scenario 2
@@ -351,8 +356,7 @@ class MultiAgentCollaborativeGraph:
                     "human",
                     "Source Code (Truth):{code}"
                     "Current Test Code:{previous_test_code}"
-                    "Pytest Failure Report:{test_report}"
-                    "Fix the assertions in the test code so they match the Source Code logic and PASS.",
+                    "Pytest Failure Report:{test_report}",
                 )
             ]
             invoke_args = {
@@ -402,14 +406,18 @@ class MultiAgentCollaborativeGraph:
                     "Task: Write ONLY the NEW test functions defined in the JSON Plan to append to the existing suite."
                     "Strict Rules:"
                     "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
-                    "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
-                    "- 3. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
-                    "- 4. Classes: If target is `Class.method`, instantiate the class first."
-                    "- 5. Output: Start output with exactly: ```python, and end output with exactly: ```. No text.",
+                    "- 2. DO NOT REWRITE ALREADY PASSED TESTS"
+                    "- 3. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
+                    "- 4. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
+                    "- 5. Classes: If target is `Class.method`, instantiate the class first."
+                    "- 6. Output: Start output with exactly: ```python, and end output with exactly: ```. No text."
+                    "- 7. Be sure that global variables are correctly handled, and that old tests don't fail with the insertion of new ones.",
+                    
                 ),
                 (
                     "human",
-                    "Source Code:\n{code}\n\nExisting Test Code:\n{previous_test_code}\n\nNew Test Plan (Cases to ADD):\n{plan}\n\nGenerate ONLY the python code for the NEW tests to be appended.",
+                    "Source Code:\n{code}\n\nExisting Test Code:\n{previous_test_code}\n\nNew Test Plan (Cases to ADD):\n{plan}\n\n"
+                    "After many iterations you missed to cover these lines: {missing_lines}. Generate new tests with mocks, libraries an what else.",
                 )
             ]
             invoke_args = {
@@ -417,6 +425,7 @@ class MultiAgentCollaborativeGraph:
                 "plan": state["test_plan"],
                 "code": state["code_under_test"],
                 "previous_test_code": state["generated_tests"],
+                "missing_lines": state.get("missing_lines", "No missing lines info available"),
             }
 
         # ---------------------------------------------------------
@@ -493,6 +502,7 @@ class MultiAgentCollaborativeGraph:
         )
         if self.verbose:
             print(f"{report.get('failed_tests_infos','')}")
+            print(f"Missing Lines: {report.get('missing_lines','None')}")
 
         return {
             "error": "",
@@ -502,6 +512,7 @@ class MultiAgentCollaborativeGraph:
             "coverage_percent": report["coverage"],
             "n_passed_tests": report["passed"],
             "n_failed_tests": report["failed"],
+            "missing_lines": report.get("missing_lines", ""),
             "iterations": state["iterations"] + 1,
         }
 
@@ -525,7 +536,7 @@ class MultiAgentCollaborativeGraph:
         # controlliamo se abbiamo coperto tutto il codice.
         # Se la coverage è sotto la soglia (es. 100%), torniamo al PLANNER.
         current_cov = state.get("coverage_percent", 0)
-        if current_cov < 100:
+        if current_cov < 95:
             return "replan"  # -> Vai a PLANNER
 
         # 3. SUCCESSO: Test passati e Coverage 100%
