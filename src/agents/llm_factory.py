@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def get_llm(provider="groq", model_name="llama-3.1-8b-instant", temperature=0):
+def get_llm(provider="groq", model_name="llama-3.1-8b-instant", temperature=0.2):
     """
     Factory function per cambiare modello facilmente.
     Questo dimostra che il sistema non è vincolato ad usare solo Groq.

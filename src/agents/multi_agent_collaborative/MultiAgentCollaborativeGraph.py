@@ -405,19 +405,19 @@ class MultiAgentCollaborativeGraph:
                     "Role: Senior Pytest Engineer (Extension Mode)."
                     "Task: Write ONLY the NEW test functions defined in the JSON Plan to append to the existing suite."
                     "Strict Rules:"
-                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
-                    "- 2. DO NOT REWRITE ALREADY PASSED TESTS"
-                    "- 3. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
-                    "- 4. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
-                    "- 5. Classes: If target is `Class.method`, instantiate the class first."
-                    "- 6. Output: Start output with exactly: ```python, and end output with exactly: ```. No text."
-                    "- 7. Be sure that global variables are correctly handled, and that old tests don't fail with the insertion of new ones.",
+                    "- 1. DO NOT REWRITE ALREADY PASSED TESTS OR RE-IMPORT STATEMENTS."
+                    "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
+                    "- 3. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
+                    "- 4. Classes: If target is `Class.method`, instantiate the class first."
+                    "- 5. Output: Start output with exactly: ```python, and end output with exactly: ```. No text."
+                    "- 6. Be sure that global variables are correctly handled, and that old tests don't fail with the insertion of new ones."
+                    ,
                     
                 ),
                 (
                     "human",
                     "Source Code:\n{code}\n\nExisting Test Code:\n{previous_test_code}\n\nNew Test Plan (Cases to ADD):\n{plan}\n\n"
-                    "After many iterations you missed to cover these lines: {missing_lines}. Generate new tests with mocks, libraries an what else.",
+                    "WRITE TESTS TO COVER THE LINES {missing_lines} WHICH ARE CURRENTLY NOT COVERED.",
                 )
             ]
             invoke_args = {
