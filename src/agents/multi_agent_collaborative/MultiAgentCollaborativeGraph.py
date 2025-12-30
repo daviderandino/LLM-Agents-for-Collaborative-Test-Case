@@ -81,7 +81,7 @@ class MultiAgentCollaborativeGraph:
             "n_passed_tests": 0,
             "n_failed_tests": 0,
             "iterations": 0,
-            "max_iterations": 200,
+            "max_iterations": 20,
         }
 
     def _build_graph(self):
@@ -356,7 +356,8 @@ class MultiAgentCollaborativeGraph:
                     "human",
                     "Source Code (Truth):{code}"
                     "Current Test Code:{previous_test_code}"
-                    "Pytest Failure Report:{test_report}",
+                    "Pytest Failure Report:{test_report}"
+                     "Fix the assertions in the test code so they match the Source Code logic and PASS.",
                 )
             ]
             invoke_args = {

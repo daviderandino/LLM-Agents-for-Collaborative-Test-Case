@@ -11,5 +11,5 @@ if __name__ == '__main__':
         input_file_path=str(input_file_path),
         planner_model='meta-llama/llama-4-scout-17b-16e-instruct',
         generator_model='meta-llama/llama-4-maverick-17b-128e-instruct',
-        verbose=True
+        verbose=False
     )
