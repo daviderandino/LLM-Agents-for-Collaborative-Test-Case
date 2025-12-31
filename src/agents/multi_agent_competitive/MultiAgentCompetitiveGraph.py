@@ -429,7 +429,7 @@ class MultiAgentCompetitiveGraph:
                     "Role: Senior Pytest Engineer (Extension Mode)."
                     "Task: Write ONLY the NEW test functions defined in the JSON Plan to append to the existing suite."
                     "Strict Rules:"
-                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
+                    "- 1. DO NOT REWRITE ALREADY PASSED TESTS OR RE-IMPORT STATEMENTS."
                     "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
                     "- 3. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
                     "- 4. Classes: If target is `Class.method`, instantiate the class first."
