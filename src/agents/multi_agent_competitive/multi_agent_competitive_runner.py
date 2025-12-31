@@ -1,11 +1,11 @@
 from src.agents.multi_agent_competitive.MultiAgentCompetitiveGraph import MultiAgentCompetitiveGraph
 from src.agents.llm_factory import get_llm
 
-def run_competitive_agents(input_file_path, planner_model, generator_model_1, generator_model_2, verbose): 
+def run_competitive_agents(input_file_path, planner_model, generator_model_1, generator_model_2, temperature=0, verbose=False): 
 
-    llm_planner = get_llm(provider='groq', model_name=planner_model)
-    llm_generator_1 = get_llm(provider='groq', model_name=generator_model_1)
-    llm_generator_2 = get_llm(provider='groq', model_name=generator_model_2)
+    llm_planner = get_llm(provider='groq', model_name=planner_model, temperature=temperature)
+    llm_generator_1 = get_llm(provider='groq', model_name=generator_model_1, temperature=temperature)
+    llm_generator_2 = get_llm(provider='groq', model_name=generator_model_2, temperature=temperature)
 
     agents = MultiAgentCompetitiveGraph(
         input_file_path,
@@ -17,7 +17,11 @@ def run_competitive_agents(input_file_path, planner_model, generator_model_1, ge
 
     final_state = agents.invoke()
 
-    ### è da estrarre coverage, iterations etc e ritornarle se si vogliono fare statistiche nell'esperimento
     return {
-        "...": 0
+        "coverage_percent": final_state.get("coverage_percent", 0), 
+        "n_passed_tests": final_state.get("n_passed_tests", 0),
+        "n_failed_tests": final_state.get("n_failed_tests", 0),
+        "iterations": final_state.get("iterations", 0),
+        "cost": final_state.get("cost", 0),
+        "total_tokens": final_state.get("total_tokens", 0)
     }

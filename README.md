@@ -113,3 +113,4 @@ python -m pytest data/output_tests/baseline/test_bank_account.py
     - Run pytest --cov on both files.
 
     - If the Multi-Agent has 100% coverage and the Baseline 80%, you've won (and proven the thesis).
+- TO RUN: python run.py --config configs/experiments/{experiment_name}.yaml

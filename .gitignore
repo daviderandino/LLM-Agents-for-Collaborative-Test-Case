@@ -6,3 +6,5 @@ report_template/
 .DS_Store
 .pytest_cache
 .coverage
+/results
+/data/output_tests/*

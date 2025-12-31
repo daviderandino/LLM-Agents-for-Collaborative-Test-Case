@@ -45,6 +45,11 @@ While generating the output, you have to follow those three instructions:
         }
 
         response = chain.invoke(chain_input)
+        
+        # Extract tokens
+        tokens = 0
+        if hasattr(response, 'response_metadata'):
+             tokens = response.response_metadata.get('token_usage', {}).get('total_tokens', 0)
 
         self.cleaned_tests = clean_llm_python(response.content)
 
@@ -57,7 +62,8 @@ While generating the output, you have to follow those three instructions:
                 "failed_tests_infos": '',
                 "coverage_percent": 0,
                 "n_passed_tests": 0,
-                "n_failed_tests": 0
+                "n_failed_tests": 0,
+                "total_tokens": tokens
             }
 
         report = run_pytest(self.target_module, self.cleaned_tests)
@@ -70,7 +76,8 @@ While generating the output, you have to follow those three instructions:
                 "failed_tests_infos": '',
                 "coverage_percent": 0,
                 "n_passed_tests": 0,
-                "n_failed_tests": 0
+                "n_failed_tests": 0,
+                "total_tokens": tokens
             }
         
         print(f"--- EXECUTION RESULT: Coverage={report['coverage']}% {report['passed']} Passed {report['failed']} Failed ---")
@@ -80,7 +87,8 @@ While generating the output, you have to follow those three instructions:
             "failed_tests_infos": report["failed_tests_infos"],
             "coverage_percent": report["coverage"],
             "n_passed_tests": report["passed"],
-            "n_failed_tests": report["failed"]
+            "n_failed_tests": report["failed"],
+            "total_tokens": tokens
         }
 
 

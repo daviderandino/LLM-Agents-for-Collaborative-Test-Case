@@ -1,0 +1,8 @@
+experiment:
+  type: "collaborative"
+  input_path: "data/input_code/bank_account.py"  # Can be a specific .py file or a folder
+
+llm:
+  planner_model: "meta-llama/llama-4-scout-17b-16e-instruct"
+  generator_model: "meta-llama/llama-4-maverick-17b-128e-instruct"
+  temperature: 0.2

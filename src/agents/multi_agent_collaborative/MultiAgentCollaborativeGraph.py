@@ -29,34 +29,30 @@ def color_text(text: str, color: str = "reset") -> str:
 
 # === DEFINIZIONE DELLO STATO DEL GRAFO ===
 class AgentState(TypedDict):
-    input_file_path: str  # path del file .py per cui generare i test (è relativo alla root del progetto, dato che gli esperimenti partono da lì)
-    target_module: str  # nome del modulo per l'import (es: data.input_code.bank_account se ho data/input_code/bank_account.py)
-    code_under_test: str  # contenuto del file .py che dobbiamo testare
+    input_file_path: str  
+    target_module: str  
+    code_under_test: str  
 
-    test_plan: str  # il piano generato (to-do list) dal nodo planner
-    generated_tests: str  # il codice pytest generato dal nodo generator
+    test_plan: str  
+    generated_tests: str  
 
-    error: str  # errore d'esecuzione di pytest (sono quelli gravi, ad esempio crash, non i singoli errori dei test case che li fanno failare)
+    error: str  
     syntax_error: bool
     pytest_error: bool
-    failed_tests_infos: str  # elenco di test failati nel formato 'FAILED nome_test - errore' (uno sotto l'altro)
-    coverage_percent: (
-        int  # percentuale di coverage raggiunta con i test generati (0-100)
-    )
+    failed_tests_infos: str  
+    coverage_percent: int
 
-    n_passed_tests: int  # numero di test generati che passano
-    n_failed_tests: int  # numero di test generati che failano
+    n_passed_tests: int  
+    n_failed_tests: int  
 
-    iterations: int  # contatore per evitare loop infiniti tra gli agenti
-    max_iterations: int  # numero massimo di iterazioni prima di finire il processo
+    iterations: int  
+    max_iterations: int
+    
+    total_tokens: int # Added to track tokens
 
 
 class MultiAgentCollaborativeGraph:
     def __init__(self, input_file_path, llm_planner, llm_generator, verbose = True):
-        """
-        Inizializza il grafo di nodi, ad ogni nodo si può associare un llm
-        differente.
-        """
         self.llm_planner = llm_planner
         self.llm_generator = llm_generator
         self.verbose = verbose
@@ -80,13 +76,10 @@ class MultiAgentCollaborativeGraph:
             "n_failed_tests": 0,
             "iterations": 0,
             "max_iterations": 10,
+            "total_tokens": 0 # Initialize
         }
 
     def _build_graph(self):
-        """
-        Configura e compila il grafo di LangGraph.
-        """
-
         workflow = StateGraph(AgentState)
 
         workflow.add_node("planner", self._plan_node)
@@ -95,14 +88,14 @@ class MultiAgentCollaborativeGraph:
 
         workflow.set_entry_point("planner")
 
-        workflow.add_edge("planner", "developer")  # arco planner -> developer
-        workflow.add_edge("developer", "executor")  # arco developer -> executor
-        workflow.add_conditional_edges(  # arco condizionale executor -> ( developer OR planner OR end )
+        workflow.add_edge("planner", "developer")  
+        workflow.add_edge("developer", "executor")  
+        workflow.add_conditional_edges(  
             "executor",
             self._route_to,
             {
-                "fix-tests": "developer",  # ci sono dei test che falliscono
-                "replan": "planner",  # la coverage è troppo bassa
+                "fix-tests": "developer",  
+                "replan": "planner",  
                 "end": END,
             }
         )
@@ -110,14 +103,9 @@ class MultiAgentCollaborativeGraph:
         return workflow.compile()
 
     def _plan_node(self, state: AgentState):
-        """
-        Nodo Planner Intelligente.
-        - Se iterations == 0: Genera il piano base (Strategia: Full Scan).
-        - Se iterations > 0: Genera casi addizionali per alzare la coverage (Strategia: Gap Filling).
-        """
         current_iter = state["iterations"]
         messages = []
-        invoke_args = {}  # Dizionario per gli argomenti dinamici
+        invoke_args = {}  
 
         # SCENARIO 1: PRIMA GENERAZIONE (Cold Start)
         if current_iter == 0:
@@ -164,20 +152,22 @@ class MultiAgentCollaborativeGraph:
                 )
             ]
 
-            # Argomenti per Scenario 1
             invoke_args = {"code": state["code_under_test"]}
 
-            # Esecuzione Scenario 1
             prompt = ChatPromptTemplate.from_messages(messages=messages)
             chain = prompt | self.llm_planner
             response = chain.invoke(invoke_args)
+            
+            # Count Tokens
+            tokens = response.response_metadata.get('token_usage', {}).get('total_tokens', 0)
+            current_tokens = state.get("total_tokens", 0)
 
             if self.verbose: 
                 print(color_text(f"RESPONSE: {response.content}", "magenta"))
             
-            # Ritorna direttamente il piano (è il primo)
             return {
-                "test_plan": response.content
+                "test_plan": response.content,
+                "total_tokens": current_tokens + tokens
             }
 
         # SCENARIO 2: RE-PLANNING (Gap Filling con Context)
@@ -212,7 +202,7 @@ class MultiAgentCollaborativeGraph:
                     "2. Start response with `[` and end with `]`.\n"
                     "3. No markdown blocks, no explanations.",
                 ),
-                # FEW-SHOT (Re-planning example)
+                # FEW-SHOT 
                 (
                     "human",
                     "Analyze code:\ndef check(x):\n    if x > 0 and x < 10:\n        return True\n    return False",
@@ -224,7 +214,7 @@ class MultiAgentCollaborativeGraph:
                     '  {{"id": "T_MISSING_NEG", "target": "check", "input": {{"x": -1}}, "expected": false, "rationale": "Negative value path"}}\n'
                     "]",
                 ),
-                # INPUT REALE: Codice Sorgente + Test Esistenti
+                # INPUT REALE
                 (
                     "human",
                     "Previous coverage was insufficient ({current_cov}%).\n\n"
@@ -234,22 +224,23 @@ class MultiAgentCollaborativeGraph:
                 )
             ]
 
-            # Argomenti per Scenario 2 (Include generated_tests)
             invoke_args = {
                 "code": state["code_under_test"],
                 "current_tests": state["generated_tests"],
                 "current_cov": cov,
             }
 
-            # Esecuzione Scenario 2
             prompt = ChatPromptTemplate.from_messages(messages=messages)
             chain = prompt | self.llm_planner
             response = chain.invoke(invoke_args)
+            
+            # Count Tokens
+            tokens = response.response_metadata.get('token_usage', {}).get('total_tokens', 0)
+            current_tokens = state.get("total_tokens", 0)
 
-            # --- LOGICA DI APPEND PURA (String Manipulation) ---
+            # --- LOGICA DI APPEND PURA ---
             new_plan_fragment = response.content.strip()
             
-            # Pulizia di sicurezza: se l'LLM ha messo comunque le quadre (per abitudine), le togliamo
             if new_plan_fragment.startswith("["):
                 new_plan_fragment = new_plan_fragment[1:]
             if new_plan_fragment.endswith("]"):
@@ -257,17 +248,13 @@ class MultiAgentCollaborativeGraph:
             
             new_plan_fragment = new_plan_fragment.strip()
 
-            # Recuperiamo il piano precedente
             old_plan = state.get("test_plan", "[]").strip()
             
-            # Togliamo la quadra di chiusura del vecchio piano ']'
             if old_plan.endswith("]"):
                 old_plan_base = old_plan[:-1].strip()
             else:
-                old_plan_base = old_plan # Caso edge, non dovrebbe capitare
+                old_plan_base = old_plan 
 
-            # Gestione della virgola: se il vecchio piano era vuoto "[]", old_plan_base è "[".
-            # Non vogliamo "[ , {nuovo} ]", ma "[ {nuovo} ]".
             if old_plan_base == "[":
                 updated_full_plan = old_plan_base + new_plan_fragment + "]"
             else:
@@ -276,7 +263,10 @@ class MultiAgentCollaborativeGraph:
             if self.verbose:
                 print(color_text(f"RESPONSE FRAGMENT: {new_plan_fragment}", "magenta"))
 
-            return {"test_plan": updated_full_plan}
+            return {
+                "test_plan": updated_full_plan,
+                "total_tokens": current_tokens + tokens
+            }
 
     def _generation_node(self, state: AgentState):
         """
@@ -289,10 +279,10 @@ class MultiAgentCollaborativeGraph:
         is_append_mode = False
 
         # ---------------------------------------------------------
-        # 1. SELEZIONE STRATEGIA (Prompt Originali Intatti)
+        # 1. SELEZIONE STRATEGIA
         # ---------------------------------------------------------
 
-        # CASO 1: Prima iterazione (Generazione da zero)
+        # CASO 1: Prima iterazione
         if state["iterations"] == 0:
             step_name = "--- STEP 2.1: GENERATING TESTS FROM SCRATCH---"
             color = "cyan"
@@ -327,7 +317,7 @@ class MultiAgentCollaborativeGraph:
                 "code": state["code_under_test"],
             }
 
-        # CASO 2: I test girano ma falliscono (Assertion Errors)
+        # CASO 2: I test girano ma falliscono
         elif state["n_failed_tests"] != 0:
             step_name = "--- STEP 2.2: FIXING FAILED TESTS ---"
             color = "yellow"
@@ -363,7 +353,6 @@ class MultiAgentCollaborativeGraph:
             }
 
         # CASO 3: Errore di Sintassi / Esecuzione
-        # Nota: Ho mantenuto la logica "OR" sulle chiavi, usando .get per sicurezza
         elif state.get("syntax_error") or state.get("pytest_error"):
             step_name = "--- STEP 2.3: FIXING SYNTAX/PYTEST ERROR ---"
             color = "yellow"
@@ -420,15 +409,19 @@ class MultiAgentCollaborativeGraph:
             }
 
         # ---------------------------------------------------------
-        # 2. ESECUZIONE (Logica Unificata)
+        # 2. ESECUZIONE
         # ---------------------------------------------------------
         print(color_text(step_name, color))
 
         prompt = ChatPromptTemplate.from_messages(messages=messages)
         chain = prompt | self.llm_generator
 
-        # Invoca l'LLM con gli argomenti specifici del caso selezionato
+        # Invoca l'LLM
         response = chain.invoke(invoke_args)
+        
+        # Count Tokens
+        tokens = response.response_metadata.get('token_usage', {}).get('total_tokens', 0)
+        current_tokens = state.get("total_tokens", 0)
 
         cleaned_tests = clean_llm_python(response.content)
 
@@ -439,14 +432,15 @@ class MultiAgentCollaborativeGraph:
 
         if is_append_mode:
             if self.verbose: print(color_text(f"APPENDING FRAGMENT:\n{cleaned_tests}", "magenta"))
-            # Concatena: Vecchio + \n\n + Nuovo
             final_test_code = state["generated_tests"] + "\n\n" + cleaned_tests
         else:
             if self.verbose: print(color_text(f"GENERATED CODE:\n{cleaned_tests}", "magenta"))
-            # Sovrascrive
             final_test_code = cleaned_tests
 
-        return {"generated_tests": final_test_code}
+        return {
+            "generated_tests": final_test_code,
+            "total_tokens": current_tokens + tokens
+        }
 
     def _execution_node(self, state: AgentState):
         """
@@ -506,33 +500,20 @@ class MultiAgentCollaborativeGraph:
         }
 
     def _route_to(self, state: AgentState):
-        """
-        Funzione decisionale che determina se dopo l'esecuzione
-        dei test generati possiamo chiudere il processo oppure
-        tornare in planning o coding.
-        """
-
-        # 0. Safety Check: Uscita di emergenza per loop infiniti
         if state["iterations"] > state["max_iterations"]:
             return "end"
 
-        # 1. PRIORITÀ AL FIX: Se c'è un errore tecnico (Crash) o logico (Fail)
-        # DEVE tornare al GENERATOR per correggere il codice esistente.
         if (state["pytest_error"] or state["syntax_error"] or state["n_failed_tests"] > 0):
-            return "fix-tests"  # -> Vai a GENERATOR
+            return "fix-tests"  
 
-        # 2. PRIORITÀ ALLA COVERAGE: Solo se i test passano (quindi error="" e failed=0)
-        # controlliamo se abbiamo coperto tutto il codice.
-        # Se la coverage è sotto la soglia (es. 100%), torniamo al PLANNER.
         current_cov = state.get("coverage_percent", 0)
         if current_cov < 100:
-            return "replan"  # -> Vai a PLANNER
+            return "replan" 
 
-        # 3. SUCCESSO: Test passati e Coverage 100%
         return "end"
 
     def invoke(self):
-        final_state = self.graph.invoke(self.initial_state)  # type: ignore
+        final_state = self.graph.invoke(self.initial_state) 
 
         output_filename = f"test_{Path(final_state['input_file_path']).stem}.py"
         output_file_path = (

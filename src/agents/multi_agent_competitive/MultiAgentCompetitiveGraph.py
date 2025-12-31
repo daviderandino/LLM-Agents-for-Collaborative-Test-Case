@@ -29,37 +29,35 @@ def color_text(text: str, color: str = "reset") -> str:
 
 # === DEFINIZIONE DELLO STATO DEL GRAFO ===
 class AgentState(TypedDict):
-    input_file_path: str  # path del file .py per cui generare i test (è relativo alla root del progetto, dato che gli esperimenti partono da lì)
-    target_module: str  # nome del modulo per l'import (es: data.input_code.bank_account se ho data/input_code/bank_account.py)
-    code_under_test: str  # contenuto del file .py che dobbiamo testare
+    input_file_path: str  
+    target_module: str  
+    code_under_test: str  
 
-    test_plan: str  # il piano generato (to-do list) dal nodo planner
-    generated_tests: str  # il codice pytest migliore tra i due developer ad ogni iterazione
+    test_plan: str  
+    generated_tests: str  
 
     candidate_tests_1: str
     candidate_tests_2: str
 
     # report del vincitore
-    error: str  # errore d'esecuzione di pytest (sono quelli gravi, ad esempio crash, non i singoli errori dei test case che li fanno failare)
+    error: str  
     syntax_error: bool
     pytest_error: bool
-    failed_tests_infos: str  # elenco di test failati nel formato 'FAILED nome_test - errore' (uno sotto l'altro)
-    coverage_percent: (
-        int  # percentuale di coverage raggiunta con i test generati (0-100)
-    )
-    n_passed_tests: int  # numero di test generati che passano
-    n_failed_tests: int  # numero di test generati che failano
+    failed_tests_infos: str  
+    coverage_percent: int
+    n_passed_tests: int  
+    n_failed_tests: int  
 
-    iterations: int  # contatore per evitare loop infiniti tra gli agenti
-    max_iterations: int  # numero massimo di iterazioni prima di finire il processo
+    iterations: int  
+    max_iterations: int  
+    
+    total_tokens: int # Total cumulative
+    dev_1_step_tokens: int # Tokens used by dev 1 in current step
+    dev_2_step_tokens: int # Tokens used by dev 2 in current step
 
 
 class MultiAgentCompetitiveGraph:
     def __init__(self, input_file_path, llm_planner, llm_generator_1, llm_generator_2, verbose = True):
-        """
-        Inizializza il grafo di nodi, ad ogni nodo si può associare un llm
-        differente.
-        """
         self.llm_planner = llm_planner
         self.llm_generator_1 = llm_generator_1
         self.llm_generator_2 = llm_generator_2
@@ -86,15 +84,12 @@ class MultiAgentCompetitiveGraph:
             "n_failed_tests": 0,
             "iterations": 0,
             "max_iterations": 10,
+            "total_tokens": 0,
+            "dev_1_step_tokens": 0,
+            "dev_2_step_tokens": 0
         }
 
     def _build_graph(self):
-        """
-        Configura e compila il grafo di LangGraph.
-
-        Planner -> (Dev1 // Dev2) -> Executor
-        """
-
         workflow = StateGraph(AgentState)
 
         workflow.add_node("planner", self._plan_node)
@@ -116,14 +111,9 @@ class MultiAgentCompetitiveGraph:
         return workflow.compile()
 
     def _plan_node(self, state: AgentState):
-        """
-        Nodo Planner Intelligente.
-        - Se iterations == 0: Genera il piano base (Strategia: Full Scan).
-        - Se iterations > 0: Genera casi addizionali per alzare la coverage (Strategia: Gap Filling).
-        """
         current_iter = state["iterations"]
         messages = []
-        invoke_args = {}  # Dizionario per gli argomenti dinamici
+        invoke_args = {}  
 
         # SCENARIO 1: PRIMA GENERAZIONE (Cold Start)
         if current_iter == 0:
@@ -170,20 +160,22 @@ class MultiAgentCompetitiveGraph:
                 )
             ]
 
-            # Argomenti per Scenario 1
             invoke_args = {"code": state["code_under_test"]}
 
-            # Esecuzione Scenario 1
             prompt = ChatPromptTemplate.from_messages(messages=messages)
             chain = prompt | self.llm_planner
             response = chain.invoke(invoke_args)
+            
+            # Count Tokens
+            tokens = response.response_metadata.get('token_usage', {}).get('total_tokens', 0)
+            current_tokens = state.get("total_tokens", 0)
 
             if self.verbose: 
                 print(color_text(f"RESPONSE: {response.content}", "magenta"))
             
-            # Ritorna direttamente il piano (è il primo)
             return {
-                "test_plan": response.content
+                "test_plan": response.content,
+                "total_tokens": current_tokens + tokens
             }
 
         # SCENARIO 2: RE-PLANNING (Gap Filling con Context)
@@ -240,22 +232,23 @@ class MultiAgentCompetitiveGraph:
                 )
             ]
 
-            # Argomenti per Scenario 2 (Include generated_tests)
             invoke_args = {
                 "code": state["code_under_test"],
                 "current_tests": state["generated_tests"],
                 "current_cov": cov,
             }
 
-            # Esecuzione Scenario 2
             prompt = ChatPromptTemplate.from_messages(messages=messages)
             chain = prompt | self.llm_planner
             response = chain.invoke(invoke_args)
+            
+            # Count Tokens
+            tokens = response.response_metadata.get('token_usage', {}).get('total_tokens', 0)
+            current_tokens = state.get("total_tokens", 0)
 
-            # --- LOGICA DI APPEND PURA (String Manipulation) ---
+            # --- LOGICA DI APPEND PURA ---
             new_plan_fragment = response.content.strip()
             
-            # Pulizia di sicurezza: se l'LLM ha messo comunque le quadre (per abitudine), le togliamo
             if new_plan_fragment.startswith("["):
                 new_plan_fragment = new_plan_fragment[1:]
             if new_plan_fragment.endswith("]"):
@@ -263,17 +256,13 @@ class MultiAgentCompetitiveGraph:
             
             new_plan_fragment = new_plan_fragment.strip()
 
-            # Recuperiamo il piano precedente
             old_plan = state.get("test_plan", "[]").strip()
             
-            # Togliamo la quadra di chiusura del vecchio piano ']'
             if old_plan.endswith("]"):
                 old_plan_base = old_plan[:-1].strip()
             else:
-                old_plan_base = old_plan # Caso edge, non dovrebbe capitare
+                old_plan_base = old_plan 
 
-            # Gestione della virgola: se il vecchio piano era vuoto "[]", old_plan_base è "[".
-            # Non vogliamo "[ , {nuovo} ]", ma "[ {nuovo} ]".
             if old_plan_base == "[":
                 updated_full_plan = old_plan_base + new_plan_fragment + "]"
             else:
@@ -283,21 +272,24 @@ class MultiAgentCompetitiveGraph:
                 print(color_text(f"RESPONSE FRAGMENT: {new_plan_fragment}", "magenta"))
 
             return {
-                "test_plan": updated_full_plan
+                "test_plan": updated_full_plan,
+                "total_tokens": current_tokens + tokens
             }
 
     def _gen_wrapper_1(self, state: AgentState):
         print(color_text("--- DEV 1 WORKING ---", "cyan"))
-        result_code = self._generation_logic(state, self.llm_generator_1, "DEV 1")
+        result_code, tokens = self._generation_logic(state, self.llm_generator_1, "DEV 1")
         return {
-            "candidate_tests_1": result_code
+            "candidate_tests_1": result_code,
+            "dev_1_step_tokens": tokens
         }
     
     def _gen_wrapper_2(self, state: AgentState):
         print(color_text("--- DEV 2 WORKING ---", "cyan"))
-        result_code = self._generation_logic(state, self.llm_generator_2, "DEV 2")
+        result_code, tokens = self._generation_logic(state, self.llm_generator_2, "DEV 2")
         return {
-            "candidate_tests_2": result_code
+            "candidate_tests_2": result_code,
+            "dev_2_step_tokens": tokens
         }
 
     def _generation_logic(self, state: AgentState, llm, agent_name: str):
@@ -317,10 +309,10 @@ class MultiAgentCompetitiveGraph:
         base_code = state["generated_tests"]
 
         # ---------------------------------------------------------
-        # 1. SELEZIONE STRATEGIA (Prompt Originali Intatti)
+        # 1. SELEZIONE STRATEGIA
         # ---------------------------------------------------------
 
-        # CASO 1: Prima iterazione (Generazione da zero)
+        # CASO 1: Prima iterazione
         if iter_num == 0:
             step_name = f"--- STEP 2.1: {agent_name} GENERATING TESTS FROM SCRATCH---"
             color = "cyan"
@@ -355,7 +347,7 @@ class MultiAgentCompetitiveGraph:
                 "code": state["code_under_test"],
             }
 
-        # CASO 2: I test girano ma falliscono (Assertion Errors)
+        # CASO 2: I test girano ma falliscono
         elif n_failed != 0:
             step_name = f"--- STEP 2.2: {agent_name} FIXING FAILED TESTS ---"
             color = "yellow"
@@ -391,7 +383,6 @@ class MultiAgentCompetitiveGraph:
             }
 
         # CASO 3: Errore di Sintassi / Esecuzione
-        # Nota: Ho mantenuto la logica "OR" sulle chiavi, usando .get per sicurezza
         elif syntax_err or pytest_err:
             step_name = "--- STEP 2.3: FIXING SYNTAX/PYTEST ERROR ---"
             color = "yellow"
@@ -448,15 +439,18 @@ class MultiAgentCompetitiveGraph:
             }
 
         # ---------------------------------------------------------
-        # 2. ESECUZIONE (Logica Unificata)
+        # 2. ESECUZIONE
         # ---------------------------------------------------------
         print(color_text(step_name, color))
 
         prompt = ChatPromptTemplate.from_messages(messages=messages)
         chain = prompt | llm
 
-        # Invoca l'LLM con gli argomenti specifici del caso selezionato
+        # Invoca l'LLM
         response = chain.invoke(invoke_args)
+        
+        # Capture tokens
+        tokens = response.response_metadata.get('token_usage', {}).get('total_tokens', 0)
 
         cleaned_tests = clean_llm_python(response.content)
 
@@ -467,14 +461,12 @@ class MultiAgentCompetitiveGraph:
 
         if is_append_mode:
             if self.verbose: print(color_text(f"APPENDING FRAGMENT:\n{cleaned_tests}", "magenta"))
-            # Concatena: Vecchio + \n\n + Nuovo
             final_test_code = base_code + "\n\n" + cleaned_tests
         else:
             if self.verbose: print(color_text(f"GENERATED CODE:\n{cleaned_tests}", "magenta"))
-            # Sovrascrive
             final_test_code = cleaned_tests
 
-        return final_test_code
+        return final_test_code, tokens
 
     def _execution_node(self, state: AgentState):
         """
@@ -483,6 +475,11 @@ class MultiAgentCompetitiveGraph:
         Aggiorna 'generated_tests' con il vincitore.
         """
         print(color_text("--- STEP 3: EXECUTING PYTEST & COMPARING CANDIDATES---", "cyan"))
+        
+        # Accumulate tokens from the developers
+        current_total = state.get("total_tokens", 0)
+        added_tokens = state.get("dev_1_step_tokens", 0) + state.get("dev_2_step_tokens", 0)
+        new_total_tokens = current_total + added_tokens
 
         # Helper interno per eseguire un singolo test
         def evaluate_candidate(code_str):
@@ -508,27 +505,21 @@ class MultiAgentCompetitiveGraph:
                 "infos": report["failed_tests_infos"]
             }
         
-        # valutazione parallela (simulata sequenziale qui, ma concettualmente parallela)
         res1 = evaluate_candidate(state["candidate_tests_1"])
         res2 = evaluate_candidate(state["candidate_tests_2"])
 
         print(f"Dev 1 -> Valid: {res1['valid']}, Cov: {res1['coverage']}%, Fail: {res1['failed']}")
         print(f"Dev 2 -> Valid: {res2['valid']}, Cov: {res2['coverage']}%, Fail: {res2['failed']}")
 
-        # si sceglie il test con la coverage più alta a prescindere dai test non-passati
         winner_code = ""
         winner_res = {}
         winner_name = ""
 
-        # Priorità: Validità tecnica > Coverage > Minor numero di fallimenti
-        
-        # Se entrambi sono invalidi, prendo il primo (a caso, tanto fallirà nel routing)
         if not res1["valid"] and not res2["valid"]:
             winner_code = state["candidate_tests_1"]
             winner_res = res1
             winner_name = "None (Both Crashed)"
         
-        # Se uno solo è valido, vince lui
         elif res1["valid"] and not res2["valid"]:
             winner_code = state["candidate_tests_1"]
             winner_res = res1
@@ -538,7 +529,6 @@ class MultiAgentCompetitiveGraph:
             winner_res = res2
             winner_name = "Dev 2 (Dev 1 Crashed)"
             
-        # Entrambi validi: confronto Coverage
         else:
             if res1["coverage"] > res2["coverage"]:
                 winner_code = state["candidate_tests_1"]
@@ -549,7 +539,6 @@ class MultiAgentCompetitiveGraph:
                 winner_res = res2
                 winner_name = "Dev 2 (Better Coverage)"
             else:
-                # Coverage pari: guardiamo chi ha meno fail
                 if res1["failed"] <= res2["failed"]:
                     winner_code = state["candidate_tests_1"]
                     winner_res = res1
@@ -561,9 +550,8 @@ class MultiAgentCompetitiveGraph:
 
         print(color_text(f"🏆 WINNER: {winner_name}", "green"))
 
-        # update dello stato col vincitore
         return {
-            "generated_tests": winner_code, # IL VINCITORE DIVENTA LA BASE
+            "generated_tests": winner_code, 
             "error": winner_res["error"],
             "syntax_error": not winner_res["valid"] and not winner_res["crash"],
             "pytest_error": winner_res["crash"],
@@ -572,37 +560,27 @@ class MultiAgentCompetitiveGraph:
             "n_passed_tests": winner_res["passed"],
             "n_failed_tests": winner_res["failed"],
             "iterations": state["iterations"] + 1,
+            "total_tokens": new_total_tokens,
+            "dev_1_step_tokens": 0, # Reset step tokens
+            "dev_2_step_tokens": 0
         }
 
 
     def _route_to(self, state: AgentState):
-        """
-        Funzione decisionale che determina se dopo l'esecuzione
-        dei test generati possiamo chiudere il processo oppure
-        tornare in planning o coding.
-        """
-
-        # 0. Safety Check: Uscita di emergenza per loop infiniti
         if state["iterations"] > state["max_iterations"]:
             return END
 
-        # 1. PRIORITÀ AL FIX: Se c'è un errore tecnico (Crash) o logico (Fail)
-        # DEVE tornare al GENERATOR per correggere il codice esistente.
         if (state["pytest_error"] or state["syntax_error"] or state["n_failed_tests"] > 0):
             return ["developer_1", "developer_2"]
 
-        # 2. PRIORITÀ ALLA COVERAGE: Solo se i test passano (quindi error="" e failed=0)
-        # controlliamo se abbiamo coperto tutto il codice.
-        # Se la coverage è sotto la soglia (es. 100%), torniamo al PLANNER.
         current_cov = state.get("coverage_percent", 0)
         if current_cov < 100:
-            return "planner"  # -> Vai a PLANNER
+            return "planner"
 
-        # 3. SUCCESSO: Test passati e Coverage 100%
         return END
 
     def invoke(self):
-        final_state = self.graph.invoke(self.initial_state)  # type: ignore
+        final_state = self.graph.invoke(self.initial_state)
 
         output_filename = f"test_{Path(final_state['input_file_path']).stem}.py"
         output_file_path = (
