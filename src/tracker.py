@@ -5,9 +5,8 @@ from pathlib import Path
 
 def save_run_metrics(config_manager, final_coverage, tests_passed, tests_failed, total_cost, iterations, total_tokens=0):
     metrics = {
-        "run_id": config_manager.run_id,
+        "run_id": config_manager.run_id, # compaiono anche i nomi dei modelli
         "timestamp": config_manager.run_id, # Simplified
-        "model": config_manager.get('llm', 'model'),
         "temperature": config_manager.get('llm', 'temperature'),
         "strict_imports": config_manager.get('agent', 'enforce_strict_imports'),
         "results": {
@@ -40,7 +39,6 @@ def _append_to_master_csv(metrics):
     flat_metrics = {
         "run_id": metrics["run_id"],
         "timestamp": metrics["timestamp"],
-        "model": metrics["model"],
         "temperature": metrics["temperature"],
         "strict_imports": metrics["strict_imports"],
         "coverage_pct": metrics["results"]["coverage_pct"],

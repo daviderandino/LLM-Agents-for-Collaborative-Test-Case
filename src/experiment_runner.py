@@ -1,18 +1,20 @@
 # src/main.py
 import argparse
 import sys
+import os
 import logging
 from pathlib import Path
 from tqdm import tqdm
 
 # Config System
-from src.config import ConfigManager
+from src.ConfigManager import ConfigManager
 from src.tracker import save_run_metrics
 
 # Agent Runners (Corrected Imports)
 from src.agents.single_agent.single_agent_runner import run_single_agent
 from src.agents.multi_agent_collaborative.multi_agent_collaborative_runner import run_collaborative_agents
 from src.agents.multi_agent_competitive.multi_agent_competitive_runner import run_competitive_agents
+
 
 def get_files_to_process(input_path_str):
     path = Path(input_path_str)
@@ -32,6 +34,7 @@ def run_experiment(cfg):
     # 1. Determine Strategy and Settings
     strategy = cfg.get('experiment', 'type')
     input_path = cfg.get('experiment', 'input_path')
+    output_dir = cfg.get('experiment', 'name')
     temperature = cfg.get('llm', 'temperature') 
     
     logger.info(f"🚀 Starting Experiment. Strategy: {strategy}")
@@ -54,24 +57,27 @@ def run_experiment(cfg):
             if strategy == "single_agent":
                 file_result = run_single_agent(
                     input_file_path=str(file_path),
-                    model=cfg.get('llm', 'default_model'),
+                    output_dir=output_dir,
+                    model=cfg.get('llm', 'model'),
                     temperature=temperature 
                 )
 
-            elif strategy == "collaborative":
+            elif strategy == "collaborative_agents":
                 file_result = run_collaborative_agents(
                     input_file_path=str(file_path),
+                    output_dir=output_dir,
                     planner_model=cfg.get('llm', 'planner_model'),
                     generator_model=cfg.get('llm', 'generator_model'),
                     temperature=temperature, 
                     verbose=cfg.get('agent', 'verbose')
                 )
 
-            elif strategy == "competitive":
+            elif strategy == "competitive_agents":
                 file_result = run_competitive_agents(
                     input_file_path=str(file_path),
+                    output_dir=output_dir,
                     planner_model=cfg.get('llm', 'planner_model'),
-                    generator_model_1=cfg.get('llm', 'generator_model'),
+                    generator_model_1=cfg.get('llm', 'generator_model_1'),
                     generator_model_2=cfg.get('llm', 'generator_model_2'),
                     temperature=temperature,
                     verbose=cfg.get('agent', 'verbose')
@@ -82,7 +88,13 @@ def run_experiment(cfg):
                 continue
 
             if file_result:
-                results_summary.append({"file": filename, "status": "success", "metrics": file_result})
+                results_summary.append(
+                    {
+                        "file": filename, 
+                        "status": "success", 
+                        "metrics": file_result
+                    }
+                )
 
         except Exception as e:
             logger.error(f"Failed to process {filename}: {e}", exc_info=True)
@@ -92,7 +104,7 @@ def run_experiment(cfg):
 
     return results_summary
 
-def main():
+def run():
     parser = argparse.ArgumentParser(description="AI Agent Experiment Runner")
     parser.add_argument("--config", type=str, default=None, help="Path to experiment config")
     args = parser.parse_args()
@@ -104,7 +116,7 @@ def main():
         sys.exit(1)
 
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    #Save config snapshot and run experiment
+    # Save config snapshot and run experiment
     cfg.save_snapshot()
     results = run_experiment(cfg)
 
@@ -127,4 +139,4 @@ def main():
         print("⚠️ No valid results to save.")
 
 if __name__ == "__main__":
-    main()
+    run()

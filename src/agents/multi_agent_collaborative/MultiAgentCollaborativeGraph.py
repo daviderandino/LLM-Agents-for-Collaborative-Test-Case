@@ -52,7 +52,8 @@ class AgentState(TypedDict):
 
 
 class MultiAgentCollaborativeGraph:
-    def __init__(self, input_file_path, llm_planner, llm_generator, verbose = True):
+    def __init__(self, input_file_path, output_dir, llm_planner, llm_generator, verbose = True):
+        self.output_dir = output_dir
         self.llm_planner = llm_planner
         self.llm_generator = llm_generator
         self.verbose = verbose
@@ -519,11 +520,12 @@ class MultiAgentCollaborativeGraph:
         output_file_path = (
             Path("data")
             / "output_tests"
-            / "multi_agent_collaborative"
-            / output_filename
+            / self.output_dir
         )
 
-        with open(str(output_file_path), "w") as f:
+        output_file_path.mkdir(parents=True, exist_ok=True)
+
+        with open(str(output_file_path / output_filename), "w") as f:
             f.write(final_state["generated_tests"])
 
         return final_state

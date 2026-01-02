@@ -1,11 +1,25 @@
 from src.agents.single_agent.SingleAgentChain import SingleAgentChain
 from src.agents.llm_factory import get_llm
 
-def run_single_agent(input_file_path, model, temperature=0): 
+def run_single_agent(
+        input_file_path,
+        output_dir,
+        model,
+        temperature=0
+    ): 
     # Pass temperature to factory
-    llm = get_llm(provider='groq', model_name=model, temperature=temperature)
+    llm = get_llm(
+        provider='groq',
+        model_name=model,
+        temperature=temperature
+    )
     
-    agent = SingleAgentChain(input_file_path, llm)
+    agent = SingleAgentChain(
+        input_file_path,
+        output_dir,
+        llm
+    )
+
     final_state = agent.invoke()
 
     return {

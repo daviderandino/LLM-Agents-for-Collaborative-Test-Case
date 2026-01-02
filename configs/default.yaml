@@ -1,13 +1,7 @@
 experiment:
-  type: "single_agent"               # Options: single_agent, collaborative, competitive
   input_path: "data/input_code"      # Can be a specific .py file or a folder
-  output_dir: "data/output_tests"
 
 llm:
-  default_model: "openai/gpt-oss-20b"
-  planner_model: "meta-llama/llama-4-scout-17b-16e-instruct"
-  generator_model: "meta-llama/llama-4-maverick-17b-128e-instruct"
-  generator_model_2: "openai/gpt-oss-20b" # Only used for competitive
   temperature: 0.0
 
 agent:

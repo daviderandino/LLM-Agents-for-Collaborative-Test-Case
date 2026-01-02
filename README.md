@@ -16,18 +16,43 @@ GROQ_API_KEY = my_key
 
 ### HOW TO RUN
 
-Run the experimets .py files from the project root (cwd should be that).
-
-You can also run the generated tests by yourself with:
-
-```bash
-python -m pytest data/output_tests/AGENTIC_ARCHITECTURE/test_XYZ.py 
-```
+Open the project root folder, and follow the notebook.
 
 ## PROJECT STRUCTURE
 
-
-![alt text](image.png)
+```
+LLM-Agents-for-Collaborative-Test-Case/
+├── configs/                                            -> yaml di configurazione dei progetti
+│   └── experiments/
+│       └── ...
+├── data/
+│   ├── input_code/                                     -> files .py target da testare
+│   └── output_tests/                                   -> test generati
+├── results/                                            -> risultati dei test
+│   └── ...
+├── src/
+│   ├── agents/                                         -> architetture agentiche
+│   │   ├── multi_agent_collaborative/
+│   │   │   ├── MultiAgentCollaborativeGraph.py
+│   │   │   └── multi_agent_collaborative_runner.py
+│   │   ├── multi_agent_competitive/
+│   │   │   ├── MultiAgentCompetitiveGraph.py
+│   │   │   └── multi_agent_competitive_runner.py
+│   │   └── single_agent/
+│   │       ├── llm_factory.py
+│   │       ├── SingleAgentChain.py
+│   │       └── single_agent_runner.py
+│   ├── utils/
+│   │   ├── llm_factory.py
+│   │   ├── llm_factory.py
+│   │   └── single_agent_runner.py                            
+│   ├── ConfigManager.py                                -> gestione configurazione degli esperimenti
+│   ├── experiment_runner.py                            -> entrypoint per eseguire esperimenti
+│   └── tracker.py                                      -> gestione raccolta stats
+├── experiments.ipynb
+├── README.md
+└── requirements.txt
+```
 
 ## Packages Overview
 ### LLM and Agent Management

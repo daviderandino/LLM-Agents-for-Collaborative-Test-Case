@@ -7,11 +7,12 @@ from src.utils.file_manager import obtain_import_module_str, read_text
 
 
 class SingleAgentChain:
-    def __init__(self, input_file_path, llm):
+    def __init__(self, input_file_path, output_dir, llm):
         """
         Inizializza l'agente singolo.
         """
         self.input_file_path = input_file_path
+        self.output_dir = output_dir
         self.llm = llm
         self.target_module = obtain_import_module_str(input_file_path)
         self.code_under_test = read_text(input_file_path)
@@ -96,9 +97,15 @@ While generating the output, you have to follow those three instructions:
         chain_result = self._feed_the_chain()
 
         output_filename = f"test_{Path(self.input_file_path).stem}.py"
-        output_file_path = Path("data") / "output_tests" / "single_agent" / output_filename
+        output_file_path = (
+            Path("data")
+            / "output_tests"
+            / self.output_dir
+        )
+
+        output_file_path.mkdir(parents=True, exist_ok=True)
         
-        with open(str(output_file_path), "w") as f:
+        with open(str(output_file_path / output_filename), "w") as f:
             f.write(self.cleaned_tests)
 
         return chain_result

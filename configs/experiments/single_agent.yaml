@@ -1,6 +1,0 @@
-experiment:
-  type: "single_agent"
-  input_path: "data/input_code/hotel_reservation.py"  # Can be a specific .py file or a folder
-
-llm:
-  default_model: "openai/gpt-oss-20b"

@@ -1,5 +1,6 @@
 experiment:
-  type: "collaborative"
+  type: "collaborative_agents"
+  name: "collaborative_agents-scout-maverick"
   input_path: "data/input_code/bank_account.py"  # Can be a specific .py file or a folder
 
 llm:
