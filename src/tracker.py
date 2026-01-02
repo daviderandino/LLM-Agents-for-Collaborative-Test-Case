@@ -3,20 +3,18 @@ import os
 import csv
 from pathlib import Path
 
-def save_run_metrics(config_manager, final_coverage, tests_passed, tests_failed, total_cost, iterations, total_tokens=0):
+def save_run_metrics(config_manager, results):
+
     metrics = {
         "run_id": config_manager.run_id, # compaiono anche i nomi dei modelli
         "timestamp": config_manager.run_id, # Simplified
         "temperature": config_manager.get('llm', 'temperature'),
         "strict_imports": config_manager.get('agent', 'enforce_strict_imports'),
-        "results": {
-            "coverage_pct": final_coverage,
-            "tests_passed": tests_passed,
-            "tests_failed": tests_failed,
-            "iterations": iterations,
-            "total_tokens": total_tokens
-        },
-        "cost_estimate": total_cost
+        "results": results,
+        "total iterations": sum([res["metrics"].get("iterations", 0) for res in results]) if results else 0,
+        "total_passed_tests": sum([res["metrics"].get("n_passed_tests", 0) for res in results]) if results else 0,
+        "total_failed_tests": sum([res["metrics"].get("n_failed_tests", 0) for res in results]) if results else 0, 
+        "total_tokens": sum([res["metrics"].get("total_tokens", 0) for res in results]) if results else 0,
     }
 
     # Save individual run file
@@ -40,13 +38,10 @@ def _append_to_master_csv(metrics):
         "run_id": metrics["run_id"],
         "timestamp": metrics["timestamp"],
         "temperature": metrics["temperature"],
-        "strict_imports": metrics["strict_imports"],
-        "coverage_pct": metrics["results"]["coverage_pct"],
-        "tests_passed": metrics["results"]["tests_passed"],
-        "tests_failed": metrics["results"]["tests_failed"],
-        "iterations": metrics["results"]["iterations"],
-        "total_tokens": metrics["results"].get("total_tokens", 0),
-        "cost_estimate": metrics["cost_estimate"]
+        "passed_tests": metrics["total_passed_tests"],
+        "failed_tests": metrics["total_failed_tests"],
+        "iterations": metrics["total iterations"],
+        "total_tokens": metrics["total_tokens"],
     }
     
     file_exists = csv_path.exists()

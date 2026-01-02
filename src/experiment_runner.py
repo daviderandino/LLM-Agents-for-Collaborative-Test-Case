@@ -120,21 +120,10 @@ def run():
     cfg.save_snapshot()
     results = run_experiment(cfg)
 
-    # Save Results Metrics
-    print(results)
 
     # Save Metrics (Placeholders Filled!)
-    if results and len(results) > 0 and 'metrics' in results[0]:
-        metrics = results[0]['metrics']
-        save_run_metrics(
-            config_manager=cfg,
-            final_coverage=round(metrics.get('coverage_percent', 0), 2), 
-            tests_passed=metrics.get('n_passed_tests', 0),
-            tests_failed=metrics.get('n_failed_tests', 0),
-            total_cost=round(metrics.get('cost', 0.0), 4),
-            iterations=metrics.get('iterations', 0),
-            total_tokens=metrics.get('total_tokens', 0)
-        )
+    if results and len(results) > 0:
+        save_run_metrics(config_manager=cfg, results=results)
     else:
         print("⚠️ No valid results to save.")
 
