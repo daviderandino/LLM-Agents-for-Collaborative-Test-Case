@@ -6,3 +6,8 @@ report_template/
 .DS_Store
 .pytest_cache
 .coverage
+.mutmut-cache
+*.csv
+
+
+data/output_tests/*

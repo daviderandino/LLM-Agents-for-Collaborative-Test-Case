@@ -6,7 +6,7 @@ if __name__ == '__main__':
     # Define the folder path as a Path object
     # The / operator safely joins paths for each operating system
     input_dir = Path("data") / "input_code"
-    model_name = 'openai/gpt-oss-20b'
+    model_name = 'meta-llama/llama-4-maverick-17b-128e-instruct'
 
     # .glob("*.py") finds all python files in the folder
     # We filter by excluding __init__.py by checking the .name attribute
