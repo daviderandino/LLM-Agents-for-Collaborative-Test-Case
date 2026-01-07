@@ -7,7 +7,7 @@ python-dotenv
 
 pytest
 pytest-cov
-mutmut
+mutmut<3.0.0
 
 pandas
 matplotlib
