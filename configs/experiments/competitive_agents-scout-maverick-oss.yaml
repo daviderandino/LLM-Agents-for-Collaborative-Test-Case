@@ -1,7 +1,7 @@
 experiment:
   type: "competitive_agents"
   name: "competitive_agents-scout-maverick-oss"
-  input_path: "data/input_code/hotel_reservation.py"
+  input_path: "data/input_code"
 
 llm:
   planner_model: "meta-llama/llama-4-scout-17b-16e-instruct"

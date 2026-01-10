@@ -1,7 +1,7 @@
 experiment:
   type: "collaborative_agents"
   name: "collaborative_agents-scout-maverick"
-  input_path: "data/input_code/bank_account.py"  # Can be a specific .py file or a folder
+  input_path: "data/input_code"  # Can be a specific .py file or a folder
 
 llm:
   planner_model: "meta-llama/llama-4-scout-17b-16e-instruct"
