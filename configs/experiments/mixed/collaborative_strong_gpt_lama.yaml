@@ -1,11 +1,11 @@
 experiment:
   type: "collaborative_agents"
-  name: "step2_collaborative_strong"
+  name: "collaborative_strong_gpt_lama"
   input_path: "data/input_code"
 
 llm:
   # Both roles played by the same model used in RQ1 Baseline
-  planner_model: meta-llama/"llama-3.3-70b-versatile"
+  planner_model: "openai/gpt-oss-120b"
   generator_model: "meta-llama/llama-3.3-70b-versatile"
   temperature: 0.2
 

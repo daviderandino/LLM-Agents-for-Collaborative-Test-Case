@@ -1,9 +1,9 @@
 
 experiment:
   type: "single_agent"
-  name: "step1_single_lama_baseline"
+  name: "single_gpt4_baseline"
   input_path: "data/input_code"
 
 llm:
-  model: "llama-3.3-70b-versatile"
+  model: "openai/gpt-oss-120b" 
   temperature: 0.0

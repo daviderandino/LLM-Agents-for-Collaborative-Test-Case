@@ -1,12 +1,12 @@
 experiment:
   type: "collaborative_agents"
-  name: "step2_collaborative_strong"
+  name: "collaborative_strong_planner"
   input_path: "data/input_code"
 
 llm:
   # Both roles played by the same model used in RQ1 Baseline
-  planner_model: "meta-llama/llama-4-scout-17b-16e-instruct"
-  generator_model: "meta-llama/llama-3.3-70b-versatile"
+  planner_model: "meta-llama/llama-3.3-70b-versatile"
+  generator_model: "meta-llama/llama-4-scout-17b-16e-instruct"
   temperature: 0.2
 
 agent:

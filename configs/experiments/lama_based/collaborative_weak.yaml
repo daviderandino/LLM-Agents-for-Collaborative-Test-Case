@@ -1,12 +1,12 @@
 experiment:
   type: "collaborative_agents"
-  name: "step2_collaborative_strong"
+  name: "collaborative_weak"
   input_path: "data/input_code"
 
 llm:
   # Both roles played by the same model used in RQ1 Baseline
-  planner_model: "openai/gpt-oss-120b"
-  generator_model: "openai/gpt-oss-20b"
+  planner_model: "meta-llama/llama-4-scout-17b-16e-instruct"
+  generator_model: "meta-llama/llama-4-scout-17b-16e-instruct"
   temperature: 0.2
 
 agent:

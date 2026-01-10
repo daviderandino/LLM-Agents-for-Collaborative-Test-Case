@@ -1,13 +1,14 @@
 experiment:
   type: "competitive_agents"
-  name: "rq3_competitive_clash"
+  name: "competitive_smart"
   input_path: "data/input_code"
 
 llm:
-  planner_model: "meta-llama/llama-4-scout-17b-16e-instruct"
+  planner_model: "meta-llama/llama-3.3-70b-versatile"
   generator_model_1: "openai/gpt-oss-120b"
   generator_model_2: "meta-llama/llama-3.3-70b-versatile" 
   temperature: 0.2
 
 agent:
   max_iterations: 8 # More iterations allow for a longer "tennis match" of improvements
+

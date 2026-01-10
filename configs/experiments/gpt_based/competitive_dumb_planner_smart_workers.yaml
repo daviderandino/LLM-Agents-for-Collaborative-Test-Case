@@ -1,11 +1,11 @@
 experiment:
   type: "competitive_agents"
-  name: "rq3_competitive_clash"
+  name: "competitive_dumb_planner_smart_workers"
   input_path: "data/input_code"
 
 llm:
-  planner_model: "meta-llama/llama-3.3-70b-versatile"
-  generator_model_1: "openai/gpt-oss-20b"
+  planner_model: "openai/gpt-oss-20b"
+  generator_model_1: "openai/gpt-oss-120b"
   generator_model_2: "meta-llama/llama-4-scout-17b-16e-instruct" 
   temperature: 0.2
 
