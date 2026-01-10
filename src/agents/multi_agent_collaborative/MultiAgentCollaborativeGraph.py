@@ -34,6 +34,7 @@ class AgentState(TypedDict):
     code_under_test: str  
 
     test_plan: str  
+    latest_plan_chunk: str 
     generated_tests: str  
 
     error: str  
@@ -48,7 +49,7 @@ class AgentState(TypedDict):
     iterations: int  
     max_iterations: int
     
-    total_tokens: int # Added to track tokens
+    total_tokens: int 
 
 
 class MultiAgentCollaborativeGraph:
@@ -67,6 +68,7 @@ class MultiAgentCollaborativeGraph:
             "target_module": obtain_import_module_str(input_file_path),
             "code_under_test": code,
             "test_plan": "",
+            "latest_plan_chunk": "", # Initialize empty
             "generated_tests": "",
             "error": "",
             "syntax_error": False,
@@ -77,7 +79,7 @@ class MultiAgentCollaborativeGraph:
             "n_failed_tests": 0,
             "iterations": 0,
             "max_iterations": 10,
-            "total_tokens": 0 # Initialize
+            "total_tokens": 0 
         }
 
     def _build_graph(self):
@@ -168,6 +170,7 @@ class MultiAgentCollaborativeGraph:
             
             return {
                 "test_plan": response.content,
+                "latest_plan_chunk": response.content,
                 "total_tokens": current_tokens + tokens
             }
 
@@ -266,6 +269,7 @@ class MultiAgentCollaborativeGraph:
 
             return {
                 "test_plan": updated_full_plan,
+                "latest_plan_chunk": new_plan_fragment, # Pass ONLY the newly generated fragment
                 "total_tokens": current_tokens + tokens
             }
 
@@ -314,7 +318,7 @@ class MultiAgentCollaborativeGraph:
             ]
             invoke_args = {
                 "target_module": state["target_module"],
-                "plan": state["test_plan"],
+                "plan": state["latest_plan_chunk"],
                 "code": state["code_under_test"],
             }
 
@@ -404,7 +408,7 @@ class MultiAgentCollaborativeGraph:
             ]
             invoke_args = {
                 "target_module": state["target_module"],
-                "plan": state["test_plan"],
+                "plan": state["latest_plan_chunk"],
                 "code": state["code_under_test"],
                 "previous_test_code": state["generated_tests"],
             }

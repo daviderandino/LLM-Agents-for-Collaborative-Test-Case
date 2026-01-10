@@ -34,6 +34,7 @@ class AgentState(TypedDict):
     code_under_test: str  
 
     test_plan: str  
+    latest_plan_chunk: str 
     generated_tests: str  
 
     candidate_tests_1: str
@@ -73,6 +74,7 @@ class MultiAgentCompetitiveGraph:
             "target_module": obtain_import_module_str(input_file_path),
             "code_under_test": code,
             "test_plan": "",
+            "latest_plan_chunk": "",
             "generated_tests": "",
             "candidate_tests_1": "",
             "candidate_tests_2": "",
@@ -176,6 +178,7 @@ class MultiAgentCompetitiveGraph:
             
             return {
                 "test_plan": response.content,
+                "latest_plan_chunk": response.content,
                 "total_tokens": current_tokens + tokens
             }
 
@@ -274,6 +277,7 @@ class MultiAgentCompetitiveGraph:
 
             return {
                 "test_plan": updated_full_plan,
+                "latest_plan_chunk": new_plan_fragment,
                 "total_tokens": current_tokens + tokens
             }
 
@@ -344,7 +348,7 @@ class MultiAgentCompetitiveGraph:
             ]
             invoke_args = {
                 "target_module": state["target_module"],
-                "plan": state["test_plan"],
+                "plan": state["latest_plan_chunk"], 
                 "code": state["code_under_test"],
             }
 
@@ -434,7 +438,7 @@ class MultiAgentCompetitiveGraph:
             ]
             invoke_args = {
                 "target_module": state["target_module"],
-                "plan": state["test_plan"],
+                "plan": state["latest_plan_chunk"], 
                 "code": state["code_under_test"],
                 "previous_test_code": base_code
             }
