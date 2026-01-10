@@ -26,7 +26,7 @@ def parse_coverage_percent(output: str) -> int:
 
 def run_pytest(target_module, generated_tests):
 
-    with open("tmp_test.py", "w") as f:
+    with open("tmp_test.py", "w",encoding="utf-8") as f:
         f.write(generated_tests)
 
     cmd = [
