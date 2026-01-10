@@ -1,0 +1,9 @@
+
+experiment:
+  type: "single_agent"
+  name: "step1_single_gpt4_baseline"
+  input_path: "data/input_code"
+
+llm:
+  model: "openai/gpt-oss-120b" 
+  temperature: 0.0

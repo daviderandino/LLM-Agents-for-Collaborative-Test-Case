@@ -1,0 +1,13 @@
+experiment:
+  type: "collaborative_agents"
+  name: "step2_collaborative_strong"
+  input_path: "data/input_code"
+
+llm:
+  # Both roles played by the same model used in RQ1 Baseline
+  planner_model: "openai/gpt-oss-20b"
+  generator_model: "openai/gpt-oss-20b"
+  temperature: 0.2
+
+agent:
+  max_iterations: 5 # Critical: Collaboration needs time to refine

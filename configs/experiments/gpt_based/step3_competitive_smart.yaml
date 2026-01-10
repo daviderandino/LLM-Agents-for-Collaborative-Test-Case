@@ -1,0 +1,14 @@
+experiment:
+  type: "competitive_agents"
+  name: "rq3_competitive_clash"
+  input_path: "data/input_code"
+
+llm:
+  planner_model: "openai/gpt-oss-120b"
+  generator_model_1: "openai/gpt-oss-120b"
+  generator_model_2: "llama-3.3-70b-versatile" 
+  temperature: 0.2
+
+agent:
+  max_iterations: 8 # More iterations allow for a longer "tennis match" of improvements
+
