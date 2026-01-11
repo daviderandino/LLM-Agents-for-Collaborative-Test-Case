@@ -6,6 +6,7 @@ from pathlib import Path
 from src.utils.file_manager import obtain_import_module_str, read_text
 from src.utils.code_parser import clean_llm_python, syntax_check
 from src.utils.pytest_runner import run_pytest
+from src.utils.mutmut_runner import get_mutation_score
 
 
 # Simple ANSI color helper for terminal prints
@@ -585,7 +586,7 @@ class MultiAgentCompetitiveGraph:
         return END
 
     def invoke(self):
-        final_state = self.graph.invoke(self.initial_state)
+        final_state = self.graph.invoke(self.initial_state) 
 
         output_filename = f"test_{Path(final_state['input_file_path']).stem}.py"
         output_file_path = (
@@ -598,5 +599,10 @@ class MultiAgentCompetitiveGraph:
 
         with open(str(output_file_path / output_filename), "w") as f:
             f.write(final_state["generated_tests"])
+
+        final_state["mutation_score_percent"] = get_mutation_score(
+            source_file=final_state['input_file_path'],
+            test_file=str(output_file_path),
+        )
 
         return final_state
