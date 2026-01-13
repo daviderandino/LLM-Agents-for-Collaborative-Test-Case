@@ -1,7 +1,0 @@
-experiment:
-  type: "single_agent"
-  name: "single_agent-oss"
-  input_path: "data/input_code"
-
-llm:
-  model: "openai/gpt-oss-20b"
