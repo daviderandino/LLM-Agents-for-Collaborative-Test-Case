@@ -4,9 +4,9 @@ experiment:
   input_path: "data/input_code"
 
 llm:
-  planner_model: "meta-llama/llama-3.3-70b-versatile"
+  planner_model: "llama-3.3-70b-versatile"
   generator_model_1: "openai/gpt-oss-120b"
-  generator_model_2: "meta-llama/llama-3.3-70b-versatile" 
+  generator_model_2: "llama-3.3-70b-versatile" 
   temperature: 0.2
 
 agent:

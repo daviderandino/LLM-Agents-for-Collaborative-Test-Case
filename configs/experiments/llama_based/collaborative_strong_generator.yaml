@@ -4,7 +4,7 @@ experiment:
   input_path: "data/input_code" 
 
 llm:
-  planner_model: "meta-llama/llama-3.3-70b-versatile"
+  planner_model: "llama-3.3-70b-versatile"
   generator_model: "meta-llama/llama-4-scout-17b-16e-instruct"
   temperature: 0.2
 
