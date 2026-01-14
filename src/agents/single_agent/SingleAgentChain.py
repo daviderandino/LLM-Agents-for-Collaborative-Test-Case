@@ -109,9 +109,20 @@ While generating the output, you have to follow those three instructions:
         with open(str(output_file_path / output_filename), "w") as f:
             f.write(self.cleaned_tests)
         
-        chain_result["mutation_score_percent"] = get_mutation_score(
+        mutation_result = get_mutation_score(
             source_file=self.input_file_path,
             test_file=str(output_file_path),
         )
+
+        if mutation_result is not None:
+            chain_result["mutation_score_percent"] = mutation_result["mutation_score_percent"]
+            chain_result["mutation_killed"] = mutation_result["mutation_killed"]
+            chain_result["mutation_survived"] = mutation_result["mutation_survived"]
+            chain_result["mutation_success"] = True
+        else:
+            chain_result["mutation_score_percent"] = None
+            chain_result["mutation_killed"] = None
+            chain_result["mutation_survived"] = None
+            chain_result["mutation_success"] = False
 
         return chain_result

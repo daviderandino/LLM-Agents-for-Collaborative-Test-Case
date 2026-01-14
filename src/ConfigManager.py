@@ -12,8 +12,8 @@ class ConfigManager:
             self._merge_configs(self.config, overrides)
 
         # Create a unique ID for this run for result tracking
-        self.run_id = os.path.splitext(os.path.basename(experiment_file or "default"))[0]  
-        self.results_dir = os.path.join("results", self.run_id)
+        self.experiment_name = os.path.splitext(os.path.basename(experiment_file or "default"))[0]  
+        self.results_dir = os.path.join("results", self.experiment_name + '_' + datetime.now().strftime("%Y%m%d_%H%M%S"))
         os.makedirs(self.results_dir, exist_ok=True)
 
     def _load_yaml(self, path):

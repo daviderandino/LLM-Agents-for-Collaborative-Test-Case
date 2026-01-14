@@ -71,7 +71,11 @@ def get_mutation_score(source_file: str, test_file: str) -> Optional[float]:
             return 0.0
             
         score = (killed / total_mutants) * 100
-        return round(score, 2)
+        return {
+            "mutation_score_percent": round(score, 2),
+            "mutation_killed": killed,
+            "mutation_survived": survived
+        }
 
     except (subprocess.TimeoutExpired, Exception):
         # In caso di timeout o eccezioni impreviste, ritorna

@@ -2,12 +2,14 @@ import json
 import os
 import csv
 from pathlib import Path
+from datetime import datetime
 
 def save_run_metrics(config_manager, results):
 
     metrics = {
-        "run_id": config_manager.run_id, # compaiono anche i nomi dei modelli
-        "timestamp": config_manager.run_id, # Simplified
+        "run_id": config_manager.experiment_name + '_'+ datetime.now().isoformat(timespec="seconds"), # compaiono anche i nomi dei modelli
+        "experiment_name": config_manager.experiment_name,
+        "timestamp": datetime.now().isoformat(timespec="seconds"),
         "temperature": config_manager.get('llm', 'temperature'),
         "strict_imports": config_manager.get('agent', 'enforce_strict_imports'),
         "results": results,
@@ -36,6 +38,7 @@ def _append_to_master_csv(metrics):
     # Flatten metrics for CSV
     flat_metrics = {
         "run_id": metrics["run_id"],
+        "experiment_name": metrics["experiment_name"],
         "timestamp": metrics["timestamp"],
         "temperature": metrics["temperature"],
         "passed_tests": metrics["total_passed_tests"],

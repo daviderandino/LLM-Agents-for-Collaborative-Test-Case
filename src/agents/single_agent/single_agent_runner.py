@@ -28,5 +28,7 @@ def run_single_agent(
         "n_failed_tests": final_state.get("n_failed_tests", 0),
         "iterations": final_state.get("iterations", 0),
         "total_tokens": final_state.get("total_tokens", 0),
-        "mutation_score_percent": final_state.get("mutation_score_percent", None)
+        "mutation_score_percent": final_state.get("mutation_score_percent", None),
+        "mutation_killed": final_state.get("mutation_killed", None),
+        "mutation_survived": final_state.get("mutation_survived", None)
     }
