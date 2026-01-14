@@ -1,6 +1,6 @@
 experiment:
   type: "competitive_agents"
-  name: "competitive_smart_planner_dumb_workers."
+  name: "competitive_smart"
   input_path: "data/input_code"
 
 llm:
