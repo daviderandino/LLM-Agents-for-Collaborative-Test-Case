@@ -1,7 +1,7 @@
 from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
 
-from src.utils.code_parser import clean_llm_python, syntax_check
+from src.utils.code_parser import clean_llm_python, syntax_check, remove_failed_tests
 from src.utils.pytest_runner import run_pytest
 from src.utils.file_manager import obtain_import_module_str, read_text
 from src.utils.mutmut_runner import get_mutation_score
@@ -106,6 +106,11 @@ While generating the output, you have to follow those three instructions:
 
         output_file_path.mkdir(parents=True, exist_ok=True)
         
+        # --- CLEANUP STEP: Remove failed tests if any ---
+        if chain_result["n_failed_tests"] > 0:
+            print(f"--- CLEANUP: Removing {chain_result['n_failed_tests']} failed tests ---")
+            self.cleaned_tests = remove_failed_tests(self.cleaned_tests, chain_result["failed_tests_infos"])
+
         with open(str(output_file_path / output_filename), "w") as f:
             f.write(self.cleaned_tests)
         
