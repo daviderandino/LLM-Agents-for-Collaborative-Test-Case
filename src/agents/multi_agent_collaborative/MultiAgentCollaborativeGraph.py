@@ -2,6 +2,7 @@ from typing import TypedDict
 from langgraph.graph import StateGraph, END
 from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
+import logging
 
 from src.utils.file_manager import obtain_import_module_str, read_text
 from src.utils.code_parser import clean_llm_python, syntax_check
@@ -59,6 +60,7 @@ class MultiAgentCollaborativeGraph:
         self.llm_planner = llm_planner
         self.llm_generator = llm_generator
         self.verbose = verbose
+        self.logger = logging.getLogger("Agent")
 
         self.graph = self._build_graph()
 
@@ -113,7 +115,7 @@ class MultiAgentCollaborativeGraph:
 
         # SCENARIO 1: PRIMA GENERAZIONE (Cold Start)
         if current_iter == 0:
-            print(color_text(f"\n--- STEP 1.1: PLANNING FROM SCRATCH ---", "cyan"))
+            self.logger.info(color_text(f"\n--- STEP 1.1: PLANNING FROM SCRATCH ---", "cyan"))
 
             messages = [
                 (
@@ -167,8 +169,7 @@ class MultiAgentCollaborativeGraph:
             current_tokens = state.get("total_tokens", 0)
 
             if self.verbose: 
-                print(color_text(f"RESPONSE: {response.content}", "magenta"))
-            
+                self.logger.debug(color_text(f"RESPONSE: {response.content}", "magenta"))
             return {
                 "test_plan": response.content,
                 "latest_plan_chunk": response.content,
@@ -178,7 +179,7 @@ class MultiAgentCollaborativeGraph:
         # SCENARIO 2: RE-PLANNING (Gap Filling con Context)
         else:
             cov = state.get("coverage_percent", 0)
-            print(color_text(
+            self.logger.info(color_text(
                     f"--- STEP 1.2: RE-PLANNING (Current Coverage: {cov}%) ---",
                     "yellow"
                 )
@@ -266,7 +267,7 @@ class MultiAgentCollaborativeGraph:
                 updated_full_plan = old_plan_base + ", " + new_plan_fragment + "]"
 
             if self.verbose:
-                print(color_text(f"RESPONSE FRAGMENT: {new_plan_fragment}", "magenta"))
+                self.logger.debug(color_text(f"RESPONSE FRAGMENT: {new_plan_fragment}", "magenta"))
 
             return {
                 "test_plan": updated_full_plan,
@@ -417,7 +418,7 @@ class MultiAgentCollaborativeGraph:
         # ---------------------------------------------------------
         # 2. ESECUZIONE
         # ---------------------------------------------------------
-        print(color_text(step_name, color))
+        self.logger.info(color_text(step_name, color))
 
         prompt = ChatPromptTemplate.from_messages(messages=messages)
         chain = prompt | self.llm_generator
@@ -437,10 +438,10 @@ class MultiAgentCollaborativeGraph:
         final_test_code = ""
 
         if is_append_mode:
-            if self.verbose: print(color_text(f"APPENDING FRAGMENT:\n{cleaned_tests}", "magenta"))
+            if self.verbose: self.logger.debug(color_text(f"APPENDING FRAGMENT:\n{cleaned_tests}", "magenta"))
             final_test_code = state["generated_tests"] + "\n\n" + cleaned_tests
         else:
-            if self.verbose: print(color_text(f"GENERATED CODE:\n{cleaned_tests}", "magenta"))
+            if self.verbose: self.logger.debug(color_text(f"GENERATED CODE:\n{cleaned_tests}", "magenta"))
             final_test_code = cleaned_tests
 
         return {
@@ -452,13 +453,13 @@ class MultiAgentCollaborativeGraph:
         """
         Salva il file, esegue pytest e ne processa l'output.
         """
-        print(color_text("--- STEP 3: EXECUTING PYTEST ---", "cyan"))
+        self.logger.info(color_text("--- STEP 3: EXECUTING PYTEST ---", "cyan"))
 
         ok, err = syntax_check(state["generated_tests"])
 
         if not ok:
-            print(color_text(f"--- EXECUTION RESULT: Syntax Error ---", "red"))
-            if self.verbose: print(err)
+            self.logger.error(color_text(f"--- EXECUTION RESULT: Syntax Error ---", "red"))
+            if self.verbose: self.logger.debug(err)
             return {
                 "error": err,
                 "syntax_error": True,
@@ -473,8 +474,8 @@ class MultiAgentCollaborativeGraph:
         report = run_pytest(state["target_module"], state["generated_tests"])
 
         if report["crash"] == "yes":
-            print(color_text(f"--- EXECUTION RESULT: Pytest Crash ---", "red"))
-            if self.verbose: print(report["error_summary"])
+            self.logger.error(color_text(f"--- EXECUTION RESULT: Pytest Crash ---", "red"))
+            if self.verbose: self.logger.debug(report["error_summary"])
             return {
                 "error": report["error_summary"],
                 "syntax_error": False,
@@ -486,13 +487,13 @@ class MultiAgentCollaborativeGraph:
                 "iterations": state["iterations"] + 1,
             }
 
-        print(color_text(
+        self.logger.info(color_text(
                 f"--- EXECUTION RESULT: Coverage={report['coverage']}% {report['passed']} Passed {report['failed']} Failed ---",
                 "green"
             )
         )
         if self.verbose:
-            print(f"{report.get('failed_tests_infos','')}")
+            self.logger.debug(f"{report.get('failed_tests_infos','')}")
 
         return {
             "error": "",

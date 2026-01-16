@@ -1,5 +1,6 @@
 from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
+import logging
 
 from src.utils.code_parser import clean_llm_python, syntax_check
 from src.utils.pytest_runner import run_pytest
@@ -16,6 +17,7 @@ class SingleAgentChain:
         self.llm = llm
         self.target_module = obtain_import_module_str(input_file_path)
         self.code_under_test = read_text(input_file_path)
+        self.logger = logging.getLogger("Agent")
 
 
     def _feed_the_chain(self):
@@ -57,7 +59,7 @@ While generating the output, you have to follow those three instructions:
         ok, err = syntax_check(self.generated_tests)
 
         if not ok:
-            print(f"--- EXECUTION RESULT: Syntax Error ---")
+            self.logger.error("--- EXECUTION RESULT: Syntax Error ---")
             return {
                 "error": err,
                 "failed_tests_infos": '',
@@ -70,7 +72,7 @@ While generating the output, you have to follow those three instructions:
         report = run_pytest(self.target_module, self.generated_tests)
 
         if report["crash"] == 'yes':
-            print(f"--- EXECUTION RESULT: Pytest Crash ---")
+            self.logger.error("--- EXECUTION RESULT: Pytest Crash ---")
 
             return {
                 "error": report["error_summary"],
@@ -81,7 +83,7 @@ While generating the output, you have to follow those three instructions:
                 "total_tokens": tokens
             }
         
-        print(f"--- EXECUTION RESULT: Coverage={report['coverage']}% {report['passed']} Passed {report['failed']} Failed ---")
+        self.logger.info(f"--- EXECUTION RESULT: Coverage={report['coverage']}% {report['passed']} Passed {report['failed']} Failed ---")
         
         return {
             "error": '',

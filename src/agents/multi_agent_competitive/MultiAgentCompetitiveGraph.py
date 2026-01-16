@@ -2,6 +2,7 @@ from typing import TypedDict
 from langgraph.graph import StateGraph, END
 from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
+import logging
 
 from src.utils.file_manager import obtain_import_module_str, read_text
 from src.utils.code_parser import clean_llm_python, syntax_check
@@ -65,6 +66,7 @@ class MultiAgentCompetitiveGraph:
         self.llm_generator_1 = llm_generator_1
         self.llm_generator_2 = llm_generator_2
         self.verbose = verbose
+        self.logger = logging.getLogger("Agent")
 
         self.graph = self._build_graph()
 
@@ -121,7 +123,7 @@ class MultiAgentCompetitiveGraph:
 
         # SCENARIO 1: PRIMA GENERAZIONE (Cold Start)
         if current_iter == 0:
-            print(color_text(f"\n--- STEP 1.1: PLANNING FROM SCRATCH ---", "cyan"))
+            self.logger.info(color_text(f"\n--- STEP 1.1: PLANNING FROM SCRATCH ---", "cyan"))
 
             messages = [
                 (
@@ -175,8 +177,7 @@ class MultiAgentCompetitiveGraph:
             current_tokens = state.get("total_tokens", 0)
 
             if self.verbose: 
-                print(color_text(f"RESPONSE: {response.content}", "magenta"))
-            
+                self.logger.debug(color_text(f"RESPONSE: {response.content}", "magenta"))
             return {
                 "test_plan": response.content,
                 "latest_plan_chunk": response.content,
@@ -186,7 +187,7 @@ class MultiAgentCompetitiveGraph:
         # SCENARIO 2: RE-PLANNING (Gap Filling con Context)
         else:
             cov = state.get("coverage_percent", 0)
-            print(color_text(
+            self.logger.info(color_text(
                     f"--- STEP 1.2: RE-PLANNING (Current Coverage: {cov}%) ---",
                     "yellow"
                 )
@@ -274,7 +275,7 @@ class MultiAgentCompetitiveGraph:
                 updated_full_plan = old_plan_base + ", " + new_plan_fragment + "]"
 
             if self.verbose:
-                print(color_text(f"RESPONSE FRAGMENT: {new_plan_fragment}", "magenta"))
+                self.logger.debug(color_text(f"RESPONSE FRAGMENT: {new_plan_fragment}", "magenta"))
 
             return {
                 "test_plan": updated_full_plan,
@@ -283,7 +284,7 @@ class MultiAgentCompetitiveGraph:
             }
 
     def _gen_wrapper_1(self, state: AgentState):
-        print(color_text("--- DEV 1 WORKING ---", "cyan"))
+        self.logger.info(color_text("--- DEV 1 WORKING ---", "cyan"))
         result_code, tokens = self._generation_logic(state, self.llm_generator_1, "DEV 1")
         return {
             "candidate_tests_1": result_code,
@@ -291,7 +292,7 @@ class MultiAgentCompetitiveGraph:
         }
     
     def _gen_wrapper_2(self, state: AgentState):
-        print(color_text("--- DEV 2 WORKING ---", "cyan"))
+        self.logger.info(color_text("--- DEV 2 WORKING ---", "cyan"))
         result_code, tokens = self._generation_logic(state, self.llm_generator_2, "DEV 2")
         return {
             "candidate_tests_2": result_code,
@@ -447,7 +448,7 @@ class MultiAgentCompetitiveGraph:
         # ---------------------------------------------------------
         # 2. ESECUZIONE
         # ---------------------------------------------------------
-        print(color_text(step_name, color))
+        self.logger.info(color_text(step_name, color))
 
         prompt = ChatPromptTemplate.from_messages(messages=messages)
         chain = prompt | llm
@@ -466,10 +467,10 @@ class MultiAgentCompetitiveGraph:
         final_test_code = ""
 
         if is_append_mode:
-            if self.verbose: print(color_text(f"APPENDING FRAGMENT:\n{cleaned_tests}", "magenta"))
+            if self.verbose: self.logger.debug(color_text(f"APPENDING FRAGMENT:\n{cleaned_tests}", "magenta"))
             final_test_code = base_code + "\n\n" + cleaned_tests
         else:
-            if self.verbose: print(color_text(f"GENERATED CODE:\n{cleaned_tests}", "magenta"))
+            if self.verbose: self.logger.debug(color_text(f"GENERATED CODE:\n{cleaned_tests}", "magenta"))
             final_test_code = cleaned_tests
 
         return final_test_code, tokens
@@ -480,7 +481,7 @@ class MultiAgentCompetitiveGraph:
         Sceglie il migliore basandosi sulla Coverage.
         Aggiorna 'generated_tests' con il vincitore.
         """
-        print(color_text("--- STEP 3: EXECUTING PYTEST & COMPARING CANDIDATES---", "cyan"))
+        self.logger.info(color_text("--- STEP 3: EXECUTING PYTEST & COMPARING CANDIDATES---", "cyan"))
         
         # Accumulate tokens from the developers
         current_total = state.get("total_tokens", 0)
@@ -514,8 +515,8 @@ class MultiAgentCompetitiveGraph:
         res1 = evaluate_candidate(state["candidate_tests_1"])
         res2 = evaluate_candidate(state["candidate_tests_2"])
 
-        print(f"Dev 1 -> Valid: {res1['valid']}, Cov: {res1['coverage']}%, Fail: {res1['failed']}")
-        print(f"Dev 2 -> Valid: {res2['valid']}, Cov: {res2['coverage']}%, Fail: {res2['failed']}")
+        self.logger.info(f"Dev 1 -> Valid: {res1['valid']}, Cov: {res1['coverage']}%, Fail: {res1['failed']}")
+        self.logger.info(f"Dev 2 -> Valid: {res2['valid']}, Cov: {res2['coverage']}%, Fail: {res2['failed']}")
 
         winner_code = ""
         winner_res = {}
@@ -554,7 +555,7 @@ class MultiAgentCompetitiveGraph:
                     winner_res = res2
                     winner_name = "Dev 2 (Tie-Break Failures)"
 
-        print(color_text(f"🏆 WINNER: {winner_name}", "green"))
+        self.logger.info(color_text(f"🏆 WINNER: {winner_name}", "green"))
 
         return {
             "generated_tests": winner_code, 
