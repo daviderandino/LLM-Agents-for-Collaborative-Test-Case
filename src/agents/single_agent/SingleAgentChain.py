@@ -105,11 +105,15 @@ While generating the output, you have to follow those three instructions:
         )
 
         output_file_path.mkdir(parents=True, exist_ok=True)
-        
         # --- CLEANUP STEP: Remove failed tests if any ---
         if chain_result["n_failed_tests"] > 0:
             print(f"--- CLEANUP: Removing {chain_result['n_failed_tests']} failed tests ---")
             self.cleaned_tests = remove_failed_tests(self.cleaned_tests, chain_result["failed_tests_infos"])
+            # Recalculate coverage after cleanup
+            report = run_pytest(self.target_module, self.cleaned_tests)
+            chain_result["coverage_percent"] = report["coverage"]
+            chain_result["n_passed_tests"] = report["passed"]
+            chain_result["n_failed_tests"] = report["failed"]
 
         with open(str(output_file_path / output_filename), "w") as f:
             f.write(self.cleaned_tests)
