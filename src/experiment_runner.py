@@ -14,7 +14,7 @@ from src.tracker import save_run_metrics
 from src.agents.single_agent.single_agent_runner import run_single_agent
 from src.agents.multi_agent_collaborative.multi_agent_collaborative_runner import run_collaborative_agents
 from src.agents.multi_agent_competitive.multi_agent_competitive_runner import run_competitive_agents
-from utils.mutmut_runner import get_mutation_metrics
+from src.utils.mutmut_runner import get_mutation_metrics
 
 
 def get_files_to_process(input_path_str):
@@ -88,7 +88,7 @@ def run_experiment(cfg):
                 logger.error(f"Unknown strategy: {strategy}")
                 continue
 
-            if metrics:
+            if metrics and metrics["n_failed_tests"]==0:
                 # Costruisci il path del test file
                 test_filename = f"test_{input_file_path.stem}.py"
                 test_file_path = Path("data") / "output_tests" / output_dir / test_filename
@@ -109,13 +109,22 @@ def run_experiment(cfg):
                     metrics["mutation_killed"] = None
                     metrics["mutation_survived"] = None
 
-                results_summary.append(
+
+            else:
+                
+                #TODO: sanitize test file 
+                
+                logger.warning(f"⚠️ Skipping mutation testing for {filename}: test execution produced failures")
+            
+            results_summary.append(
                     {
                         "file": filename, 
                         "status": "success", 
                         "metrics": metrics
                     }
                 )
+
+            logger.info(f"Metrics for {filename}: {metrics}")
 
         except Exception as e:
             logger.error(f"Failed to process {filename}: {e}", exc_info=True)

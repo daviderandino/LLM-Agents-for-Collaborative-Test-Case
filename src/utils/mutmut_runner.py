@@ -38,17 +38,21 @@ def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional
         if result.returncode not in [0, 2]:
             return None
         
-        # Leggi risultati da mutmut results
-        result_cmd = [sys.executable, "-m", "mutmut", "results", "--json"]
-        result_output = subprocess.run(result_cmd, capture_output=True, text=True, env=env)
+        # Conta i mutanti killed usando mutmut result-ids
+        killed_cmd = [sys.executable, "-m", "mutmut", "result-ids", "killed"]
+        killed_output = subprocess.run(killed_cmd, capture_output=True, text=True, env=env)
         
-        if result_output.returncode != 0:
+        # Conta i mutanti survived
+        survived_cmd = [sys.executable, "-m", "mutmut", "result-ids", "survived"]
+        survived_output = subprocess.run(survived_cmd, capture_output=True, text=True, env=env)
+        
+        if killed_output.returncode != 0 or survived_output.returncode != 0:
             return None
         
-        data = json.loads(result_output.stdout)
-        total = len(data)
-        survived = sum(1 for m in data.values() if m["status"] == "survived")
-        killed = total - survived
+        # Conta il numero di IDs (separati da spazi)
+        killed = len(killed_output.stdout.strip().split()) if killed_output.stdout.strip() else 0
+        survived = len(survived_output.stdout.strip().split()) if survived_output.stdout.strip() else 0
+        total = killed + survived
         
         score = (killed / total * 100) if total > 0 else 0.0
         
@@ -58,6 +62,6 @@ def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional
             "mutation_survived": survived
         }
     
-    except (subprocess.TimeoutExpired, json.JSONDecodeError, Exception):
+    except (subprocess.TimeoutExpired, Exception):
         return None
     
