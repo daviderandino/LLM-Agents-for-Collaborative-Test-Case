@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
 
 from src.utils.file_manager import obtain_import_module_str, read_text
-from src.utils.code_parser import clean_llm_python, syntax_check
+from src.utils.code_parser import clean_llm_python, syntax_check, remove_failed_tests
 from src.utils.pytest_runner import run_pytest
 
 
@@ -69,7 +69,7 @@ class MultiAgentCollaborativeGraph:
             "target_module": obtain_import_module_str(input_file_path),
             "code_under_test": code,
             "test_plan": "",
-            "latest_plan_chunk": "", # Initialize empty
+            "latest_plan_chunk": "", 
             "generated_tests": "",
             "error": "",
             "syntax_error": False,
@@ -529,6 +529,15 @@ class MultiAgentCollaborativeGraph:
         )
 
         output_file_path.mkdir(parents=True, exist_ok=True)
+        
+        # --- CLEANUP STEP: Remove failed tests if any ---
+        if final_state["n_failed_tests"] > 0:
+            print(color_text(f"--- CLEANUP: Removing {final_state['n_failed_tests']} failed tests ---", "yellow"))
+            final_state["generated_tests"] = remove_failed_tests(final_state["generated_tests"], final_state["failed_tests_infos"])
+            report = run_pytest(self.target_module, self.cleaned_tests)
+            final_state["coverage_percent"] = report["coverage"]
+            final_state["n_passed_tests"] = report["passed"]
+            final_state["n_failed_tests"] = report["failed"]
 
         with open(str(output_file_path / output_filename), "w") as f:
             f.write(final_state["generated_tests"])

@@ -5,8 +5,8 @@ experiment:
 
 llm:
   # Both roles played by the same model used in RQ1 Baseline
-  planner_model: meta-llama/"llama-3.3-70b-versatile"
-  generator_model: "meta-llama/llama-3.3-70b-versatile"
+  planner_model: "llama-3.3-70b-versatile"
+  generator_model: "llama-3.3-70b-versatile"
   temperature: 0.2
 
 agent:
