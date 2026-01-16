@@ -25,34 +25,6 @@ def save_run_metrics(config_manager, results):
         json.dump(metrics, f, indent=4)
         
     # Append to a master CSV for easy Excel/Pandas analysis
-    _append_to_master_csv(metrics)
+    # _append_to_master_csv(metrics)
     
     print(f"📊 Results saved to {file_path}")
-
-def _append_to_master_csv(metrics):
-    # Logic to append a single line to results/master_log.csv
-    results_dir = Path("results")
-    results_dir.mkdir(parents=True, exist_ok=True)
-    csv_path = results_dir / "master_log.csv"
-    
-    # Flatten metrics for CSV
-    flat_metrics = {
-        "run_id": metrics["run_id"],
-        "experiment_name": metrics["experiment_name"],
-        "timestamp": metrics["timestamp"],
-        "temperature": metrics["temperature"],
-        "passed_tests": metrics["total_passed_tests"],
-        "failed_tests": metrics["total_failed_tests"],
-        "iterations": metrics["total iterations"],
-        "total_tokens": metrics["total_tokens"],
-    }
-    
-    file_exists = csv_path.exists()
-    
-    with open(csv_path, mode='a', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=flat_metrics.keys())
-        if not file_exists:
-            writer.writeheader()
-        writer.writerow(flat_metrics)
-    
-    print(f"📝 Appended metrics to {csv_path}")
