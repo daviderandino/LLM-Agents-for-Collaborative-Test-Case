@@ -38,6 +38,9 @@ def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional
     
     env = os.environ.copy()
     env["PYTHONPATH"] = f"{Path.cwd()}:{env.get('PYTHONPATH', '')}"
+    
+    # Working directory deve essere la root del progetto per trovare setup.cfg
+    project_root = Path.cwd()
 
     cmd = [
         sys.executable, "-m", "mutmut", "run",
@@ -48,18 +51,18 @@ def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional
     ]
     
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=300, env=env)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=300, env=env, cwd=project_root)
         
         if result.returncode not in [0, 2]:
             return None
         
         # Conta i mutanti killed usando mutmut result-ids
         killed_cmd = [sys.executable, "-m", "mutmut", "result-ids", "killed"]
-        killed_output = subprocess.run(killed_cmd, capture_output=True, text=True, env=env)
+        killed_output = subprocess.run(killed_cmd, capture_output=True, text=True, env=env, cwd=project_root)
         
         # Conta i mutanti survived
         survived_cmd = [sys.executable, "-m", "mutmut", "result-ids", "survived"]
-        survived_output = subprocess.run(survived_cmd, capture_output=True, text=True, env=env)
+        survived_output = subprocess.run(survived_cmd, capture_output=True, text=True, env=env, cwd=project_root)
         
         if killed_output.returncode != 0 or survived_output.returncode != 0:
             return None
