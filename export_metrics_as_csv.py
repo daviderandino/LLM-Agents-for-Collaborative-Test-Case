@@ -69,9 +69,9 @@ def main():
     if not RESULTS_DIR.exists():
         raise SystemExit(f"Directory not found: {RESULTS_DIR}")
 
-    metrics_files = sorted(RESULTS_DIR.glob("*/metrics.json"))
+    metrics_files = sorted(RESULTS_DIR.glob("*.json"))
     if not metrics_files:
-        raise SystemExit(f"No files found in: {RESULTS_DIR}/*/metrics.json")
+        raise SystemExit(f"No files found in: {RESULTS_DIR}/*.json")
 
     all_rows: List[Dict[str, Any]] = []
     errors: List[str] = []
@@ -96,7 +96,7 @@ def main():
     print(f"   Rows written: {len(all_rows)}")
 
     if errors:
-        print("\nErrors while processing some metrics.json files:")
+        print("\nErrors while processing some JSON files:")
         for err in errors:
             print(" -", err)
 
