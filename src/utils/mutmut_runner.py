@@ -2,8 +2,20 @@ import subprocess
 import sys
 from pathlib import Path
 import os
-import json
+import shutil
 from typing import Dict, Optional
+
+
+def _clean_mutmut_cache() -> None:
+    """
+    Pulisce la cache di mutmut per evitare risultati stale.
+    """
+    cache_path = Path.cwd() / ".mutmut-cache"
+    if cache_path.exists():
+        if cache_path.is_file():
+            cache_path.unlink()
+        else:
+            shutil.rmtree(cache_path, ignore_errors=True)
 
 
 def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional[Dict]:
@@ -17,6 +29,9 @@ def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional
     Returns:
         Dict con mutation_score_percent, mutation_killed, mutation_survived oppure None se fallisce
     """
+    # Pulisci la cache prima di ogni run per evitare risultati stale
+    _clean_mutmut_cache()
+    
     source_file = Path(source_file_path).resolve()
     test_file = Path(test_file_path).resolve()
     test_dir = test_file.parent

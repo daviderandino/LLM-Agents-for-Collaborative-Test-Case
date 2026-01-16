@@ -17,8 +17,8 @@ class ConfigManager:
         # Generate run_id once at initialization
         self.run_id = self.experiment_name + '_' + datetime.now().isoformat(timespec="seconds")
         
-        self.results_dir = os.path.join("results", self.run_id)
-        os.makedirs(self.results_dir, exist_ok=True)
+        # Salva direttamente in results/ senza creare sottocartelle
+        os.makedirs("results", exist_ok=True)
 
     def _load_yaml(self, path):
         with open(path, 'r') as f:

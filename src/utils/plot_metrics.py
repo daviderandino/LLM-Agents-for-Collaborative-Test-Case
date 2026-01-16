@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 
 def plot_metrics(results_dir='results'):
     """
-    Legge tutte le cartelle dentro 'results', parsa metrics.json 
-    e genera un grafico comparativo.
+    Legge tutti i file JSON dentro 'results' e genera un grafico comparativo.
     """
     
     experiment_data = []
@@ -16,15 +15,13 @@ def plot_metrics(results_dir='results'):
         print(f"Errore: La cartella '{results_dir}' non esiste.")
         return
 
-    # Ordino le cartelle
-    subdirs = sorted([d for d in os.listdir(results_dir) if os.path.isdir(os.path.join(results_dir, d))])
+    # Leggi tutti i file JSON nella cartella results
+    json_files = sorted([f for f in os.listdir(results_dir) if f.endswith('.json')])
 
-    for experiment_name in subdirs:
-        metric_path = os.path.join(results_dir, experiment_name, 'metrics.json')
+    for json_file in json_files:
+        metric_path = os.path.join(results_dir, json_file)
+        experiment_name = json_file.replace('.json', '')
         
-        if not os.path.exists(metric_path):
-            continue
-
         try:
             with open(metric_path, 'r') as f:
                 data = json.load(f)
