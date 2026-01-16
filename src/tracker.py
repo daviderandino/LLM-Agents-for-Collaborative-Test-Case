@@ -7,7 +7,7 @@ from datetime import datetime
 def save_run_metrics(config_manager, results):
 
     metrics = {
-        "run_id": config_manager.experiment_name + '_'+ datetime.now().isoformat(timespec="seconds"), # compaiono anche i nomi dei modelli
+        "run_id": config_manager.run_id,
         "experiment_name": config_manager.experiment_name,
         "timestamp": datetime.now().isoformat(timespec="seconds"),
         "temperature": config_manager.get('llm', 'temperature'),

@@ -5,7 +5,6 @@ import os
 import logging
 from pathlib import Path
 from tqdm import tqdm
-from datetime import datetime
 
 # Config System
 from src.ConfigManager import ConfigManager
@@ -35,7 +34,7 @@ def run_experiment(cfg):
     # 1. Determine Strategy and Settings
     strategy = cfg.get('experiment', 'type')
     input_path = cfg.get('experiment', 'input_path')
-    output_dir = cfg.get('experiment', 'name') + "_" + datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = cfg.run_id  # Use the unique run_id from ConfigManager
     temperature = cfg.get('llm', 'temperature') 
     
     logger.info(f"🚀 Starting Experiment. Strategy: {strategy}")
@@ -117,8 +116,8 @@ def run():
         sys.exit(1)
 
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    # Save config snapshot and run experiment
-    cfg.save_snapshot()
+    
+    # cfg.save_snapshot() disabled snapshot
     results = run_experiment(cfg)
 
     # Save Metrics (Placeholders Filled!)
