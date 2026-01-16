@@ -8,3 +8,6 @@ llm:
   generator_model_1: "meta-llama/llama-4-maverick-17b-128e-instruct"
   generator_model_2: "openai/gpt-oss-20b"
   temperature: 0.2
+
+agent:
+  max_iterations: 5
