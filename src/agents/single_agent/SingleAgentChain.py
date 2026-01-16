@@ -27,10 +27,12 @@ class SingleAgentChain:
 """You are an expert Software Engineer in Test (SDET).
 Your goal is to write a high-quality unit test suite using 'pytest' for the provided Python code.
 
-While generating the output, you have to follow those three instructions:
+While generating the output, you have to follow those instructions:
 - **IMPORTANT**: Import the class or functions to test specifically from the module `{target_module}`. 
     (Example: `from {target_module} import ...`)
-- Write test cases for success scenarios, edge cases, and error handling.
+- Write the **minimum number of test cases** necessary to maximize code coverage. Prioritize coverage over test quantity.
+- Ensure all test cases are **correct and fully functional**. Every test must pass.
+- Cover success scenarios, edge cases, and error handling where relevant to achieving maximum coverage.
 - Output ONLY the raw Python code. Do not include markdown formatting or explanations."""
         ),
         (

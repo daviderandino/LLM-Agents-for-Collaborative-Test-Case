@@ -29,7 +29,7 @@ def color_text(text: str, color: str = "reset") -> str:
     return f"{code}{text}{reset}"
 
 
-# === DEFINIZIONE DELLO STATO DEL GRAFO ===
+# === GRAPH STATE DEFINITION ===
 class AgentState(TypedDict):
     input_file_path: str  
     target_module: str  
@@ -42,7 +42,7 @@ class AgentState(TypedDict):
     candidate_tests_1: str
     candidate_tests_2: str
 
-    # report del vincitore
+    # winner's report
     error: str  
     syntax_error: bool
     pytest_error: bool
@@ -121,7 +121,7 @@ class MultiAgentCompetitiveGraph:
         messages = []
         invoke_args = {}  
 
-        # SCENARIO 1: PRIMA GENERAZIONE (Cold Start)
+        # SCENARIO 1: FIRST GENERATION (Cold Start)
         if current_iter == 0:
             self.logger.info(color_text(f"\n--- STEP 1.1: PLANNING FROM SCRATCH ---", "cyan"))
 
@@ -130,6 +130,7 @@ class MultiAgentCompetitiveGraph:
                     "system",
                     "Role: Senior Python QA Engineer obsessed with 100% Code Coverage.\n"
                     "Task: Dissect the provided code and generate a surgical JSON test plan.\n\n"
+                    "Key Objective: Generate the minimum number of test cases necessary to achieve maximum code coverage.\n\n"
                     "Strategy for Max Coverage:\n"
                     "1. Branch Analysis: Generate a test for every `if`, `elif`, `else` and loop entry/exit.\n"
                     "2. Boundary Values: Test MIN, MAX, MIN-1, MAX+1, ZERO, NONE.\n"
@@ -159,7 +160,7 @@ class MultiAgentCompetitiveGraph:
                     '  {{"id": "T2_ERR", "target": "div", "input": {{"a": 5, "b": 0}}, "expected": "ValueError", "rationale": "Zero division catch"}}\n'
                     "]",
                 ),
-                # INPUT REALE: Solo il codice sorgente
+                # REAL INPUT: Just the source code
                 (
                     "human",
                     "Analyze the following Python code:\n{code}"
@@ -184,7 +185,7 @@ class MultiAgentCompetitiveGraph:
                 "total_tokens": current_tokens + tokens
             }
 
-        # SCENARIO 2: RE-PLANNING (Gap Filling con Context)
+        # SCENARIO 2: RE-PLANNING (Gap Filling with Context)
         else:
             cov = state.get("coverage_percent", 0)
             self.logger.info(color_text(
@@ -199,7 +200,8 @@ class MultiAgentCompetitiveGraph:
                     "Role: Python Coverage Specialist.\n"
                     "Context: The previous test suite failed to achieve 100% coverage.\n"
                     "Objective: Analyze the Source Code AND the Existing Tests to find MISSED logical paths.\n"
-                    "Task: Generate ONLY the new test cases needed to fill the gaps.\n\n"
+                    "Task: Generate ONLY the new test cases needed to fill the gaps.\n"
+                    "Key Constraint: Minimize test count while maximizing coverage - add only essential tests.\n\n"
                     "Strategy for Gap Filling:\n"
                     "1. Deep Analysis: Compare Source Code vs Existing Tests to spot skipped branches.\n"
                     "2. Complex Logic: Focus on compound conditions (AND/OR) and edge boundaries missed by current tests.\n"
@@ -328,6 +330,9 @@ class MultiAgentCompetitiveGraph:
                     "system",
                     "Role: Senior Pytest Engineer."
                     "Task: Convert JSON Test Plan into a production-grade test suite."
+                    "Key Objectives:"
+                    "- Generate the minimum number of test cases necessary to achieve maximum code coverage."
+                    "- Ensure all test cases are correct and fully functional. Every test must pass."
                     "Strict Rules:"
                     "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
                     "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
@@ -367,6 +372,8 @@ class MultiAgentCompetitiveGraph:
                     "- 1. Analyze the Pytest failure report."
                     "- 2. Compare expectations vs actual Source Code behavior."
                     "- 3. ADJUST the test assertions/setup to match the Source Code reality."
+                    "Key Objectives:"
+                    "- Ensure all test cases are correct and fully functional. Every test must pass."
                     "Strict Rules:"
                     "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
                     "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
@@ -398,6 +405,8 @@ class MultiAgentCompetitiveGraph:
                     "system",
                     "Role: Python Code Fixer."
                     "Task: Fix the syntax/runtime error in the provided test file."
+                    "Key Objectives:"
+                    "- Ensure all test cases are correct and fully functional. Every test must pass."
                     "Strict Rules:"
                     "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
                     "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
@@ -426,6 +435,9 @@ class MultiAgentCompetitiveGraph:
                     "system",
                     "Role: Senior Pytest Engineer (Extension Mode)."
                     "Task: Write ONLY the NEW test functions defined in the JSON Plan to append to the existing suite."
+                    "Key Objectives:"
+                    "- Generate the minimum number of test cases necessary to achieve maximum code coverage."
+                    "- Ensure all test cases are correct and fully functional. Every test must pass."
                     "Strict Rules:"
                     "- 1. DO NOT REWRITE ALREADY PASSED TESTS OR RE-IMPORT STATEMENTS."
                     "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."

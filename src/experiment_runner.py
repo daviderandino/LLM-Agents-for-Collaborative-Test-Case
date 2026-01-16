@@ -121,7 +121,7 @@ def run_experiment(cfg):
                     logger.info(f"✓ Cleanup complete. New metrics - Coverage: {metrics['coverage_percent']}%, Passed: {metrics['n_passed_tests']}, Failed: {metrics['n_failed_tests']}")
 
             # --- MUTATION TESTING STEP ---
-            if metrics and metrics["n_failed_tests"] == 0:
+            if metrics: #Note: we are assuming that the prefious if correctly removed failed tests
                 logger.info(f"🧬 Running mutation testing...")
                 mutation_result = get_mutation_metrics(
                     source_file_path=str(input_file_path),
@@ -170,7 +170,7 @@ def run():
         print(f"❌ Could not load config: {e}")
         sys.exit(1)
 
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
     
     # cfg.save_snapshot() disabled snapshot
     results = run_experiment(cfg)
