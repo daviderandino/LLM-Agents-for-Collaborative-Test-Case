@@ -141,6 +141,8 @@ def run():
 
     try:
         cfg = ConfigManager(args.config)
+        if hasattr(cfg, 'run_id') and isinstance(cfg.run_id, str):
+            cfg.run_id = cfg.run_id.replace(":", "-")
     except Exception as e:
         print(f"❌ Could not load config: {e}")
         sys.exit(1)
