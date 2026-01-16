@@ -6,4 +6,4 @@ experiment:
 
 llm:
   model: "openai/gpt-oss-120b" 
-  temperature: 0.0
+  temperature: 0.2
