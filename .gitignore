@@ -8,6 +8,6 @@ report_template/
 .coverage
 /results/*
 !/results/*.json
-/data/output_tests/*
+
 .mutmut-cache
 *.csv
