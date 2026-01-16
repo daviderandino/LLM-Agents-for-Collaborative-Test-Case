@@ -1,7 +1,7 @@
 from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
 
-from src.utils.code_parser import clean_llm_python, syntax_check, remove_failed_tests
+from src.utils.code_parser import clean_llm_python, syntax_check
 from src.utils.pytest_runner import run_pytest
 from src.utils.file_manager import obtain_import_module_str, read_text
 
@@ -52,9 +52,9 @@ While generating the output, you have to follow those three instructions:
         if hasattr(response, 'response_metadata'):
              tokens = response.response_metadata.get('token_usage', {}).get('total_tokens', 0)
 
-        self.cleaned_tests = clean_llm_python(response.content)
+        self.generated_tests = clean_llm_python(response.content)
 
-        ok, err = syntax_check(self.cleaned_tests)
+        ok, err = syntax_check(self.generated_tests)
 
         if not ok:
             print(f"--- EXECUTION RESULT: Syntax Error ---")
@@ -67,7 +67,7 @@ While generating the output, you have to follow those three instructions:
                 "total_tokens": tokens
             }
 
-        report = run_pytest(self.target_module, self.cleaned_tests)
+        report = run_pytest(self.target_module, self.generated_tests)
 
         if report["crash"] == 'yes':
             print(f"--- EXECUTION RESULT: Pytest Crash ---")
@@ -104,17 +104,8 @@ While generating the output, you have to follow those three instructions:
         )
 
         output_file_path.mkdir(parents=True, exist_ok=True)
-        # --- CLEANUP STEP: Remove failed tests if any ---
-        if chain_result["n_failed_tests"] > 0:
-            print(f"--- CLEANUP: Removing {chain_result['n_failed_tests']} failed tests ---")
-            self.cleaned_tests = remove_failed_tests(self.cleaned_tests, chain_result["failed_tests_infos"])
-            # Recalculate coverage after cleanup
-            report = run_pytest(self.target_module, self.cleaned_tests)
-            chain_result["coverage_percent"] = report["coverage"]
-            chain_result["n_passed_tests"] = report["passed"]
-            chain_result["n_failed_tests"] = report["failed"]
 
         with open(str(output_file_path / output_filename), "w") as f:
-            f.write(self.cleaned_tests)
+            f.write(self.generated_tests)
 
         return chain_result

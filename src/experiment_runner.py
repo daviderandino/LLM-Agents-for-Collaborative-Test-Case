@@ -15,6 +15,8 @@ from src.agents.single_agent.single_agent_runner import run_single_agent
 from src.agents.multi_agent_collaborative.multi_agent_collaborative_runner import run_collaborative_agents
 from src.agents.multi_agent_competitive.multi_agent_competitive_runner import run_competitive_agents
 from src.utils.mutmut_runner import get_mutation_metrics
+from src.utils.code_parser import remove_failed_tests
+from src.utils.pytest_runner import run_pytest
 
 
 def get_files_to_process(input_path_str):
@@ -86,14 +88,40 @@ def run_experiment(cfg):
             
             else:
                 logger.error(f"Unknown strategy: {strategy}")
-                continue
+                break
 
-            if metrics and metrics["n_failed_tests"]==0:
-                # Costruisci il path del test file
-                test_filename = f"test_{input_file_path.stem}.py"
-                test_file_path = Path("data") / "output_tests" / output_dir / test_filename
+            # --- Prepare test file path ---
+            test_filename = f"test_{input_file_path.stem}.py"
+            test_file_path = Path("data") / "output_tests" / output_dir / test_filename
+
+            # --- CLEANUP STEP: Remove failed tests if any ---
+            if metrics and metrics["n_failed_tests"] > 0:
+                logger.info(f"🧹 Cleanup: Removing {metrics['n_failed_tests']} failed tests...")
                 
-                # Esegui mutation testing
+                if test_file_path.exists():
+                    with open(str(test_file_path), "r") as f:
+                        test_code = f.read()
+                    
+                    # Remove failed tests
+                    cleaned_code = remove_failed_tests(test_code, metrics["failed_tests_infos"])
+                    
+                    # Recalculate metrics after cleanup
+                    from src.utils.file_manager import obtain_import_module_str
+                    target_module = obtain_import_module_str(str(input_file_path))
+                    report = run_pytest(target_module, cleaned_code)
+                    
+                    # Update metrics
+                    metrics["coverage_percent"] = report["coverage"]
+                    metrics["failed_tests_infos"] = report["failed_tests_infos"]
+                    
+                    # Write the cleaned code back
+                    with open(str(test_file_path), "w") as f:
+                        f.write(cleaned_code)
+                    
+                    logger.info(f"✓ Cleanup complete. New metrics - Coverage: {metrics['coverage_percent']}%, Passed: {metrics['n_passed_tests']}, Failed: {metrics['n_failed_tests']}")
+
+            # --- MUTATION TESTING STEP ---
+            if metrics and metrics["n_failed_tests"] == 0:
                 logger.info(f"🧬 Running mutation testing...")
                 mutation_result = get_mutation_metrics(
                     source_file_path=str(input_file_path),
@@ -108,12 +136,7 @@ def run_experiment(cfg):
                     metrics["mutation_score_percent"] = None
                     metrics["mutation_killed"] = None
                     metrics["mutation_survived"] = None
-
-
             else:
-                
-                #TODO: sanitize test file 
-                
                 logger.warning(f"⚠️ Skipping mutation testing for {filename}: test execution produced failures")
             
             results_summary.append(
