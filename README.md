@@ -16,22 +16,51 @@ GROQ_API_KEY = my_key
 
 ### HOW TO RUN
 
-Open the project root folder, and follow the notebook.
+#### Option 1: Run Experiments via Command Line
+
+```bash
+python src/experiment_runner.py --config configs/experiments/{experiment_name}.yaml
+```
+
+Example:
+```bash
+python src/experiment_runner.py --config configs/experiments/single_gptoss120B.yaml
+```
+
+#### Option 2: Run via Jupyter Notebook
+
+Open and run `experiments.ipynb` to execute experiments interactively.
+
+#### Option 3: Analyze Results
+
+After running experiments:
+
+1. **Export metrics to CSV**:
+   ```bash
+   python export_metrics_as_csv.py
+   ```
+   This creates `all_metrics.csv` with aggregated results.
+
+2. **Run mutation testing** (optional):
+   Open and run `mutation_injection.ipynb` to inject mutations and measure test quality.
+
+3. **View metrics visualization**:
+   Open and run `metrics_aggregation.ipynb` to see aggregated metrics by experiment with charts.
 
 ## PROJECT STRUCTURE
 
 ```
 LLM-Agents-for-Collaborative-Test-Case/
-├── configs/                                            -> yaml di configurazione dei progetti
+├── configs/                                            -> YAML configuration files for projects
 │   └── experiments/
 │       └── ...
 ├── data/
-│   ├── input_code/                                     -> files .py target da testare
-│   └── output_tests/                                   -> test generati
-├── results/                                            -> risultati dei test
+│   ├── input_code/                                     -> Target .py files to test
+│   └── output_tests/                                   -> Generated tests
+├── results/                                            -> Test results (JSON files)
 │   └── ...
 ├── src/
-│   ├── agents/                                         -> architetture agentiche
+│   ├── agents/                                         -> Agent architectures
 │   │   ├── multi_agent_collaborative/
 │   │   │   ├── MultiAgentCollaborativeGraph.py
 │   │   │   └── multi_agent_collaborative_runner.py
@@ -43,38 +72,84 @@ LLM-Agents-for-Collaborative-Test-Case/
 │   │       ├── SingleAgentChain.py
 │   │       └── single_agent_runner.py
 │   ├── utils/
-│   │   ├── llm_factory.py
-│   │   ├── llm_factory.py
-│   │   └── single_agent_runner.py                            
-│   ├── ConfigManager.py                                -> gestione configurazione degli esperimenti
-│   ├── experiment_runner.py                            -> entrypoint per eseguire esperimenti
-│   └── tracker.py                                      -> gestione raccolta stats
-├── experiments.ipynb
+│   │   ├── code_parser.py
+│   │   ├── file_manager.py
+│   │   ├── mutmut_runner.py
+│   │   ├── plot_metrics.py
+│   │   └── pytest_runner.py                            
+│   ├── ConfigManager.py                                -> Experiment configuration management
+│   ├── experiment_runner.py                            -> Entrypoint to run experiments
+│   └── tracker.py                                      -> Stats collection management
+├── experiments.ipynb                                   -> Main experiment notebook
+├── metrics_aggregation.ipynb                           -> Aggregates and visualizes metrics from CSV
+├── mutation_injection.ipynb                            -> Runs mutation testing on generated tests
+├── export_metrics_as_csv.py                            -> Exports results to CSV format
 ├── README.md
 └── requirements.txt
 ```
 
 ## Packages Overview
+
 ### LLM and Agent Management
+- **langchain** / **langchain-core**: For base interaction with LLMs and prompt templates
+- **langgraph**: Framework for agent orchestration with state graphs (replaces manual agent coordination)
+- **python-dotenv**: To securely manage API keys
 
-Framework for agent orchestration. CrewAI excellent for defining specific "roles" (e.g. Generator vs Reviewer), explicitly required.
+### Testing and Evaluation
+- **pytest**: The standard framework for running generated tests
+- **pytest-cov**: Plugin to calculate line/branch code coverage
+- **mutmut**: For mutation testing (verify if tests "kill" mutants - artificially injected bugs)
 
-**langchain** / **langchain-openai**: For base interaction with LLMs.
+### Data Analysis & Visualization
+- **pandas**: To organize and aggregate metric results
+- **matplotlib**: To create comparison charts and visualizations
+- **numpy**: For numerical computations and statistics
 
-**python-dotenv**: To securely manage API keys.
+### Configuration
+- **PyYAML**: For loading experiment configuration files
 
-### Testing and Evaluation (Minimum Requirements)
+## Output & Metrics
 
-**pytest**: The standard framework for running generated tests.
+### Results Directory Structure
+Each experiment creates a JSON file in `results/` with:
+- `run_id`: Unique identifier (experiment_name + timestamp)
+- `experiment_name`: Name of the configuration used
+- `timestamp`: When the experiment was run
+- `temperature`: LLM temperature parameter
+- `results[]`: Array containing per-file results:
+  - `file`: Source file name
+  - `status`: success/failure
+  - `metrics`:
+    - `coverage_percent`: Line coverage percentage
+    - `mutation_score_percent`: Mutation test success rate
+    - `mutation_killed`: Number of mutations killed by tests
+    - `mutation_survived`: Number of undetected mutations
+    - `total_tokens`: LLM tokens used
 
-**pytest-cov**: Plugin to calculate line/branch coverage.
+### Analysis Notebooks
+- **metrics_aggregation.ipynb**: Aggregates metrics by experiment_name, shows mean/std for coverage, mutation score, and tokens
+- **mutation_injection.ipynb**: Runs mutation testing where missing, adds mutation metrics to results
 
-**mutmut** or **cosmic-ray**: For mutation testing (verify if tests "kill" mutants, i.e., if they find artificially introduced bugs).
+### CSV Export
+`export_metrics_as_csv.py` generates `all_metrics.csv` for easy analysis in Excel/Pandas
 
-### Data Analysis
-**pandas**: To organize metric results.
+## Agent Architectures
 
-**matplotlib** / **seaborn**: To create graphs for the report
+### Single Agent
+- One LLM generates all tests from scratch
+- Baseline for comparison
+
+### Multi-Agent Collaborative
+- **Planner**: Creates test plan JSON
+- **Developer**: Generates test code from plan
+- **Executor**: Runs tests and measures coverage
+- **Feedback Loop**: Re-plans to fill coverage gaps
+
+### Multi-Agent Competitive
+- **Planner**: Creates test plan
+- **Developer 1 & 2**: Simultaneously generate different test implementations
+- **Executor**: Runs both and selects best based on coverage/quality
+- Strategy focuses on diverse test generation approaches
 
 --------------
 

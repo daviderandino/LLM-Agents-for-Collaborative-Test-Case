@@ -17,7 +17,7 @@ class ConfigManager:
         # Generate run_id once at initialization
         self.run_id = self.experiment_name + '_' + datetime.now().isoformat(timespec="seconds")
         
-        # Salva direttamente in results/ senza creare sottocartelle
+        # Save directly in results/ without creating subdirectories
         os.makedirs("results", exist_ok=True)
 
     def _load_yaml(self, path):
@@ -34,11 +34,6 @@ class ConfigManager:
 
     def get(self, section, key):
         return self.config.get(section, {}).get(key)
-        
-    def save_snapshot(self):
-        """Save the exact config used for this run into the results folder."""
-        with open(os.path.join(self.results_dir, 'config_snapshot.yaml'), 'w') as f:
-            yaml.dump(self.config, f)
 
 # Usage Example:
 # cfg = ConfigManager('configs/experiments/aggressive.yaml')

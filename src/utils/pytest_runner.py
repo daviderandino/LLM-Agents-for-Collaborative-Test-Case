@@ -54,27 +54,27 @@ def analyze_pytest_output(stdout, stderr, exit_code):
         "coverage": 0,
         "passed": 0,
         "failed": 0,
-        "failed_tests_infos": '',     # Lista di stringhe "FAILED nome - errore"
-        "error_summary": ''           # Usato solo se status == crash
+        "failed_tests_infos": '',     # List of "FAILED name - error" strings
+        "error_summary": ''           # Used only if status == crash
     }
 
-    # è difficile che pytest proprio crashi
+    # It's hard for pytest to actually crash
     if exit_code > 1:
         report["crash"] = "yes"
         report["error_summary"] = stderr
         return report
 
-    # coverage in stdout -> pytest è stato eseguito con successo
+    # coverage in stdout -> pytest was executed successfully
     cov_match = re.search(r"^TOTAL\s+.*?\s+(\d+)%\s*$", stdout, re.MULTILINE)
 
     if cov_match:
-        # Se ha trovato la riga, estrai il numero
+        # If found the line, extract the number
         report["coverage"] = int(cov_match.group(1))
     else:
-        # Se NON l'ha trovata (es. test falliti male), metti 0 e non crashare
+        # If NOT found (e.g. badly failed tests), set to 0 and don't crash
         report["coverage"] = 0
 
-    # estraiamo i test falliti
+    # Extract the failed tests
     fail_pattern = r"(FAILED|ERROR)\s+.*?::(\S+)\s+(?:-\s+)?(.*)"
     
     failed_tests = []
@@ -82,22 +82,22 @@ def analyze_pytest_output(stdout, stderr, exit_code):
     for line in stdout.splitlines():
         clean_line = line.strip()
         
-        # CORREZIONE 1: Controlliamo sia FAILED che ERROR
+        # FIX 1: Check both FAILED and ERROR
         if clean_line.startswith(("FAILED", "ERROR")):
             match = re.search(fail_pattern, clean_line)
             if match:
-                # CORREZIONE 2: Indici aggiornati
-                status = match.group(1)    # "FAILED" o "ERROR"
-                test_name = match.group(2) # Il nome del test
-                error_msg = match.group(3) # Il resto della riga
+                # FIX 2: Updated indices
+                status = match.group(1)    # "FAILED" or "ERROR"
+                test_name = match.group(2) # The test name
+                error_msg = match.group(3) # The rest of the line
                 
-                # Formattazione dinamica: "FAILED nome - msg" oppure "ERROR nome - msg"
+                # Dynamic formatting: "FAILED name - msg" or "ERROR name - msg"
                 failed_tests.append(f"{status} {test_name} - {error_msg}")
 
-    # concateno in un'unica stringa che contiene i test non passati
+    # Concatenate into a single string containing failed tests
     report["failed_tests_infos"] = "\n".join(failed_tests)
 
-    # conteggio test passati/falliti
+    # Count passed/failed tests
     passed_m = re.search(r"(\d+) passed", stdout)
     failed_m = re.search(r"(\d+) failed", stdout)
     error_m = re.search(r"(\d+) error", stdout)

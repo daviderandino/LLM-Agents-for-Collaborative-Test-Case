@@ -8,7 +8,7 @@ from typing import Dict, Optional
 
 def _clean_mutmut_cache() -> None:
     """
-    Pulisce la cache di mutmut per evitare risultati stale.
+    Cleans the mutmut cache to avoid stale results.
     """
     cache_path = Path.cwd() / ".mutmut-cache"
     if cache_path.exists():
@@ -20,16 +20,16 @@ def _clean_mutmut_cache() -> None:
 
 def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional[Dict]:
     """
-    Calcola le metriche di mutation testing usando mutmut.
+    Calculates mutation testing metrics using mutmut.
     
     Args:
-        source_file_path: Path del file sorgente da testare
-        test_file_path: Path del file di test specifico
+        source_file_path: Path of the source file to test
+        test_file_path: Path of the specific test file
         
     Returns:
-        Dict con mutation_score_percent, mutation_killed, mutation_survived oppure None se fallisce
+        Dict with mutation_score_percent, mutation_killed, mutation_survived or None if fails
     """
-    # Pulisci la cache prima di ogni run per evitare risultati stale
+    # Clean cache before each run to avoid stale results
     _clean_mutmut_cache()
     
     source_file = Path(source_file_path).resolve()
@@ -39,7 +39,7 @@ def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional
     env = os.environ.copy()
     env["PYTHONPATH"] = f"{Path.cwd()}:{env.get('PYTHONPATH', '')}"
     
-    # Working directory deve essere la root del progetto per trovare setup.cfg
+    # Working directory must be the project root to find setup.cfg
     project_root = Path.cwd()
 
     cmd = [

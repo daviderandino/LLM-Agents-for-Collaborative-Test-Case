@@ -7,7 +7,7 @@ from typing import Union
 PathLike = Union[str, os.PathLike]
 
 def read_text(path: PathLike, encoding: str = "utf-8") -> str:
-    # Legge un file di testo e ritorna il contenuto.
+    # Reads a text file and returns its content.
     p = Path(path)
     return p.read_text(encoding=encoding)
 
@@ -18,7 +18,7 @@ def write_text(
     encoding: str = "utf-8",
     ensure_parent: bool = True,
 ) -> None:
-    # Scrive contenuto su file (path passato come parametro). Se ensure_parent=True crea le cartelle mancanti
+    # Writes content to file (path passed as parameter). If ensure_parent=True creates missing directories
     p = Path(path)
     if ensure_parent:
         p.parent.mkdir(parents=True, exist_ok=True)
@@ -26,8 +26,8 @@ def write_text(
 
 
 def safe_remove(path: PathLike) -> bool:
-    # Prova a cancellare un file. Ritorna True se rimosso, False se non esiste o non cancellabile
-    # Utile su Windows dove a volte i file restano lockati
+    # Attempts to delete a file. Returns True if removed, False if not exists or cannot be deleted
+    # Useful on Windows where files are sometimes locked
     p = Path(path)
     try:
         p.unlink()
@@ -37,7 +37,7 @@ def safe_remove(path: PathLike) -> bool:
 
 
 def ensure_dir(path: PathLike) -> str:
-    # Crea una directory (se non esiste) e ritorna il path come stringa
+    # Creates a directory (if it doesn't exist) and returns the path as a string
     p = Path(path)
     p.mkdir(parents=True, exist_ok=True)
     return str(p)

@@ -5,8 +5,8 @@ from pathlib import Path
 from datetime import datetime
 
 def save_run_metrics(config_manager, results):
-    # Estrai il timestamp dal run_id (formato: experiment_name_YYYY-MM-DDTHH:MM:SS)
-    # Il run_id contiene l'esperimento_name + '_' + timestamp
+    # Extract timestamp from run_id (format: experiment_name_YYYY-MM-DDTHH:MM:SS)
+    # The run_id contains experiment_name + '_' + timestamp
     run_id_parts = config_manager.run_id.rsplit('_', 1)
     timestamp = run_id_parts[1] if len(run_id_parts) > 1 else datetime.now().isoformat(timespec="seconds")
 
@@ -18,7 +18,7 @@ def save_run_metrics(config_manager, results):
         "results": results,
     }
 
-    # Save individual run file direttamente in results/ con il nome run_id.json
+    # Save individual run file directly in results/ with run_id.json name
     file_path = os.path.join("results", f"{config_manager.run_id}.json")
     with open(file_path, 'w') as f:
         json.dump(metrics, f, indent=4)

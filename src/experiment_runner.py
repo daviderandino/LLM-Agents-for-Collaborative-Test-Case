@@ -170,7 +170,7 @@ def run():
         print(f"❌ Could not load config: {e}")
         sys.exit(1)
 
-    logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', datefmt='%H:%M:%S')
     
     # cfg.save_snapshot() disabled snapshot
     results = run_experiment(cfg)

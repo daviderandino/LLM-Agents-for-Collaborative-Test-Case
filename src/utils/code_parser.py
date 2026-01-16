@@ -4,27 +4,27 @@ import ast
 
 def clean_llm_python(text: str) -> str:
     """
-    Estrae il codice Python dai blocchi Markdown usando Regex.
-    Rimuove tutto il testo prima e dopo il blocco di codice.
+    Extracts Python code from Markdown blocks using Regex.
+    Removes all text before and after the code block.
     """
-    # Pattern che cerca ```python (opzionale) ...contenuto... ```
-    # re.DOTALL permette al punto (.) di includere anche le nuove righe
+    # Pattern that searches for ```python (optional) ...content... ```
+    # re.DOTALL allows the dot (.) to include newlines as well
     m = re.search(r"```(?:python)?\s*(.*?)```", text, re.DOTALL | re.IGNORECASE)
     code = m.group(1) if m else text
-    # Rimuove residui
+    # Remove residue
     code = code.replace("```python", "").replace("```", "").strip()
     return code
 
 
 def ensure_pytest_import(code: str) -> str:
-    # Assicura che l'import di pytest sia presente nel codice
+    # Ensures that the pytest import is present in the code
     if re.search(r"^\s*import\s+pytest\b", code, re.MULTILINE):
         return code
     return "import pytest\n\n" + code.lstrip()
 
 
 def syntax_check(code: str) -> tuple[bool, str]:
-    # Controlla se il codice Python ha errori di sintassi
+    # Checks if the Python code has syntax errors
     try:
         ast.parse(code)
         return True, ""
