@@ -5,22 +5,21 @@ from pathlib import Path
 from datetime import datetime
 
 def save_run_metrics(config_manager, results):
+    # Estrai il timestamp dal run_id (formato: experiment_name_YYYY-MM-DDTHH:MM:SS)
+    # Il run_id contiene l'esperimento_name + '_' + timestamp
+    run_id_parts = config_manager.run_id.rsplit('_', 1)
+    timestamp = run_id_parts[1] if len(run_id_parts) > 1 else datetime.now().isoformat(timespec="seconds")
 
     metrics = {
         "run_id": config_manager.run_id,
         "experiment_name": config_manager.experiment_name,
-        "timestamp": datetime.now().isoformat(timespec="seconds"),
+        "timestamp": timestamp,
         "temperature": config_manager.get('llm', 'temperature'),
-        "strict_imports": config_manager.get('agent', 'enforce_strict_imports'),
         "results": results,
-        "total iterations": sum([res.get("metrics", {}).get("iterations", 0) for res in results]) if results else 0,
-        "total_passed_tests": sum([res.get("metrics", {}).get("n_passed_tests", 0) for res in results]) if results else 0,
-        "total_failed_tests": sum([res.get("metrics", {}).get("n_failed_tests", 0) for res in results]) if results else 0, 
-        "total_tokens": sum([res.get("metrics", {}).get("total_tokens", 0) for res in results]) if results else 0,
     }
 
-    # Save individual run file
-    file_path = os.path.join(config_manager.results_dir, "metrics.json")
+    # Save individual run file direttamente in results/ con il nome run_id.json
+    file_path = os.path.join("results", f"{config_manager.run_id}.json")
     with open(file_path, 'w') as f:
         json.dump(metrics, f, indent=4)
         
