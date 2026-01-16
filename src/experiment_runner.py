@@ -14,6 +14,7 @@ from src.tracker import save_run_metrics
 from src.agents.single_agent.single_agent_runner import run_single_agent
 from src.agents.multi_agent_collaborative.multi_agent_collaborative_runner import run_collaborative_agents
 from src.agents.multi_agent_competitive.multi_agent_competitive_runner import run_competitive_agents
+from utils.mutmut_runner import get_mutation_metrics
 
 
 def get_files_to_process(input_path_str):
@@ -46,25 +47,25 @@ def run_experiment(cfg):
 
     results_summary = []
     
-    for file_path in files:
-        filename = file_path.name
+    for input_file_path in files:
+        filename = input_file_path.name
         logger.info(f"--- Processing: {filename} ---")
         
-        file_result = None
+        metrics = None
         
         try:
             # Pass temperature to the runners
             if strategy == "single_agent":
-                file_result = run_single_agent(
-                    input_file_path=str(file_path),
+                metrics = run_single_agent(
+                    input_file_path=str(input_file_path),
                     output_dir=output_dir,
                     model=cfg.get('llm', 'model'),
                     temperature=temperature 
                 )
 
             elif strategy == "collaborative_agents":
-                file_result = run_collaborative_agents(
-                    input_file_path=str(file_path),
+                metrics = run_collaborative_agents(
+                    input_file_path=str(input_file_path),
                     output_dir=output_dir,
                     planner_model=cfg.get('llm', 'planner_model'),
                     generator_model=cfg.get('llm', 'generator_model'),
@@ -73,8 +74,8 @@ def run_experiment(cfg):
                 )
 
             elif strategy == "competitive_agents":
-                file_result = run_competitive_agents(
-                    input_file_path=str(file_path),
+                metrics = run_competitive_agents(
+                    input_file_path=str(input_file_path),
                     output_dir=output_dir,
                     planner_model=cfg.get('llm', 'planner_model'),
                     generator_model_1=cfg.get('llm', 'generator_model_1'),
@@ -87,12 +88,32 @@ def run_experiment(cfg):
                 logger.error(f"Unknown strategy: {strategy}")
                 continue
 
-            if file_result:
+            if metrics:
+                # Costruisci il path del test file
+                test_filename = f"test_{input_file_path.stem}.py"
+                test_file_path = Path("data") / "output_tests" / output_dir / test_filename
+                
+                # Esegui mutation testing
+                logger.info(f"🧬 Running mutation testing...")
+                mutation_result = get_mutation_metrics(
+                    source_file_path=str(input_file_path),
+                    test_file_path=str(test_file_path),
+                )
+
+                if mutation_result is not None:
+                    metrics["mutation_score_percent"] = mutation_result["mutation_score_percent"]
+                    metrics["mutation_killed"] = mutation_result["mutation_killed"]
+                    metrics["mutation_survived"] = mutation_result["mutation_survived"]
+                else:
+                    metrics["mutation_score_percent"] = None
+                    metrics["mutation_killed"] = None
+                    metrics["mutation_survived"] = None
+
                 results_summary.append(
                     {
                         "file": filename, 
                         "status": "success", 
-                        "metrics": file_result
+                        "metrics": metrics
                     }
                 )
 

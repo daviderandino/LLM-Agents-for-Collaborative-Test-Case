@@ -7,19 +7,10 @@ import os
 
 
 def parse_coverage_percent(output: str) -> int:
-    # Estrae la coverage percent dall'output di pytest-cov.
-    # Regex cerca un numero percentuale alla fine della riga che inizia con TOTAL, poi fallback
-    # Nota: l'output varia leggermente in base alla versione, questa regex è generica
 
     m = re.search(r"^TOTAL.*?(\d+)%\s*$", output, re.MULTILINE)
     if m:
         return int(m.group(1))
-
-    # Fallback di sicurezza:
-    # in alcuni casi pytest-cov non stampa la riga "TOTAL" (es. crash dei test,
-    # versioni diverse del plugin, report parziale).
-    # In questi casi recuperiamo l’ultima percentuale presente nell’output
-    # per evitare falsi negativi (coverage=0) e loop inutili dell’agent.
     m2 = re.search(r"(\d+)%\s*$", output, re.MULTILINE)
     return int(m2.group(1)) if m2 else 0
 

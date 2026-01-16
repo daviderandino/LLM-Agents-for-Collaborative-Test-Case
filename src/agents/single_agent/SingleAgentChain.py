@@ -4,7 +4,6 @@ from pathlib import Path
 from src.utils.code_parser import clean_llm_python, syntax_check
 from src.utils.pytest_runner import run_pytest
 from src.utils.file_manager import obtain_import_module_str, read_text
-from src.utils.mutmut_runner import get_mutation_score
 
 
 class SingleAgentChain:
@@ -106,23 +105,8 @@ While generating the output, you have to follow those three instructions:
 
         output_file_path.mkdir(parents=True, exist_ok=True)
         
-        with open(str(output_file_path / output_filename), "w") as f:
+        test_file = output_file_path / output_filename
+        with open(str(test_file), "w") as f:
             f.write(self.cleaned_tests)
-        
-        mutation_result = get_mutation_score(
-            source_file=self.input_file_path,
-            test_file=str(output_file_path),
-        )
-
-        if mutation_result is not None:
-            chain_result["mutation_score_percent"] = mutation_result["mutation_score_percent"]
-            chain_result["mutation_killed"] = mutation_result["mutation_killed"]
-            chain_result["mutation_survived"] = mutation_result["mutation_survived"]
-            chain_result["mutation_success"] = True
-        else:
-            chain_result["mutation_score_percent"] = None
-            chain_result["mutation_killed"] = None
-            chain_result["mutation_survived"] = None
-            chain_result["mutation_success"] = False
 
         return chain_result

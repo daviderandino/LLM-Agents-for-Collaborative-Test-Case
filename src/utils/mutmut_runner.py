@@ -1,83 +1,63 @@
 import subprocess
 import sys
-import shutil
 from pathlib import Path
 import os
-import xml.etree.ElementTree as ET
-from typing import Optional
+import json
+from typing import Dict, Optional
 
 
-def get_mutation_score(source_file: str, test_file: str) -> Optional[float]:
+def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional[Dict]:
     """
-    Esegue mutmut sul file sorgente.
-    Ritorna il punteggio (0-100) se l'esecuzione ha successo.
-    Ritorna None se mutmut fallisce (es. clean run fallita, errori di sintassi).
+    Calcola le metriche di mutation testing usando mutmut.
+    
+    Args:
+        source_file_path: Path del file sorgente da testare
+        test_file_path: Path del file di test specifico
+        
+    Returns:
+        Dict con mutation_score_percent, mutation_killed, mutation_survived oppure None se fallisce
     """
-
-    cache_path = Path(".mutmut-cache")
-    if cache_path.exists():
-        if cache_path.is_file(): cache_path.unlink()
-        else: shutil.rmtree(cache_path)
-
-    test_file_path = Path(test_file).resolve()
-    test_dir = test_file_path.parent
-    source_file_path = Path(source_file).resolve()
-    project_root = Path.cwd().resolve()
+    source_file = Path(source_file_path).resolve()
+    test_file = Path(test_file_path).resolve()
+    test_dir = test_file.parent
     
     env = os.environ.copy()
-    env["PYTHONPATH"] = f"{project_root}:{env.get('PYTHONPATH', '')}"
+    env["PYTHONPATH"] = f"{Path.cwd()}:{env.get('PYTHONPATH', '')}"
 
     cmd = [
         sys.executable, "-m", "mutmut", "run",
-        "--paths-to-mutate", str(source_file_path),
+        "--paths-to-mutate", str(source_file),
         "--tests-dir", str(test_dir),
-        "--runner", f"pytest {test_file_path}", 
-        "--no-progress",
-        "--simple-output"
+        "--runner", f"pytest {test_file}",
+        "--no-progress"
     ]
     
     try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=300,
-            env=env
-        )
-
-        # Se il return code non è 0 (successo totale) o 2 (mutanti trovati/sopravvissuti),
-        # significa che mutmut è crashato (es. 'Clean run failed' se i test base non passano).
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=300, env=env)
+        
         if result.returncode not in [0, 2]:
             return None
         
-        # report XML
-        cmd_xml = [sys.executable, "-m", "mutmut", "junitxml"]
-        xml_result = subprocess.run(
-            cmd_xml,
-            capture_output=True,
-            text=True,
-            env=env
-        )
+        # Leggi risultati da mutmut results
+        result_cmd = [sys.executable, "-m", "mutmut", "results", "--json"]
+        result_output = subprocess.run(result_cmd, capture_output=True, text=True, env=env)
         
-        if xml_result.returncode != 0:
-             return None
-
-        root = ET.fromstring(xml_result.stdout)
-        total_mutants = int(root.attrib.get("tests", 0))
-        survived = int(root.attrib.get("failures", 0))
-        killed = total_mutants - survived
+        if result_output.returncode != 0:
+            return None
         
-        if total_mutants == 0:
-            return 0.0
-            
-        score = (killed / total_mutants) * 100
+        data = json.loads(result_output.stdout)
+        total = len(data)
+        survived = sum(1 for m in data.values() if m["status"] == "survived")
+        killed = total - survived
+        
+        score = (killed / total * 100) if total > 0 else 0.0
+        
         return {
             "mutation_score_percent": round(score, 2),
             "mutation_killed": killed,
             "mutation_survived": survived
         }
-
-    except (subprocess.TimeoutExpired, Exception):
-        # In caso di timeout o eccezioni impreviste, ritorna
+    
+    except (subprocess.TimeoutExpired, json.JSONDecodeError, Exception):
         return None
     
