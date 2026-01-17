@@ -5,8 +5,8 @@ experiment:
 
 llm:
   # Both roles played by the same model used in RQ1 Baseline
-  planner_model: "openai/gpt-oss-20b"
-  generator_model: "openai/gpt-oss-120b"
+  planner_model: "openai/gpt-oss-120b"
+  generator_model: "openai/gpt-oss-20b"
   temperature: 0.2
 
 agent:
