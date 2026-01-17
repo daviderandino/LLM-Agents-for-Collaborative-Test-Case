@@ -42,8 +42,12 @@ def remove_failed_tests(code: str, failed_tests_infos: str) -> str:
     for line in failed_tests_infos.splitlines():
         m = re.search(r"(?:FAILED|ERROR)\s+(\S+)", line)
         if m:
-            # Use split("::")[-1] just in case pytest output includes the file path prefix
-            test_name = m.group(1).split("::")[-1]
+            # Estrae il nome grezzo (es. "tests/test_file.py::test_div[10-0]")
+            raw_name = m.group(1).split("::")[-1]
+            
+            # RIMUOVE i parametri parametrizzati (es. "test_div[10-0]" -> "test_div")
+            test_name = raw_name.split("[")[0]
+            
             failed_names.add(test_name)
 
     if not failed_names:
