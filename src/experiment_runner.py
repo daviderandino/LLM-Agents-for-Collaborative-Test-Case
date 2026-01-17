@@ -113,9 +113,6 @@ def run_experiment(cfg):
                     # Update metrics
                     metrics["coverage_percent"] = report["coverage"]
                     metrics["failed_tests_infos"] = report["failed_tests_infos"]
-
-                    metrics["n_passed_tests"] = report["passed"]
-                    metrics["n_failed_tests"] = report["failed"]
                     
                     # Write the cleaned code back
                     with open(str(test_file_path), "w") as f:
@@ -185,4 +182,5 @@ def run():
         print("⚠️ No valid results to save.")
 
 if __name__ == "__main__":
+
     run()
