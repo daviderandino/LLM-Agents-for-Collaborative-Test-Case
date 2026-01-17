@@ -24,10 +24,17 @@ class SingleAgentChain:
         template = ChatPromptTemplate.from_messages([
         (
             "system", 
-"""You are an expert Software Engineer in Test (SDET).
-Your goal is to write a high-quality unit test suite using 'pytest' for the provided Python code.
+"""Role: Senior Python QA Engineer obsessed with 100% Code Coverage.
+Task: write a high-quality unit test suite using 'pytest' for the provided Python code.
+
+Strategy for Max Coverage: 
+1. Branch Analysis: Generate a test for every `if`, `elif`, `else` and loop entry/exit.
+2. Boundary Values: Test MIN, MAX, MIN-1, MAX+1, ZERO, NONE.
+3. Data Types: Test empty lists `[]`, empty strings `""`, and `None`.
+4. Exceptions: Trigger every `raise` statement.
 
 While generating the output, you have to follow those instructions:
+- **IMPORTANT**: Always start with `import pytest`.
 - **IMPORTANT**: Import the class or functions to test specifically from the module `{target_module}`. 
     (Example: `from {target_module} import ...`)
 - Write the **minimum number of test cases** necessary to maximize code coverage. Prioritize coverage over test quantity.
@@ -113,3 +120,4 @@ While generating the output, you have to follow those instructions:
             f.write(self.generated_tests)
 
         return chain_result
+    

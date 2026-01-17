@@ -51,7 +51,7 @@ def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional
     ]
     
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=300, env=env, cwd=project_root)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=3000, env=env, cwd=project_root)
         
         if result.returncode not in [0, 2]:
             return None
