@@ -5,6 +5,7 @@ import os
 import logging
 from pathlib import Path
 from tqdm import tqdm
+import shutil
 
 # Config System
 from src.ConfigManager import ConfigManager
@@ -18,6 +19,23 @@ from src.utils.mutmut_runner import get_mutation_metrics
 from src.utils.code_parser import remove_failed_tests
 from src.utils.pytest_runner import run_pytest
 
+
+def cleanup_artifacts():
+    """Rimuove i file di cache generati durante l'esperimento (.coverage, .mutmut-cache, etc)."""
+    logger = logging.getLogger("Cleanup")
+    
+    files_to_remove = [".mutmut-cache", ".coverage"]
+    
+    root_path = Path(".")
+
+    for file_name in files_to_remove:
+        file_path = root_path / file_name
+        if file_path.exists() and file_path.is_file():
+            try:
+                file_path.unlink() # Cancella il file
+                logger.info(f"🗑️  Removed cache file: {file_name}")
+            except Exception as e:
+                logger.warning(f"⚠️ Could not remove {file_name}: {e}")
 
 def get_files_to_process(input_path_str):
     path = Path(input_path_str)
@@ -180,6 +198,8 @@ def run():
         save_run_metrics(config_manager=cfg, results=results)
     else:
         print("⚠️ No valid results to save.")
+    
+    cleanup_artifacts()
 
 if __name__ == "__main__":
     run()
