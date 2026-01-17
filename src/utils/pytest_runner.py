@@ -103,6 +103,8 @@ def analyze_pytest_output(stdout, stderr, exit_code):
     error_m = re.search(r"(\d+) error", stdout)
 
     report["passed"] = int(passed_m.group(1)) if passed_m else 0
-    report["failed"] = int(failed_m.group(1)) if failed_m else 0 + int(error_m.group(1)) if error_m else 0
+    val_failed = int(failed_m.group(1)) if failed_m else 0
+    val_error = int(error_m.group(1)) if error_m else 0
+    report["failed"] = val_failed + val_error
 
     return report
