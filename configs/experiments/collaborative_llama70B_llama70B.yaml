@@ -4,7 +4,6 @@ experiment:
   input_path: "data/input_code"
 
 llm:
-  # Both roles played by the same model used in RQ1 Baseline
   planner_model: "llama-3.3-70b-versatile"
   generator_model: "llama-3.3-70b-versatile"
   temperature: 0.2
