@@ -133,7 +133,7 @@ def run_experiment(cfg):
                     metrics["failed_tests_infos"] = report["failed_tests_infos"]
                     
                     # Write the cleaned code back
-                    with open(str(test_file_path), "w") as f:
+                    with open(str(test_file_path), "w",encoding="utf-8") as f:
                         f.write(cleaned_code)
                     
                     logger.info(f"✓ Cleanup complete. New metrics - Coverage: {metrics['coverage_percent']}%, Passed: {metrics['n_passed_tests']}, Failed: {metrics['n_failed_tests']}")

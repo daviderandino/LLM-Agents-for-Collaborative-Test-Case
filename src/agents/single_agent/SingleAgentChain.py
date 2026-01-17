@@ -116,7 +116,7 @@ While generating the output, you have to follow those instructions:
 
         output_file_path.mkdir(parents=True, exist_ok=True)
 
-        with open(str(output_file_path / output_filename), "w") as f:
+        with open(str(output_file_path / output_filename), "w", encoding="utf-8") as f:
             f.write(self.generated_tests)
 
         return chain_result

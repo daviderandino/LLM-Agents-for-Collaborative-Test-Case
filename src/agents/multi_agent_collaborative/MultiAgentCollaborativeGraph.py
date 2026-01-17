@@ -543,7 +543,7 @@ class MultiAgentCollaborativeGraph:
 
         output_file_path.mkdir(parents=True, exist_ok=True)
 
-        with open(str(output_file_path / output_filename), "w") as f:
+        with open(str(output_file_path / output_filename), "w", encoding="utf-8") as f:
             f.write(final_state["generated_tests"])
 
         return final_state
