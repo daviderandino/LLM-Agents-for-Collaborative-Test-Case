@@ -1,0 +1,83 @@
+{
+    "run_id": "single_llamaScout17B_2026-01-18T11-02-55",
+    "experiment_name": "single_llamaScout17B",
+    "timestamp": "2026-01-18T11-02-55",
+    "temperature": 0.2,
+    "results": [
+        {
+            "file": "d10_hotel_reservation.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 51,
+                "n_passed_tests": 4,
+                "n_failed_tests": 9,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 2584,
+                "mutation_score_percent": 12.28,
+                "mutation_killed": 7,
+                "mutation_survived": 50
+            }
+        },
+        {
+            "file": "d07_library.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 96,
+                "n_passed_tests": 15,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 2005,
+                "mutation_score_percent": 71.05,
+                "mutation_killed": 27,
+                "mutation_survived": 11
+            }
+        },
+        {
+            "file": "d03_stack.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 22,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 1297,
+                "mutation_score_percent": 77.78,
+                "mutation_killed": 14,
+                "mutation_survived": 4
+            }
+        },
+        {
+            "file": "d01_bank_account.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 18,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 1017,
+                "mutation_score_percent": 62.96,
+                "mutation_killed": 17,
+                "mutation_survived": 10
+            }
+        },
+        {
+            "file": "d04_linked_list.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 25,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 1719,
+                "mutation_score_percent": 94.74,
+                "mutation_killed": 54,
+                "mutation_survived": 3
+            }
+        }
+    ]
+}

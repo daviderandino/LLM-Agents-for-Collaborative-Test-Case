@@ -304,7 +304,7 @@ class MultiAgentCollaborativeGraph:
                     "- Generate the minimum number of test cases necessary to achieve maximum code coverage."
                     "- Ensure all test cases are correct and fully functional. Every test must pass."
                     "Strict Rules:"
-                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
+                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source code. DO NOT invent new classes or functions. Use ONLY the exact classes or functions names found in the code to test."
                     "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
                     "- 3. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
                     "- 4. Classes: If target is `Class.method`, instantiate the class first."
@@ -316,7 +316,7 @@ class MultiAgentCollaborativeGraph:
                 ),
                 (
                     "ai",
-                    "```python\nimport pytest\nfrom calc import div\n\n@pytest.mark.parametrize('a, b, expected', [\n    (10, 2, 5)\n])\ndef test_div_success(a, b, expected):\n    assert div(a, b) == expected\n\ndef test_div_error():\n    with pytest.raises(ZeroDivisionError):\n        div(5, 0)\n```",
+                    "```python\nimport pytest\nfrom calc import *\n\n@pytest.mark.parametrize('a, b, expected', [\n    (10, 2, 5)\n])\ndef test_div_success(a, b, expected):\n    assert div(a, b) == expected\n\ndef test_div_error():\n    with pytest.raises(ZeroDivisionError):\n        div(5, 0)\n```",
                 ),
                 (
                     "human", 
@@ -345,7 +345,7 @@ class MultiAgentCollaborativeGraph:
                     "Key Objectives:"
                     "- Ensure all test cases are correct and fully functional. Every test must pass."
                     "Strict Rules:"
-                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
+                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source. DO NOT invent new classes or functions. Use ONLY the exact classes or functions names found in the source code."
                     "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
                     "- 3. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
                     "- 4. Classes: If target is `Class.method`, instantiate the class first."
@@ -378,7 +378,7 @@ class MultiAgentCollaborativeGraph:
                     "Key Objectives:"
                     "- Ensure all test cases are correct and fully functional. Every test must pass."
                     "Strict Rules:"
-                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
+                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source. DO NOT invent new classes or functions. Use ONLY the exact classes or functions names found in the source code."
                     "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
                     "- 3. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
                     "- 4. Classes: If target is `Class.method`, instantiate the class first."
@@ -409,7 +409,7 @@ class MultiAgentCollaborativeGraph:
                     "- Generate the minimum number of test cases necessary to achieve maximum code coverage."
                     "- Ensure all test cases are correct and fully functional. Every test must pass."
                     "Strict Rules:"
-                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`. Import any other lib used in source."
+                    "- 1. Imports: Always start with `import pytest` and `from {target_module} import *`.Import any other lib used in source. DO NOT invent new classes or functions. Use ONLY the exact classes or functions names found in the source code."
                     "- 2. Strategy: Group tests with `@pytest.mark.parametrize` where possible."
                     "- 3. Logic: If `expected` in JSON is an Exception name (e.g. 'ValueError'), use `with pytest.raises(...)`. Else use `assert result == expected`."
                     "- 4. Classes: If target is `Class.method`, instantiate the class first."
@@ -532,7 +532,8 @@ class MultiAgentCollaborativeGraph:
         return "end"
 
     def invoke(self):
-        final_state = self.graph.invoke(self.initial_state) 
+        config = {"recursion_limit": 50}
+        final_state = self.graph.invoke(self.initial_state, config=config) 
 
         output_filename = f"test_{Path(final_state['input_file_path']).stem}.py"
         output_file_path = (
