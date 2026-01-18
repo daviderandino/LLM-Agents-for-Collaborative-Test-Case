@@ -15,9 +15,9 @@
                 "iterations": 1,
                 "cost": 0,
                 "total_tokens": 19142,
-                "mutation_score_percent": null,
-                "mutation_killed": null,
-                "mutation_survived": null
+                "mutation_score_percent": 62.96,
+                "mutation_killed": 17,
+                "mutation_survived": 10
             }
         },
         {
@@ -31,9 +31,9 @@
                 "iterations": 1,
                 "cost": 0,
                 "total_tokens": 16157,
-                "mutation_score_percent": null,
-                "mutation_killed": null,
-                "mutation_survived": null
+                "mutation_score_percent": 77.78,
+                "mutation_killed": 14,
+                "mutation_survived": 4
             }
         },
         {
@@ -47,9 +47,9 @@
                 "iterations": 1,
                 "cost": 0,
                 "total_tokens": 11229,
-                "mutation_score_percent": null,
-                "mutation_killed": null,
-                "mutation_survived": null
+                "mutation_score_percent": 87.72,
+                "mutation_killed": 50,
+                "mutation_survived": 7
             }
         },
         {
@@ -63,9 +63,9 @@
                 "iterations": 2,
                 "cost": 0,
                 "total_tokens": 17293,
-                "mutation_score_percent": null,
-                "mutation_killed": null,
-                "mutation_survived": null
+                "mutation_score_percent": 89.47,
+                "mutation_killed": 34,
+                "mutation_survived": 4
             }
         },
         {
@@ -79,9 +79,9 @@
                 "iterations": 2,
                 "cost": 0,
                 "total_tokens": 23105,
-                "mutation_score_percent": null,
-                "mutation_killed": null,
-                "mutation_survived": null
+                "mutation_score_percent": 50.88,
+                "mutation_killed": 29,
+                "mutation_survived": 28
             }
         }
     ]
