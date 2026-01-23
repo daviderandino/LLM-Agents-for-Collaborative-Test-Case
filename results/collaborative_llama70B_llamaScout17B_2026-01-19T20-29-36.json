@@ -14,9 +14,9 @@
                 "failed_tests_infos": "",
                 "iterations": 1,
                 "total_tokens": 2895,
-                "mutation_score_percent": null,
-                "mutation_killed": null,
-                "mutation_survived": null
+                "mutation_score_percent": 48.15,
+                "mutation_killed": 13,
+                "mutation_survived": 14
             }
         },
         {
@@ -29,9 +29,9 @@
                 "failed_tests_infos": "",
                 "iterations": 1,
                 "total_tokens": 4098,
-                "mutation_score_percent": null,
-                "mutation_killed": null,
-                "mutation_survived": null
+                "mutation_score_percent": 77.78,
+                "mutation_killed": 14,
+                "mutation_survived": 4
             }
         },
         {
@@ -44,9 +44,9 @@
                 "failed_tests_infos": "",
                 "iterations": 3,
                 "total_tokens": 11282,
-                "mutation_score_percent": null,
-                "mutation_killed": null,
-                "mutation_survived": null
+                "mutation_score_percent": 91.23,
+                "mutation_killed": 52,
+                "mutation_survived": 5
             }
         },
         {
@@ -59,9 +59,9 @@
                 "failed_tests_infos": "",
                 "iterations": 5,
                 "total_tokens": 16365,
-                "mutation_score_percent": null,
-                "mutation_killed": null,
-                "mutation_survived": null
+                "mutation_score_percent": 89.47,
+                "mutation_killed": 34,
+                "mutation_survived": 4
             }
         },
         {
@@ -74,9 +74,9 @@
                 "failed_tests_infos": "",
                 "iterations": 11,
                 "total_tokens": 48242,
-                "mutation_score_percent": null,
-                "mutation_killed": null,
-                "mutation_survived": null
+                "mutation_score_percent": 71.93,
+                "mutation_killed": 41,
+                "mutation_survived": 16
             }
         }
     ]
