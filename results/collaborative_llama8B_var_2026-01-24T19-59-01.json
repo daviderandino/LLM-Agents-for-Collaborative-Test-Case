@@ -1,0 +1,256 @@
+{
+    "run_id": "collaborative_llama8B_var_2026-01-24T19-59-01",
+    "experiment_name": "collaborative_llama8B_var",
+    "timestamp": "2026-01-24T19-59-01",
+    "temperature": 0.0,
+    "results": [
+        {
+            "file": "t16.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 8,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1719,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t1.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 7,
+                "n_failed_tests": 8,
+                "failed_tests_infos": "FAILED test_min_cost_success[cost1-2-3-16] - IndexError: list index out of range\nFAILED test_min_cost_zero_m - Failed: DID NOT RAISE <class 'IndexError'>\nFAILED test_min_cost_success_one_row - IndexError: list index out of range\nFAILED test_min_cost_success_one_column - IndexError: list index out of range\nFAILED test_min_cost_success_one_element - IndexError: list index out of range\nFAILED test_min_cost_success_m_larger_than_matrix - IndexError: list index out of range\nFAILED test_min_cost_success_n_larger_than_matrix - IndexError: list index out of range\nFAILED test_min_cost_success_m_zero - Failed: DID NOT RAISE <class 'IndexError'>",
+                "iterations": 6,
+                "total_tokens": 10382,
+                "mutation_score_percent": 36.17,
+                "mutation_killed": 17,
+                "mutation_survived": 30
+            }
+        },
+        {
+            "file": "t9.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 2,
+                "total_tokens": 1948,
+                "mutation_score_percent": 55.56,
+                "mutation_killed": 5,
+                "mutation_survived": 4
+            }
+        },
+        {
+            "file": "t20.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_multiples_of_num_zero_division - ValueError: range() arg 3 must not be zero\nFAILED test_multiples_of_num_zero_n - ValueError: range() arg 3 must not be zero",
+                "iterations": 6,
+                "total_tokens": 6231,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t5.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 14,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_count_ways_base_cases[0-1] - IndexError: list assignment index out of range\nFAILED test_count_ways_negative_input - IndexError: list assignment index out of range\nFAILED test_count_ways_edge_cases - IndexError: list assignment index out of range",
+                "iterations": 6,
+                "total_tokens": 8294,
+                "mutation_score_percent": 48.72,
+                "mutation_killed": 19,
+                "mutation_survived": 20
+            }
+        },
+        {
+            "file": "t12.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 5,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "FAILED test_sort_matrix[M5-expected5] - assert [[]] == []",
+                "iterations": 6,
+                "total_tokens": 6347,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t11.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 8,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_remove_Occ_error_non_string_input_2 - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_remove_Occ_error_non_string_input_4 - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 6,
+                "total_tokens": 6333,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t7.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 9,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "FAILED test_find_char_long_none_type - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 6,
+                "total_tokens": 5366,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t15.py",
+            "status": "failed",
+            "error": "Syntax error in generated test: SyntaxError: expected '('",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 0,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 6,
+                "total_tokens": 14196,
+                "mutation_score_percent": null
+            }
+        },
+        {
+            "file": "t8.py",
+            "status": "failed",
+            "error": "Syntax error in generated test: SyntaxError: '[' was never closed",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 0,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 6,
+                "total_tokens": 13723,
+                "mutation_score_percent": null
+            }
+        },
+        {
+            "file": "t17.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 6,
+                "failed_tests_infos": "FAILED test_square_perimeter_success[-5-20] - assert -20 == 20\nFAILED test_square_perimeter_negative - assert -20 == 20\nFAILED test_square_perimeter_failure - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_failure_2 - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_failure_3 - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_failure_4 - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 6,
+                "total_tokens": 4947,
+                "mutation_score_percent": 66.67,
+                "mutation_killed": 2,
+                "mutation_survived": 1
+            }
+        },
+        {
+            "file": "t3.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 3,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_is_not_prime[1-True] - AssertionError: Unexpected exception: assert False == True\nFAILED test_is_not_prime[-5-True] - AssertionError: Unexpected exception: math domain error\nFAILED test_is_not_prime[0-True] - AssertionError: Unexpected exception: assert False == True\nFAILED test_is_not_prime[-1-True] - AssertionError: Unexpected exception: math domain error",
+                "iterations": 6,
+                "total_tokens": 4770,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t18.py",
+            "status": "error",
+            "error": "Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organization `org_01kfrjvpkqej7bwgq5x64fem33` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 8789, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t10.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 5,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "FAILED test_small_nnum_success[list15-3-expected5] - AssertionError: assert ['a', 'b', 'c'] == []",
+                "iterations": 6,
+                "total_tokens": 6601,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t14.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 11,
+                "n_failed_tests": 6,
+                "failed_tests_infos": "FAILED test_find_Volume_zero_division - Failed: DID NOT RAISE <class 'ZeroDivisionError'>\nFAILED test_find_Volume_negative_height - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_find_Volume_zero_base - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_find_Volume_zero_length - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_find_Volume_negative_length - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_find_Volume_negative_base - Failed: DID NOT RAISE <class 'ValueError'>",
+                "iterations": 6,
+                "total_tokens": 8040,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t4.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 3,
+                "total_tokens": 3091,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t13.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjvpkqej7bwgq5x64fem33` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499932, Requested 609. Please try again in 1m33.4848s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t6.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjvpkqej7bwgq5x64fem33` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499930, Requested 432. Please try again in 1m2.5536s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t2.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjvpkqej7bwgq5x64fem33` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499927, Requested 421. Please try again in 1m0.1344s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t19.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjvpkqej7bwgq5x64fem33` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499942, Requested 649. Please try again in 1m42.1248s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        }
+    ]
+}
