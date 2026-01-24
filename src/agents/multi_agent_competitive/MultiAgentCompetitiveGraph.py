@@ -60,12 +60,13 @@ class AgentState(TypedDict):
 
 
 class MultiAgentCompetitiveGraph:
-    def __init__(self, input_file_path, output_dir, llm_planner, llm_generator_1, llm_generator_2, verbose = True):
+    def __init__(self, input_file_path, output_dir, llm_planner, llm_generator_1, llm_generator_2, verbose = True, max_iterations=10):
         self.output_dir = output_dir
         self.llm_planner = llm_planner
         self.llm_generator_1 = llm_generator_1
         self.llm_generator_2 = llm_generator_2
         self.verbose = verbose
+        self.max_iterations = max_iterations
         self.logger = logging.getLogger("Agent")
 
         self.graph = self._build_graph()
@@ -89,7 +90,7 @@ class MultiAgentCompetitiveGraph:
             "n_passed_tests": 0,
             "n_failed_tests": 0,
             "iterations": 0,
-            "max_iterations": 10,
+            "max_iterations": self.max_iterations,
             "total_tokens": 0,
             "dev_1_step_tokens": 0,
             "dev_2_step_tokens": 0

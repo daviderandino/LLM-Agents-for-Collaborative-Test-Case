@@ -73,7 +73,8 @@ def run_experiment(cfg):
                     generator_model=cfg.get('llm', 'generator_model'),
                     planner_temperature=cfg.get('llm', 'planner_temperature') or temperature,
                     generator_temperature=cfg.get('llm', 'generator_temperature') or temperature,
-                    verbose=cfg.get('agent', 'verbose')
+                    verbose=cfg.get('agent', 'verbose'),
+                    max_iterations=cfg.get('agent', 'max_iterations') or 10
                 )
 
             elif strategy == "competitive_agents":
@@ -86,7 +87,8 @@ def run_experiment(cfg):
                     planner_temperature=cfg.get('llm', 'planner_temperature') or temperature,
                     generator_1_temperature=cfg.get('llm', 'generator_1_temperature') or temperature,
                     generator_2_temperature=cfg.get('llm', 'generator_2_temperature') or temperature,
-                    verbose=cfg.get('agent', 'verbose')
+                    verbose=cfg.get('agent', 'verbose'),
+                    max_iterations=cfg.get('agent', 'max_iterations') or 10
                 )
             
             else:

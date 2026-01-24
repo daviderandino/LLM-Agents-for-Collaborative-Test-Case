@@ -10,7 +10,8 @@ def run_competitive_agents(
         planner_temperature=0,
         generator_1_temperature=0,
         generator_2_temperature=0,
-        verbose=False
+        verbose=False,
+        max_iterations=10
     ): 
 
     llm_planner = get_llm(
@@ -35,7 +36,8 @@ def run_competitive_agents(
         llm_planner,
         llm_generator_1,
         llm_generator_2,
-        verbose
+        verbose,
+        max_iterations
     )
 
     final_state = agents.invoke()

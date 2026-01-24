@@ -55,11 +55,12 @@ class AgentState(TypedDict):
 
 
 class MultiAgentCollaborativeGraph:
-    def __init__(self, input_file_path, output_dir, llm_planner, llm_generator, verbose = True):
+    def __init__(self, input_file_path, output_dir, llm_planner, llm_generator, verbose = True, max_iterations=10):
         self.output_dir = output_dir
         self.llm_planner = llm_planner
         self.llm_generator = llm_generator
         self.verbose = verbose
+        self.max_iterations = max_iterations
         self.logger = logging.getLogger("Agent")
 
         self.graph = self._build_graph()
@@ -81,7 +82,7 @@ class MultiAgentCollaborativeGraph:
             "n_passed_tests": 0,
             "n_failed_tests": 0,
             "iterations": 0,
-            "max_iterations": 10,
+            "max_iterations": self.max_iterations,
             "total_tokens": 0 
         }
 

@@ -8,7 +8,8 @@ def run_collaborative_agents(
         generator_model, 
         planner_temperature=0,
         generator_temperature=0,
-        verbose=False
+        verbose=False,
+        max_iterations=10
     ): 
     
     llm_planner = get_llm(
@@ -27,7 +28,8 @@ def run_collaborative_agents(
         output_dir,
         llm_planner,
         llm_generator,
-        verbose
+        verbose,
+        max_iterations
     )
 
     final_state = agents.invoke()
