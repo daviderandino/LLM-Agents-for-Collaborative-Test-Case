@@ -1,0 +1,308 @@
+{
+    "run_id": "single_llama8B_t=0.4_2026-01-24T14-06-54",
+    "experiment_name": "single_llama8B_t=0.4",
+    "timestamp": "2026-01-24T14-06-54",
+    "temperature": 0.4,
+    "results": [
+        {
+            "file": "t16.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 7,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 593,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t1.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 38,
+                "n_passed_tests": 1,
+                "n_failed_tests": 8,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 1018,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 47
+            }
+        },
+        {
+            "file": "t9.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 88,
+                "n_passed_tests": 6,
+                "n_failed_tests": 10,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 664,
+                "mutation_score_percent": 44.44,
+                "mutation_killed": 4,
+                "mutation_survived": 5
+            }
+        },
+        {
+            "file": "t20.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 67,
+                "n_passed_tests": 1,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 697,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 4
+            }
+        },
+        {
+            "file": "t5.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 18,
+                "n_passed_tests": 1,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 625,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 39
+            }
+        },
+        {
+            "file": "t12.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 858,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t11.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 6,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 814,
+                "mutation_score_percent": 85.0,
+                "mutation_killed": 17,
+                "mutation_survived": 3
+            }
+        },
+        {
+            "file": "t7.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 567,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 1
+            }
+        },
+        {
+            "file": "t15.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 5,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 557,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 1
+            }
+        },
+        {
+            "file": "t8.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 7,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 517,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t17.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 2,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 406,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 3,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t3.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 7,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 554,
+                "mutation_score_percent": 80.0,
+                "mutation_killed": 8,
+                "mutation_survived": 2
+            }
+        },
+        {
+            "file": "t18.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 12,
+                "n_failed_tests": 6,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 968,
+                "mutation_score_percent": null,
+                "mutation_killed": null,
+                "mutation_survived": null
+            }
+        },
+        {
+            "file": "t10.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 642,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t14.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 3,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 628,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t4.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 3,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 636,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t13.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 8,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 609,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 3,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t6.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 7,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 771,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 6,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t2.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 678,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 2,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t19.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 8,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 535,
+                "mutation_score_percent": null,
+                "mutation_killed": null,
+                "mutation_survived": null
+            }
+        }
+    ]
+}
