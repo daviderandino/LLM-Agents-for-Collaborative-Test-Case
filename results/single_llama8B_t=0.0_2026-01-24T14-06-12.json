@@ -186,7 +186,7 @@
         },
         {
             "file": "t18.py",
-            "status": "success",
+            "status": "failed",
             "metrics": {
                 "coverage_percent": 0,
                 "n_passed_tests": 0,
@@ -299,9 +299,9 @@
                 "failed_tests_infos": "",
                 "iterations": 0,
                 "total_tokens": 512,
-                "mutation_score_percent": null,
-                "mutation_killed": null,
-                "mutation_survived": null
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 2,
+                "mutation_survived": 0
             }
         }
     ]

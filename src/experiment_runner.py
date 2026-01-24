@@ -15,7 +15,7 @@ from src.agents.single_agent.single_agent_runner import run_single_agent
 from src.agents.multi_agent_collaborative.multi_agent_collaborative_runner import run_collaborative_agents
 from src.agents.multi_agent_competitive.multi_agent_competitive_runner import run_competitive_agents
 from src.utils.mutmut_runner import get_mutation_metrics
-from src.utils.code_parser import remove_failed_tests
+from src.utils.code_parser import remove_failed_tests, syntax_check
 from src.utils.pytest_runner import run_pytest
 
 
@@ -97,6 +97,35 @@ def run_experiment(cfg):
             test_filename = f"test_{input_file_path.stem}.py"
             test_file_path = Path("data") / "output_tests" / output_dir / test_filename
 
+            # --- SYNTAX CHECK: Verify the generated test file has valid Python syntax ---
+            if test_file_path.exists():
+                with open(str(test_file_path), "r") as f:
+                    test_code = f.read()
+                
+                is_valid, syntax_error = syntax_check(test_code)
+                if not is_valid:
+                    logger.error(f"❌ Syntax error in generated test file: {syntax_error}")
+                    results_summary.append(
+                        {
+                            "file": filename, 
+                            "status": "failed", 
+                            "error": f"Syntax error in generated test: {syntax_error}",
+                            "metrics": metrics
+                        }
+                    )
+                    continue  # Skip this file and move to the next one
+            else:
+                logger.error(f"❌ Test file not found: {test_file_path}")
+                results_summary.append(
+                    {
+                        "file": filename, 
+                        "status": "failed", 
+                        "error": f"Test file not generated: {test_file_path}",
+                        "metrics": metrics
+                    }
+                )
+                continue
+
             # --- CLEANUP STEP: Remove failed tests if any ---
             if metrics and metrics["n_failed_tests"] > 0:
                 logger.info(f"🧹 Cleanup: Removing {metrics['n_failed_tests']} failed tests...")
@@ -115,7 +144,6 @@ def run_experiment(cfg):
                     
                     # Update metrics
                     metrics["coverage_percent"] = report["coverage"]
-                    metrics["failed_tests_infos"] = report["failed_tests_infos"]
                     
                     # Write the cleaned code back
                     with open(str(test_file_path), "w") as f:

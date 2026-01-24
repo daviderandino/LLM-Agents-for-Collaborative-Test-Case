@@ -22,20 +22,14 @@ def test_lst_to_string_multiple_chars():
 def test_get_char_count_array_empty_string():
     assert get_char_count_array("") == [0] * 256
 
-
-
 def test_remove_dirty_chars_empty_string():
     assert remove_dirty_chars("", "") == ""
-
 
 def test_remove_dirty_chars_dirty_chars():
     assert remove_dirty_chars("abc", "def") == "abc"
 
 def test_remove_dirty_chars_all_dirty_chars():
     assert remove_dirty_chars("abc", "abcdef") == ""
-
-
-
 
 def test_remove_dirty_chars_second_string_with_all_chars():
     assert remove_dirty_chars("abc", "abcdefghijklmnopqrstuvwxyz") == ""

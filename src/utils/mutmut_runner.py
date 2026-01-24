@@ -42,18 +42,32 @@ def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional
     # Working directory must be the project root to find setup.cfg
     project_root = Path.cwd()
 
+    # Get the absolute path to the input_code directory to ignore it
+    input_code_dir = project_root / "data" / "input_code"
+
+    # Create pytest command using python -m to ensure PYTHONPATH is respected
+    pytest_cmd = f"{sys.executable} -m pytest --ignore={input_code_dir} {test_file}"
+    
     cmd = [
         sys.executable, "-m", "mutmut", "run",
         "--paths-to-mutate", str(source_file),
         "--tests-dir", str(test_dir),
-        "--runner", f"pytest {test_file}",
+        "--runner", pytest_cmd,
         "--no-progress"
     ]
     
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=3000, env=env, cwd=project_root)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=300, env=env, cwd=project_root)
         
-        if result.returncode not in [0, 2]:
+        print(f"   Mutmut exit code: {result.returncode}")
+        # Exit codes vary: 0 = all killed, 1 = timeout/suspicious, 2 = some survived, 
+        # 3 = skipped, 4 = untested, 6 = BAD (mix), 14 = cache issues but still has results
+        # We try to extract results regardless of exit code, only fail if no results found
+        # This is more robust than checking specific exit codes
+        if result.returncode > 10:  # Only reject catastrophic errors
+            print(f"   ❌ Mutmut failed with return code {result.returncode}")
+            print(f"   STDOUT: {result.stdout}")
+            print(f"   STDERR: {result.stderr}")
             return None
         
         # Conta i mutanti killed usando mutmut result-ids
@@ -65,6 +79,9 @@ def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional
         survived_output = subprocess.run(survived_cmd, capture_output=True, text=True, env=env, cwd=project_root)
         
         if killed_output.returncode != 0 or survived_output.returncode != 0:
+            print(f"   ❌ Failed to get mutation results")
+            print(f"   Killed command exit code: {killed_output.returncode}")
+            print(f"   Survived command exit code: {survived_output.returncode}")
             return None
         
         # Conta il numero di IDs (separati da spazi)
@@ -80,6 +97,12 @@ def get_mutation_metrics(source_file_path: str, test_file_path: str) -> Optional
             "mutation_survived": survived
         }
     
-    except (subprocess.TimeoutExpired, Exception):
+    except subprocess.TimeoutExpired as e:
+        print(f"   ⏰ Mutation testing timed out after 3000 seconds")
+        print(f"   Error: {e}")
+        return None
+    except Exception as e:
+        print(f"   ❌ Mutation testing failed with exception")
+        print(f"   Error: {e}")
         return None
     

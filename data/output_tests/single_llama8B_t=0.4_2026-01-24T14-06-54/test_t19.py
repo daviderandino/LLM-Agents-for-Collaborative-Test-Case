@@ -1,5 +1,5 @@
 import pytest
-from data.input_code.t19 import test_duplicate
+from data.input_code.t19 import is_duplicate
 
 @pytest.mark.parametrize("arraynums, expected", [
     ([1, 2, 3, 4, 5], False),
@@ -11,10 +11,10 @@ from data.input_code.t19 import test_duplicate
     ([1, 2, 3, 4, 5, 6], False),
 ])
 def test_test_duplicate(arraynums, expected):
-    assert test_duplicate(arraynums) == expected
+    assert is_duplicate(arraynums) == expected
 
 def test_test_duplicate_empty_set():
     with pytest.raises(TypeError):
-        test_duplicate(None)
+        is_duplicate(None)
 
 
