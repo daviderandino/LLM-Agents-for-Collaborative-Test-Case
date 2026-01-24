@@ -1,6 +1,6 @@
 
 experiment:
-  type: "single_agent"
+  type: "single_agent_ablative"
   name: "single_lama_baseline"
   input_path: "data/input_code"
 
