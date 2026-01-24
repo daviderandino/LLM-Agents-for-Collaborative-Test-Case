@@ -6,19 +6,20 @@ def run_collaborative_agents(
         output_dir,
         planner_model, 
         generator_model, 
-        temperature=0, 
+        planner_temperature=0,
+        generator_temperature=0,
         verbose=False
     ): 
     
     llm_planner = get_llm(
         provider='groq', 
         model_name=planner_model, 
-        temperature=temperature
+        temperature=planner_temperature
     )
     llm_generator = get_llm(
         provider='groq', 
         model_name=generator_model, 
-        temperature=temperature
+        temperature=generator_temperature
     )
 
     agents = MultiAgentCollaborativeGraph(

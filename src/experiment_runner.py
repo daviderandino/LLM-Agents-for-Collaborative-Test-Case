@@ -71,7 +71,8 @@ def run_experiment(cfg):
                     output_dir=output_dir,
                     planner_model=cfg.get('llm', 'planner_model'),
                     generator_model=cfg.get('llm', 'generator_model'),
-                    temperature=temperature, 
+                    planner_temperature=cfg.get('llm', 'planner_temperature') or temperature,
+                    generator_temperature=cfg.get('llm', 'generator_temperature') or temperature,
                     verbose=cfg.get('agent', 'verbose')
                 )
 
@@ -82,7 +83,9 @@ def run_experiment(cfg):
                     planner_model=cfg.get('llm', 'planner_model'),
                     generator_model_1=cfg.get('llm', 'generator_model_1'),
                     generator_model_2=cfg.get('llm', 'generator_model_2'),
-                    temperature=temperature,
+                    planner_temperature=cfg.get('llm', 'planner_temperature') or temperature,
+                    generator_1_temperature=cfg.get('llm', 'generator_1_temperature') or temperature,
+                    generator_2_temperature=cfg.get('llm', 'generator_2_temperature') or temperature,
                     verbose=cfg.get('agent', 'verbose')
                 )
             

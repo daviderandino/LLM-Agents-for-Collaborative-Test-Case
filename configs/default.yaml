@@ -2,7 +2,7 @@ experiment:
   input_path: "data/input_code"      # Can be a specific .py file or a folder
 
 llm:
-  temperature: 0.0
+  temperature: 0.0 # planner, generator, generator1 and generator2 can have different tgemperature values
 
 agent:
   verbose: false

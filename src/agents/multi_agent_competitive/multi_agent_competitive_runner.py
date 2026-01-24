@@ -7,24 +7,26 @@ def run_competitive_agents(
         planner_model, 
         generator_model_1, 
         generator_model_2, 
-        temperature=0, 
+        planner_temperature=0,
+        generator_1_temperature=0,
+        generator_2_temperature=0,
         verbose=False
     ): 
 
     llm_planner = get_llm(
         provider='groq',
         model_name=planner_model, 
-        temperature=temperature
+        temperature=planner_temperature
     )
     llm_generator_1 = get_llm(
         provider='groq', 
         model_name=generator_model_1, 
-        temperature=temperature
+        temperature=generator_1_temperature
     )
     llm_generator_2 = get_llm(
         provider='groq', 
         model_name=generator_model_2, 
-        temperature=temperature
+        temperature=generator_2_temperature
     )
 
     agents = MultiAgentCompetitiveGraph(
