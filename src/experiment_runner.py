@@ -12,8 +12,10 @@ from src.tracker import save_run_metrics
 
 # Agent Runners (Corrected Imports)
 from src.agents.single_agent.single_agent_runner import run_single_agent
-from src.agents.multi_agent_collaborative.multi_agent_collaborative_runner import run_collaborative_agents
-from src.agents.multi_agent_competitive.multi_agent_competitive_runner import run_competitive_agents
+from src.agents.multi_agent_collaborative_json.multi_agent_collaborative_runner import run_collaborative_agents as run_collaborative_agents_json
+from src.agents.multi_agent_collaborative_natural.multi_agent_collaborative_runner import run_collaborative_agents as run_collaborative_agents_natural
+from src.agents.multi_agent_competitive_json.multi_agent_competitive_runner import run_competitive_agents as run_competitive_agents_json
+from src.agents.multi_agent_competitive_natural.multi_agent_competitive_runner import run_competitive_agents as run_competitive_agents_natural
 from src.utils.mutmut_runner import get_mutation_metrics
 from src.utils.code_parser import remove_failed_tests, syntax_check
 from src.utils.pytest_runner import run_pytest
@@ -65,8 +67,8 @@ def run_experiment(cfg):
                     temperature=temperature 
                 )
 
-            elif strategy == "collaborative_agents":
-                metrics = run_collaborative_agents(
+            elif strategy == "collaborative_agents_json":
+                metrics = run_collaborative_agents_json(
                     input_file_path=str(input_file_path),
                     output_dir=output_dir,
                     planner_model=cfg.get('llm', 'planner_model'),
@@ -77,8 +79,34 @@ def run_experiment(cfg):
                     max_iterations=cfg.get('agent', 'max_iterations') or 10
                 )
 
-            elif strategy == "competitive_agents":
-                metrics = run_competitive_agents(
+            elif strategy == "collaborative_agents_natural":
+                metrics = run_collaborative_agents_natural(
+                    input_file_path=str(input_file_path),
+                    output_dir=output_dir,
+                    planner_model=cfg.get('llm', 'planner_model'),
+                    generator_model=cfg.get('llm', 'generator_model'),
+                    planner_temperature=cfg.get('llm', 'planner_temperature') or temperature,
+                    generator_temperature=cfg.get('llm', 'generator_temperature') or temperature,
+                    verbose=cfg.get('agent', 'verbose'),
+                    max_iterations=cfg.get('agent', 'max_iterations') or 10
+                )
+
+            elif strategy == "competitive_agents_json":
+                metrics = run_competitive_agents_json(
+                    input_file_path=str(input_file_path),
+                    output_dir=output_dir,
+                    planner_model=cfg.get('llm', 'planner_model'),
+                    generator_model_1=cfg.get('llm', 'generator_model_1'),
+                    generator_model_2=cfg.get('llm', 'generator_model_2'),
+                    planner_temperature=cfg.get('llm', 'planner_temperature') or temperature,
+                    generator_1_temperature=cfg.get('llm', 'generator_1_temperature') or temperature,
+                    generator_2_temperature=cfg.get('llm', 'generator_2_temperature') or temperature,
+                    verbose=cfg.get('agent', 'verbose'),
+                    max_iterations=cfg.get('agent', 'max_iterations') or 10
+                )
+
+            elif strategy == "competitive_agents_natural":
+                metrics = run_competitive_agents_natural(
                     input_file_path=str(input_file_path),
                     output_dir=output_dir,
                     planner_model=cfg.get('llm', 'planner_model'),

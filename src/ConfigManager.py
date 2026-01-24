@@ -12,6 +12,7 @@ class ConfigManager:
             self._merge_configs(self.config, overrides)
 
         # Create a unique ID for this run for result tracking
+        # Use the filename as experiment_name (already includes _json, _natural, etc.)
         self.experiment_name = os.path.splitext(os.path.basename(experiment_file or "default"))[0]
         
         # Generate run_id once at initialization

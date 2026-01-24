@@ -1,0 +1,308 @@
+{
+    "run_id": "collaborative_llama8B_natural_2026-01-24T22-23-47",
+    "experiment_name": "collaborative_llama8B_natural",
+    "timestamp": "2026-01-24T22-23-47",
+    "temperature": 0.0,
+    "results": [
+        {
+            "file": "t18.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 38,
+                "n_passed_tests": 41,
+                "n_failed_tests": 19,
+                "failed_tests_infos": "FAILED test_lst_to_string_empty_list - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_get_char_count_array[a-expected0] - assert [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] == [1]\nFAILED test_get_char_count_array[abcdefgh-expected2] - assert [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] == [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]\nFAILED test_get_char_count_array_duplicate_chars[aaaabbbcc-expected0] - assert [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] == [4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]\nFAILED test_remove_dirty_chars[Hello, - World!-Hello-Hello] - AssertionError: assert 'Hellool' == 'Hello'\nFAILED test_remove_dirty_chars[Hello--Hello] - AssertionError: assert '' == 'Hello'\nFAILED test_remove_dirty_chars[\\n\\n\\n-\\n\\n\\n-] - AssertionError: assert '\\n\\n\\n' == ''\nFAILED test_remove_dirty_chars[\\t\\t\\t-\\t\\t\\t-] - AssertionError: assert '\\t\\t\\t' == ''\nFAILED test_remove_dirty_chars[\\u03b1\\u03b2\\u03b3-\\u03b1\\u03b2\\u03b3-\\u03b1\\u03b2\\u03b3] - IndexError: list index out of range\nFAILED test_remove_dirty_chars_non_ascii[\\u03b1\\u03b2\\u03b3-\\u03b1\\u03b2\\u03b3] - IndexError: list index out of range\nFAILED test_remove_dirty_chars_empty_second_string[Hello, - World!-Hello] - AssertionError: assert 'Hellool' == 'Hello, World!'\nFAILED test_remove_dirty_chars_empty_second_string[Hello-] - AssertionError: assert '' == 'Hello'\nFAILED test_remove_dirty_chars_empty_second_string[Hello- - ] - AssertionError: assert '' == 'Hello'\nFAILED test_remove_dirty_chars_empty_second_string[\\u03b1\\u03b2\\u03b3-\\u03b1\\u03b2\\u03b3] - IndexError: list index out of range\nFAILED test_remove_dirty_chars_second_string_longer_than_string[Hello, - World!-Hello] - AssertionError: assert 'Hellool' == 'Hello, World!'\nFAILED test_remove_dirty_chars_second_string_longer_than_string[Hello-] - AssertionError: assert '' == 'Hello'\nFAILED test_remove_dirty_chars_second_string_longer_than_string[Hello- - ] - AssertionError: assert '' == 'Hello'\nFAILED test_remove_dirty_chars_second_string_longer_than_string[\\u03b1\\u03b2\\u03b3-\\u03b1\\u03b2\\u03b3] - IndexError: list index out of range\nFAILED test_remove_dirty_chars_non_ascii_second_string[\\u03b1\\u03b2\\u03b3-\\u03b1\\u03b2\\u03b3] - IndexError: list index out of range",
+                "iterations": 3,
+                "total_tokens": 16016,
+                "mutation_score_percent": 6.67,
+                "mutation_killed": 2,
+                "mutation_survived": 28
+            }
+        },
+        {
+            "file": "t16.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 10,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 3,
+                "total_tokens": 4111,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t15.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 7,
+                "n_failed_tests": 7,
+                "failed_tests_infos": "FAILED test_split_lowerstring_success[hello - world-expected0] - AssertionError: assert ['h', 'e', 'l', 'l', 'o ', 'w', 'o', 'r', 'l', 'd'] == ['hello', 'world']\nFAILED test_split_lowerstring_success[hellohello-expected1] - AssertionError: assert ['h', 'e', 'l', 'l', 'o', 'h', 'e', 'l', 'l', 'o'] == ['hello', 'hello']\nFAILED test_split_lowerstring_mixed_case - AssertionError: assert ['e', 'l', 'l', 'o W', 'o', 'r', 'l', 'd'] == ['Hello', 'World']\nFAILED test_split_lowerstring_with_spaces - AssertionError: assert ['h', 'e', 'l', 'l', 'o   ', 'w', 'o', 'r', 'l', 'd  '] == ['hello', 'world']\nFAILED test_split_lowerstring_with_punctuation - AssertionError: assert ['h', 'e', 'l', 'l', 'o, ', 'w', 'o', 'r', 'l', 'd!'] == ['hello', 'world']\nFAILED test_split_lowerstring_with_numbers - AssertionError: assert ['h', 'e', 'l', 'l', 'o123', 'w', 'o', 'r', 'l', 'd'] == ['hello123world']\nFAILED test_split_lowerstring_with_multiple_consecutive_lowercase - AssertionError: assert ['h', 'e', 'l', 'l', 'o', 'h', 'e', 'l', 'l', 'o', 'h', 'e', 'l', 'l', 'o'] == ['hellohellohello']",
+                "iterations": 3,
+                "total_tokens": 3799,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 1
+            }
+        },
+        {
+            "file": "t9.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 9,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 2,
+                "total_tokens": 3035,
+                "mutation_score_percent": 75.0,
+                "mutation_killed": 6,
+                "mutation_survived": 2
+            }
+        },
+        {
+            "file": "t8.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 1,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 2,
+                "total_tokens": 2554,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t12.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 7,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 2,
+                "total_tokens": 3215,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t7.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 10,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "FAILED test_find_char_long_punctuation - AssertionError: assert ['Hello', 'World'] == []",
+                "iterations": 3,
+                "total_tokens": 3335,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t4.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 11,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_heap_queue_largest_success[nums4-5-expected4] - assert [30, 20, 10] == [30, 20, 10, 10, 10]\nFAILED test_heap_queue_largest_too_large_n - Failed: DID NOT RAISE <class 'ValueError'>",
+                "iterations": 3,
+                "total_tokens": 4407,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t19.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 11,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_is_duplicate_non_hashable_type - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_is_duplicate_non_list_string - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_is_duplicate_non_hashable_string - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 3,
+                "total_tokens": 3880,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 2,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t3.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 7,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_is_not_prime_zero - assert False\nFAILED test_is_not_prime_number_equal_to_1 - assert False\nFAILED test_is_not_prime_zero_divisor - Failed: DID NOT RAISE <class 'ValueError'>",
+                "iterations": 3,
+                "total_tokens": 3974,
+                "mutation_score_percent": 90.0,
+                "mutation_killed": 9,
+                "mutation_survived": 1
+            }
+        },
+        {
+            "file": "t13.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 7,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_count_common_none_values - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_count_common_non_string_values - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_count_common_none_values_output - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_count_common_non_string_values_output - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 3,
+                "total_tokens": 4623,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 3,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t2.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 8,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_similar_elements_non_hashable_input - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_similar_elements_non_tuple_input - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_similar_elements_set_input - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_similar_elements_mixed_types - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 3,
+                "total_tokens": 5175,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 2,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t17.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 2,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_square_perimeter_negative - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_non_numeric - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_complex - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_non_integer - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 3,
+                "total_tokens": 3337,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 3,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t11.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 16,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_remove_Occ_none_input_char - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_remove_Occ_non_string_input_char - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 3,
+                "total_tokens": 4737,
+                "mutation_score_percent": 80.0,
+                "mutation_killed": 16,
+                "mutation_survived": 4
+            }
+        },
+        {
+            "file": "t10.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 75,
+                "n_passed_tests": 9,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "FAILED test_small_nnum_success[list12-2-expected2] - assert [-10, -8] == [-10, -5]",
+                "iterations": 3,
+                "total_tokens": 4829,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t1.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 69,
+                "n_passed_tests": 4,
+                "n_failed_tests": 8,
+                "failed_tests_infos": "FAILED test_min_cost_success[cost0-1-1-1] - IndexError: list index out of range\nFAILED test_min_cost_success[cost1-2-2-5] - IndexError: list index out of range\nFAILED test_min_cost_success[cost2-3-3-12] - IndexError: list index out of range\nFAILED test_min_cost_smaller_matrix_m - IndexError: list index out of range\nFAILED test_min_cost_smaller_matrix_n - IndexError: list index out of range\nFAILED test_min_cost_all_zeros - IndexError: list index out of range\nFAILED test_min_cost_negative_values - IndexError: list index out of range\nFAILED test_min_cost_large_values - IndexError: list index out of range",
+                "iterations": 3,
+                "total_tokens": 6437,
+                "mutation_score_percent": 27.66,
+                "mutation_killed": 13,
+                "mutation_survived": 34
+            }
+        },
+        {
+            "file": "t20.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 5,
+                "failed_tests_infos": "FAILED test_multiples_of_num_success[0-0-expected2] - ValueError: range() arg 3 must not be zero\nFAILED test_multiples_of_num_success[-5-2-expected3] - assert [] == [-10, -8, -6, -4, -2]\nFAILED test_multiples_of_num_zero - ValueError: range() arg 3 must not be zero\nFAILED test_multiples_of_num_negative_multiplier - assert [] == [-10, -8, -6, -4, -2]\nFAILED test_multiples_of_num_negative_number - assert [-2, -4, -6, -8, -10] == []",
+                "iterations": 3,
+                "total_tokens": 4419,
+                "mutation_score_percent": 75.0,
+                "mutation_killed": 3,
+                "mutation_survived": 1
+            }
+        },
+        {
+            "file": "t14.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 6,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_find_Volume_zero_base - Failed: DID NOT RAISE <class 'ZeroDivisionError'>\nFAILED test_find_Volume_floating_point_input - assert 88.30499999999999 == 88.305",
+                "iterations": 3,
+                "total_tokens": 3565,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t6.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 8,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1777,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 6,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t5.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 18,
+                "n_passed_tests": 3,
+                "n_failed_tests": 8,
+                "failed_tests_infos": "FAILED test_count_ways_success[3-4] - assert 0 == 4\nFAILED test_count_ways_success[1-1] - assert 0 == 1\nFAILED test_count_ways_success[0-1] - IndexError: list assignment index out of range\nFAILED test_count_ways_negative_error[-1] - IndexError: list assignment index out of range\nFAILED test_count_ways_negative_error[-100] - IndexError: list assignment index out of range\nFAILED test_count_ways_negative_error[-1000] - IndexError: list assignment index out of range\nFAILED test_count_ways_large_input - assert 7424580412223196202895949384810803026794570617631909076111668818665385199533772702640636049290938823932530336092053295714677938324976257680329735042825922332254742656185337688282886926827702457299195194779497983305675993745796937417114740601377128195365234422911247446963166340427777721 == 499500\nFAILED test_count_ways_zero_input - IndexError: list assignment index out of range",
+                "iterations": 3,
+                "total_tokens": 5659,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 39
+            }
+        }
+    ]
+}

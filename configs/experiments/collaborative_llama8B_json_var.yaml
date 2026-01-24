@@ -1,0 +1,15 @@
+experiment:
+  type: "collaborative_agents_json"
+  name: "collaborative_custom_temperatures"
+  input_path: "data/input_code"
+
+llm:
+  planner_model: "llama-3.1-8b-instant"
+  generator_model: "llama-3.1-8b-instant"
+  
+  # Individual temperatures for each agent
+  planner_temperature: 0.2    # Deterministic behaviour for planner
+  generator_temperature: 0.2  #  Deterministic behaviour for generator
+
+agent:
+  max_iterations: 6
