@@ -1,0 +1,15 @@
+experiment:
+  type: "collaborative_agents"
+  name: "collaborative_custom_temperatures"
+  input_path: "data/input_code"
+
+llm:
+  planner_model: "openai/gpt-oss-20b"
+  generator_model: "openai/gpt-oss-120b"
+  
+  # Individual temperatures for each agent
+  planner_temperature: 0.1    # Lower temperature for more consistent planning
+  generator_temperature: 0.4  # Higher temperature for more creative test generation
+
+agent:
+  max_iterations: 5

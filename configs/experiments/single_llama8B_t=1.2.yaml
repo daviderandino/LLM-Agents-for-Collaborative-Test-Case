@@ -5,5 +5,5 @@ experiment:
   input_path: "data/input_code"
 
 llm:
-  model: "llama-3.3-70b-versatile"
-  temperature: 0.2
+  model: "llama-3.1-8b-instant"
+  temperature: 1.2

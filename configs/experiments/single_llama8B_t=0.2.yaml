@@ -1,8 +1,9 @@
+
 experiment:
   type: "single_agent"
-  name: "single_agent-oss"
+  name: "single_lama_baseline"
   input_path: "data/input_code"
 
 llm:
-  model: "openai/gpt-oss-20b"
+  model: "llama-3.1-8b-instant"
   temperature: 0.2
