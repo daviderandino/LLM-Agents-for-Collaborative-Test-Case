@@ -3,6 +3,7 @@ from langgraph.graph import StateGraph, END
 from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
 import logging
+import time
 
 from src.utils.file_manager import obtain_import_module_str, read_text
 from src.utils.code_parser import clean_llm_python, syntax_check
@@ -287,6 +288,8 @@ class MultiAgentCompetitiveGraph:
             }
 
     def _gen_wrapper_1(self, state: AgentState):
+        self.logger.info(color_text("--- WAITING 10 SECONDS BEFORE DEV 1 ---", "yellow"))
+        time.sleep(10)
         self.logger.info(color_text("--- DEV 1 WORKING ---", "cyan"))
         result_code, tokens = self._generation_logic(state, self.llm_generator_1, "DEV 1")
         return {
@@ -295,6 +298,8 @@ class MultiAgentCompetitiveGraph:
         }
     
     def _gen_wrapper_2(self, state: AgentState):
+        self.logger.info(color_text("--- WAITING 20 SECONDS BEFORE DEV 2 ---", "yellow"))
+        time.sleep(20)
         self.logger.info(color_text("--- DEV 2 WORKING ---", "cyan"))
         result_code, tokens = self._generation_logic(state, self.llm_generator_2, "DEV 2")
         return {
