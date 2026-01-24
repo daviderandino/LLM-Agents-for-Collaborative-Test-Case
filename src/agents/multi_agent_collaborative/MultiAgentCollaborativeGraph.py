@@ -3,6 +3,7 @@ from langgraph.graph import StateGraph, END
 from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
 import logging
+import time
 
 from src.utils.file_manager import obtain_import_module_str, read_text
 from src.utils.code_parser import clean_llm_python, syntax_check
@@ -282,6 +283,9 @@ class MultiAgentCollaborativeGraph:
         """
         Writes or fixes the Python code for the tests.
         """
+        self.logger.info(color_text("--- WAITING 10 SECONDS BEFORE DEVELOPER ---", "yellow"))
+        time.sleep(10)
+        
         messages = []
         invoke_args = {}
         step_name = ""
