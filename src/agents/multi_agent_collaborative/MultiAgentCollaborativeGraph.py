@@ -520,7 +520,7 @@ class MultiAgentCollaborativeGraph:
         }
 
     def _route_to(self, state: AgentState):
-        if state["iterations"] > state["max_iterations"]:
+        if state["iterations"] >= state["max_iterations"]:
             return "end"
 
         if (state["pytest_error"] or state["syntax_error"] or state["n_failed_tests"] > 0):
