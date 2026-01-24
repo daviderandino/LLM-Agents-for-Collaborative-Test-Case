@@ -9,9 +9,9 @@ llm:
   generator_model_2: "llama-3.3-70b-versatile"
   
   # Individual temperatures for each agent
-  planner_temperature: 0.0       # Very deterministic planning
-  generator_1_temperature: 0.3   # Moderate creativity for first generator
-  generator_2_temperature: 0.5   # Higher creativity for second generator
+  planner_temperature: 0.0       # Deterministic
+  generator_1_temperature: 0.0   # Deterministic behaviour for first developer
+  generator_2_temperature: 0.6   # Crative behavious for second developer
 
 agent:
   max_iterations: 5

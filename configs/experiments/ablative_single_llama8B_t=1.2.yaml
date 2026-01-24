@@ -1,9 +1,9 @@
 
 experiment:
-  type: "single_agent_ablative"
+  type: "single_agent"
   name: "single_lama_baseline"
   input_path: "data/input_code"
 
 llm:
   model: "llama-3.1-8b-instant"
-  temperature: 0.4
+  temperature: 1.2

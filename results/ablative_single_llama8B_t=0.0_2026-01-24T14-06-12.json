@@ -1,6 +1,6 @@
 {
-    "run_id": "single_llama8B_t=0.0_2026-01-24T14-06-12",
-    "experiment_name": "single_llama8B_t=0.0",
+    "run_id": "ablative_single_llama8B_t=0.0_2026-01-24T14-06-12",
+    "experiment_name": "ablative_single_llama8B_t=0.0",
     "timestamp": "2026-01-24T14-06-12",
     "temperature": 0,
     "results": [
