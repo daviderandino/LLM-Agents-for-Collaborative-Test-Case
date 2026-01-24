@@ -14,4 +14,4 @@ llm:
   generator_2_temperature: 0.6   # Crative behavious for second developer
 
 agent:
-  max_iterations: 5
+  max_iterations: 3
