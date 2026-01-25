@@ -1,0 +1,248 @@
+{
+    "run_id": "collaborative_llama8B_natural_2026-01-25T13-11-53",
+    "experiment_name": "collaborative_llama8B_natural",
+    "timestamp": "2026-01-25T13-11-53",
+    "temperature": 0.0,
+    "results": [
+        {
+            "file": "t16.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 7,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_text_lowercase_underscore_pattern_mismatch[h\\xe9llo_world-Found - a match!] - AssertionError: assert 'Not matched!' == 'Found a match!'\nFAILED test_text_lowercase_underscore_valid_input - AssertionError: assert 'Not matched!' == 'Found a match!'",
+                "iterations": 3,
+                "total_tokens": 3780,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t1.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 6,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_min_cost_zero_size - assert 1 == 0\nFAILED test_min_cost_size_mismatch - IndexError: list index out of range",
+                "iterations": 3,
+                "total_tokens": 6079,
+                "mutation_score_percent": 82.98,
+                "mutation_killed": 39,
+                "mutation_survived": 8
+            }
+        },
+        {
+            "file": "t9.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 7,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_find_Rotations[abba-1] - AssertionError: assert 4 == 1\nFAILED test_find_Rotations[abcabcabc-1] - AssertionError: assert 3 == 1",
+                "iterations": 3,
+                "total_tokens": 3528,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t20.py",
+            "status": "error",
+            "error": "Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 8437, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t5.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 18,
+                "n_passed_tests": 2,
+                "n_failed_tests": 14,
+                "failed_tests_infos": "FAILED test_count_ways_base_cases - IndexError: list assignment index out of range\nFAILED test_count_ways_normal_execution[2-1] - assert 3 == 1\nFAILED test_count_ways_normal_execution[3-1] - assert 0 == 1\nFAILED test_count_ways_normal_execution[4-3] - assert 11 == 3\nFAILED test_count_ways_normal_execution[5-7] - assert 0 == 7\nFAILED test_count_ways_normal_execution[6-13] - assert 41 == 13\nFAILED test_count_ways_normal_execution[7-24] - assert 0 == 24\nFAILED test_count_ways_normal_execution[8-44] - assert 153 == 44\nFAILED test_count_ways_normal_execution[9-81] - assert 0 == 81\nFAILED test_count_ways_normal_execution[10-149] - assert 571 == 149\nFAILED test_count_ways_normal_execution[100-354224848179261915075] - assert 31208688988045323113527764971 == 354224848179261915075\nFAILED test_count_ways_negative_numbers - IndexError: list assignment index out of range\nFAILED test_count_ways_edge_conditions - TypeError: can't multiply sequence by non-int of type 'float'\nFAILED test_count_ways_normal_execution_edge_cases - assert 3 == 1",
+                "iterations": 3,
+                "total_tokens": 4993,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 39
+            }
+        },
+        {
+            "file": "t12.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 9,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_sort_matrix_single_column - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_sort_matrix_inconsistent_row_length - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_sort_matrix_inconsistent_row_length_sort - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 3,
+                "total_tokens": 5324,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t11.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 7,
+                "n_failed_tests": 9,
+                "failed_tests_infos": "FAILED test_remove_Occ_success[None-a-None] - TypeError: object of type 'NoneType' has no len()\nFAILED test_remove_Occ_success[123-a-None] - TypeError: object of type 'int' has no len()\nFAILED test_remove_Occ_success[hello-1-None] - AssertionError: assert 'hello' is None\nFAILED test_remove_Occ_success[llama-l-amma0] - AssertionError: assert 'ama' == 'amma'\nFAILED test_remove_Occ_success[llama-l-amma1] - AssertionError: assert 'ama' == 'amma'\nFAILED test_remove_Occ_success[llama-m-lla] - AssertionError: assert 'llaa' == 'lla'\nFAILED test_remove_Occ_type_error[hello-None] - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_remove_Occ_value_error[123-a] - TypeError: object of type 'int' has no len()\nFAILED test_remove_Occ_value_error[hello-1] - AssertionError: assert 'hello' is None",
+                "iterations": 3,
+                "total_tokens": 5276,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t7.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 10,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 3,
+                "total_tokens": 3348,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t15.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 3,
+                "n_failed_tests": 6,
+                "failed_tests_infos": "FAILED test_split_lowerstring[Hello - world-expected0] - AssertionError: assert ['e', 'l', 'l', 'o ', 'w', 'o', 'r', 'l', 'd'] == ['hello', 'world']\nFAILED test_split_lowerstring[123-expected4] - ValueError: expected exception must be a BaseException type, not 'RaisesExc'\nFAILED test_split_lowerstring[None-expected5] - ValueError: expected exception must be a BaseException type, not 'RaisesExc'\nFAILED test_split_lowerstring[Hello! - world-expected6] - AssertionError: assert ['e', 'l', 'l', 'o! ', 'w', 'o', 'r', 'l', 'd'] == ['hello', 'world']\nFAILED test_split_lowerstring[h\\xebllo-expected7] - AssertionError: assert ['h\u00eb', 'l', 'l', 'o'] == ['h\u00ebllo']\nFAILED test_split_lowerstring[Hello - world-expected8] - AssertionError: assert ['e', 'l', 'l', 'o   ', 'w', 'o', 'r', 'l', 'd'] == ['hello', 'world']",
+                "iterations": 3,
+                "total_tokens": 3933,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t8.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 8,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1934,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t17.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 67,
+                "n_passed_tests": 3,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_square_perimeter_positive[-5-20] - assert -20 == 20\nFAILED test_square_perimeter_non_numeric - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_non_integer - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 3,
+                "total_tokens": 3085,
+                "mutation_score_percent": 33.33,
+                "mutation_killed": 1,
+                "mutation_survived": 2
+            }
+        },
+        {
+            "file": "t3.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 57,
+                "n_passed_tests": 7,
+                "n_failed_tests": 5,
+                "failed_tests_infos": "FAILED test_is_not_prime_success[0-True] - assert False == True\nFAILED test_is_not_prime_success[-5-True] - ValueError: math domain error\nFAILED test_is_not_prime_success[1-True] - assert False == True\nFAILED test_is_not_prime_non_integer_input - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_is_not_prime_one_input - Failed: DID NOT RAISE <class 'ValueError'>",
+                "iterations": 3,
+                "total_tokens": 4038,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 10
+            }
+        },
+        {
+            "file": "t18.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 20,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_get_char_count_array[Hello-expected0] - assert [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] == [72, 101, 108, 108, 111]\nFAILED test_remove_dirty_chars_output[\\xe1\\xe9\\xed\\xf3\\xfa-\\xe1\\xe9\\xed\\xf3\\xfa-\\xe1\\xe9\\xed\\xf3\\xfa] - AssertionError: assert '' == '\u00e1\u00e9\u00ed\u00f3\u00fa'",
+                "iterations": 3,
+                "total_tokens": 7865,
+                "mutation_score_percent": 75.86,
+                "mutation_killed": 22,
+                "mutation_survived": 7
+            }
+        },
+        {
+            "file": "t10.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 0,
+                "n_failed_tests": 7,
+                "failed_tests_infos": "FAILED test_small_nnum[list10-3-expected0] - AssertionError: assert 'Expected small_nnum([1, 2, 3, 4, 5], 3) to raise an exception, but it returned [1, 2, 3]\\nassert False' == '[1, 2, 3]'\nFAILED test_small_nnum[list11-3-expected1] - AssertionError: assert 'Expected small_nnum([], 3) to raise an exception, but it returned []\\nassert False' == '[]'\nFAILED test_small_nnum[list12-3-expected2] - AssertionError: assert 'Expected small_nnum([1, 2, 2, 3, 4], 3) to raise an exception, but it returned [1, 2, 2]\\nassert False' == '[1, 2, 2]'\nFAILED test_small_nnum[list13-3-TypeError] - assert \"'<' not supported between instances of 'int' and 'str'\" == 'TypeError'\nFAILED test_small_nnum[list14--3-ValueError] - AssertionError: assert 'Expected small_nnum([1, 2, 3, 4, 5], -3) to raise an exception, but it returned []\\nassert False' == 'ValueError'\nFAILED test_small_nnum[list15-5-expected5] - AssertionError: assert 'Expected small_nnum([1, 2, 3, 4, 5], 5) to raise an exception, but it returned [1, 2, 3, 4, 5]\\nassert False' == '[1, 2, 3, 4, 5]'\nFAILED test_small_nnum[list16-10-expected6] - AssertionError: assert 'Expected small_nnum([1, 2, 3, 4, 5], 10) to raise an exception, but it returned [1, 2, 3, 4, 5]\\nassert False' == '[1, 2, 3, 4, 5]'",
+                "iterations": 3,
+                "total_tokens": 3968,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t14.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 1,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "FAILED test_find_Volume_success - Failed: DID NOT RAISE <class 'ZeroDivisionError'>",
+                "iterations": 3,
+                "total_tokens": 4009,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t4.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499527, Requested 837. Please try again in 1m2.8992s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t13.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499942, Requested 797. Please try again in 2m7.699199999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t6.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499940, Requested 593. Please try again in 1m32.1024s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t2.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499938, Requested 582. Please try again in 1m29.856s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t19.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499935, Requested 573. Please try again in 1m27.7824s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        }
+    ]
+}
