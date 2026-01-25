@@ -8,8 +8,8 @@ llm:
   generator_model: "llama-3.1-8b-instant"
   
   # Individual temperatures for each agent
-  planner_temperature: 0    # Deterministic behaviour for planner
-  generator_temperature: 0  #  Deterministic behaviour for generator
+  planner_temperature: 0.6    # Deterministic behaviour for planner
+  generator_temperature: 0.0  #  Deterministic behaviour for generator
 
 agent:
   max_iterations: 6

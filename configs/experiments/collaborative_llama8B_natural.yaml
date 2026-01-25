@@ -9,7 +9,7 @@ llm:
   
   # Individual temperatures for each agent
   planner_temperature: 0.6    # Deterministic behaviour for planner
-  generator_temperature: 0.2  #  Deterministic behaviour for generator
+  generator_temperature: 0.0  #  Deterministic behaviour for generator
 
 agent:
   max_iterations: 3

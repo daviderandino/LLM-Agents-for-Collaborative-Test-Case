@@ -6,4 +6,4 @@ experiment:
 
 llm:
   model: "llama-3.1-8b-instant"
-  temperature: 0
+  temperature: 0.0
