@@ -1,0 +1,108 @@
+{
+    "run_id": "competitive_llama8B_natural_2026-01-25T13-27-26",
+    "experiment_name": "competitive_llama8B_natural",
+    "timestamp": "2026-01-25T13-27-26",
+    "temperature": 0.0,
+    "results": [
+        {
+            "file": "t16.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499895, Requested 595. Please try again in 1m24.672s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t1.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499892, Requested 735. Please try again in 1m48.345599999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t9.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499889, Requested 607. Please try again in 1m25.7088s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t20.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499887, Requested 581. Please try again in 1m20.8704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t5.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499884, Requested 669. Please try again in 1m35.5584s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t12.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499881, Requested 564. Please try again in 1m16.896s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t11.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499878, Requested 644. Please try again in 1m30.2016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t7.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499876, Requested 573. Please try again in 1m17.5872s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t15.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499873, Requested 570. Please try again in 1m16.5504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t8.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499870, Requested 570. Please try again in 1m16.032s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t17.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499867, Requested 562. Please try again in 1m14.1312s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t3.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499865, Requested 594. Please try again in 1m19.3152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t18.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499862, Requested 743. Please try again in 1m44.544s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t10.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499859, Requested 573. Please try again in 1m14.6496s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t14.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499856, Requested 570. Please try again in 1m13.6128s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t4.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499854, Requested 578. Please try again in 1m14.6496s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t13.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499851, Requested 581. Please try again in 1m14.6496s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t6.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499848, Requested 593. Please try again in 1m16.204799999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t2.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499844, Requested 582. Please try again in 1m13.6128s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t19.py",
+            "status": "error",
+            "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.1-8b-instant` in organization `org_01kfrjkyqhf71thv92948zx917` service tier `on_demand` on tokens per day (TPD): Limit 500000, Used 499840, Requested 573. Please try again in 1m11.3664s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        }
+    ]
+}
