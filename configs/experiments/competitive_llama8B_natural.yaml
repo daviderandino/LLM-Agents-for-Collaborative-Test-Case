@@ -9,8 +9,8 @@ llm:
   generator_model_2: "llama-3.1-8b-instant"
   
   # Individual temperatures for each agent
-  planner_temperature: 0.0       # Deterministic
-  generator_1_temperature: 0.0   # Deterministic behaviour for first developer
+  planner_temperature: 0.6       # Deterministic
+  generator_1_temperature: 0.2   # Deterministic behaviour for first developer
   generator_2_temperature: 0.6   # Crative behavious for second developer
 
 agent:
