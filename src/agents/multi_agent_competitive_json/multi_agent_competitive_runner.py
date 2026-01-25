@@ -1,4 +1,4 @@
-from src.agents.multi_agent_competitive.MultiAgentCompetitiveGraph import MultiAgentCompetitiveGraph
+from src.agents.multi_agent_competitive_json.MultiAgentCompetitiveGraph import MultiAgentCompetitiveGraph
 from src.agents.llm_factory import get_llm
 
 def run_competitive_agents(

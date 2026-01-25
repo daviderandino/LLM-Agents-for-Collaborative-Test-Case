@@ -1,4 +1,4 @@
-from src.agents.multi_agent_collaborative.MultiAgentCollaborativeGraph import MultiAgentCollaborativeGraph 
+from src.agents.multi_agent_collaborative_json.MultiAgentCollaborativeGraph import MultiAgentCollaborativeGraph 
 from src.agents.llm_factory import get_llm
 
 def run_collaborative_agents(
