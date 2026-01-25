@@ -10,8 +10,8 @@ llm:
   
   # Individual temperatures for each agent
   planner_temperature: 0.6       # Deterministic
-  generator_1_temperature: 0.2   # Deterministic behaviour for first developer
-  generator_2_temperature: 0.6   # Crative behavious for second developer
+  generator_1_temperature: 0.0   # Deterministic behaviour for first developer
+  generator_2_temperature: 0.4   # Crative behavious for second developer
 
 agent:
   max_iterations: 3
