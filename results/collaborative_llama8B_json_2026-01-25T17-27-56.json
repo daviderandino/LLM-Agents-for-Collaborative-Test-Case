@@ -1,0 +1,287 @@
+{
+    "run_id": "collaborative_llama8B_json_2026-01-25T17-27-56",
+    "experiment_name": "collaborative_llama8B_json",
+    "timestamp": "2026-01-25T17-27-56",
+    "temperature": 0.0,
+    "results": [
+        {
+            "file": "t18.py",
+            "status": "error",
+            "error": "Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organization `org_01kfrk3haqfmk8hthhy19pf4f6` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 8790, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t16.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 4,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "FAILED test_text_lowercase_underscore[None-Not - matched!] - TypeError: expected string or bytes-like object, got 'NoneType'",
+                "iterations": 6,
+                "total_tokens": 4861,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t15.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 2,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_split_lowerstring_success[Hello - World-expected0] - AssertionError: assert ['e', 'l', 'l', 'o W', 'o', 'r', 'l', 'd'] == ['Hello', 'World']\nFAILED test_split_lowerstring_success[HELLO - WORLD-expected1] - AssertionError: assert [] == ['HELLO', 'WORLD']\nFAILED test_split_lowerstring_success[Hello123World-expected2] - AssertionError: assert ['e', 'l', 'l', 'o123W', 'o', 'r', 'l', 'd'] == ['Hello123World']\nFAILED test_split_lowerstring_success[Hello - World, foo bar-expected3] - AssertionError: assert ['e', 'l', 'l', 'o W', 'o', 'r', 'l', 'd, ', 'f', 'o', 'o ', 'b', 'a', 'r'] == ['Hello World, foo bar']",
+                "iterations": 6,
+                "total_tokens": 5550,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 1
+            }
+        },
+        {
+            "file": "t9.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 2,
+                "total_tokens": 2152,
+                "mutation_score_percent": 55.56,
+                "mutation_killed": 5,
+                "mutation_survived": 4
+            }
+        },
+        {
+            "file": "t8.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1405,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t12.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 3,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_sort_matrix[M0-expected0] - assert [[1, 4, 6], [5, 2, 8], [7, 3, 9]] == [[1, 4, 6], [2, 5, 8], [3, 7, 9]]\nFAILED test_sort_matrix[M4-expected4] - assert [[1, 4, 6], [7, 3, 9], [10, 2, 8]] == [[1, 4, 6], [2, 5, 8], [3, 7, 9]]\nFAILED test_sort_matrix[M5-expected5] - assert [[7, 3, 0], [1, 4, 6], [5, 2, 8]] == [[1, 4, 6], [2, 5, 8], [7, 3, 0]]",
+                "iterations": 6,
+                "total_tokens": 7730,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t7.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 6,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 2,
+                "total_tokens": 2044,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t4.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 3,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_heap_queue_largest[nums1-1-expected1] - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_heap_queue_largest[nums3--1-expected3] - Failed: DID NOT RAISE <class 'ValueError'>",
+                "iterations": 6,
+                "total_tokens": 5454,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t19.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1306,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 2,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t3.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 6,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_is_not_prime_zero - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_is_not_prime_negative_result - ValueError: math domain error",
+                "iterations": 6,
+                "total_tokens": 5036,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 10,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t13.py",
+            "status": "failed",
+            "error": "Syntax error in generated test: SyntaxError: closing parenthesis ']' does not match opening parenthesis '('",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 0,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 6,
+                "total_tokens": 7491,
+                "mutation_score_percent": null
+            }
+        },
+        {
+            "file": "t2.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1454,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 2,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t17.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 3,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1142,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 3,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t11.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 7,
+                "n_failed_tests": 1,
+                "failed_tests_infos": "FAILED test_remove_Occ[None-a-ValueError] - TypeError: object of type 'NoneType' has no len()",
+                "iterations": 6,
+                "total_tokens": 5747,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t10.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1543,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t1.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 2,
+                "n_failed_tests": 5,
+                "failed_tests_infos": "FAILED test_min_cost[cost0-2-2-11] - AssertionError: Expected 11 but got 15\nFAILED test_min_cost[cost2-3-3-31] - IndexError: list index out of range\nFAILED test_min_cost[cost3-3-3-31] - IndexError: list index out of range\nFAILED test_min_cost[cost4-3-3-0] - IndexError: list index out of range\nFAILED test_min_cost[cost6-1-1-TypeError] - IndexError: list index out of range",
+                "iterations": 6,
+                "total_tokens": 8905,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t20.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 67,
+                "n_passed_tests": 4,
+                "n_failed_tests": 5,
+                "failed_tests_infos": "FAILED test_multiples_of_num[5-0-expected2] - ValueError: range() arg 3 must not be zero\nFAILED test_multiples_of_num[0-0-expected4] - ValueError: range() arg 3 must not be zero\nFAILED test_multiples_of_num_m_lt_n - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_multiples_of_num_m_zero - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_multiples_of_num_invalid_range - Failed: DID NOT RAISE <class 'ValueError'>",
+                "iterations": 6,
+                "total_tokens": 5586,
+                "mutation_score_percent": 50.0,
+                "mutation_killed": 2,
+                "mutation_survived": 2
+            }
+        },
+        {
+            "file": "t14.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_find_Volume_error - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_find_Volume_zero_division - Failed: DID NOT RAISE <class 'ZeroDivisionError'>\nFAILED test_find_Volume_non_negative_dimensions - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_find_Volume_non_zero_dimensions - Failed: DID NOT RAISE <class 'ValueError'>",
+                "iterations": 6,
+                "total_tokens": 5259,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t6.py",
+            "status": "error",
+            "error": "Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organization `org_01kfrk3haqfmk8hthhy19pf4f6` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 10309, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t5.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 0,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 6,
+                "total_tokens": 5543,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        }
+    ]
+}

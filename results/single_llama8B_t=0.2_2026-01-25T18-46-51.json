@@ -1,0 +1,306 @@
+{
+    "run_id": "single_llama8B_t=0.2_2026-01-25T18-46-51",
+    "experiment_name": "single_llama8B_t=0.2",
+    "timestamp": "2026-01-25T18-46-51",
+    "temperature": 0.2,
+    "results": [
+        {
+            "file": "t18.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 62,
+                "n_passed_tests": 1,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_str_to_list - TypeError: 'NoneType' object is not iterable\nFAILED test_lst_to_string - TypeError: can only join an iterable\nFAILED test_get_char_count_array - assert [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] == [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]\nFAILED test_remove_dirty_chars - AssertionError: assert 'He' == 'Hlo'",
+                "iterations": 0,
+                "total_tokens": 1164,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 30
+            }
+        },
+        {
+            "file": "t16.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_text_lowercase_underscore_none - TypeError: expected string or bytes-like object, got 'NoneType'\nFAILED test_text_lowercase_underscore_valid_pattern_with_numbers - AssertionError: assert 'Not matched!' == 'Found a match!'\nFAILED test_text_lowercase_underscore_valid_pattern_with_special_chars - AssertionError: assert 'Not matched!' == 'Found a match!'",
+                "iterations": 0,
+                "total_tokens": 549,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t15.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 9,
+                "failed_tests_infos": "FAILED test_split_lowerstring_multiple_lower_case - AssertionError: assert ['a', 'b', 'c123', 'd', 'e', 'f'] == ['abc', 'def']\nFAILED test_split_lower_case_with_special_chars - AssertionError: assert ['a!', 'b@', 'c#'] == ['a!b@c#']\nFAILED test_split_lower_case_with_punctuation - AssertionError: assert ['a,', 'b.', 'c'] == ['a', 'b.c']\nFAILED test_split_lower_case_with_whitespace - AssertionError: assert ['a ', 'b ', 'c'] == ['a', 'b', 'c']\nFAILED test_split_lower_case_with_newline - AssertionError: assert ['a\\n', 'b\\n', 'c'] == ['a', 'b', 'c']\nFAILED test_split_lower_case_with_tabs - AssertionError: assert ['a\\t', 'b\\t', 'c'] == ['a', 'b', 'c']\nFAILED test_split_lower_case_with_multiple_whitespace - AssertionError: assert ['a   ', 'b   ', 'c'] == ['a', 'b', 'c']\nFAILED test_split_lower_case_with_empty_list - TypeError: expected string or bytes-like object, got 'list'\nFAILED test_split_lower_case_with_none - TypeError: expected string or bytes-like object, got 'NoneType'",
+                "iterations": 0,
+                "total_tokens": 694,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t9.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_find_Rotations_success - AssertionError: assert 5 == 1\nFAILED test_find_Rotations_long_string - AssertionError: assert 26 == 1\nFAILED test_find_Rotations_string_with_spaces - AssertionError: assert 6 == 1\nFAILED test_find_Rotations_string_with_special_chars - AssertionError: assert 6 == 1",
+                "iterations": 0,
+                "total_tokens": 681,
+                "mutation_score_percent": 55.56,
+                "mutation_killed": 5,
+                "mutation_survived": 4
+            }
+        },
+        {
+            "file": "t8.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 6,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 486,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t12.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_sort_matrix_success - assert [[3, 2], [1, 4]] == [[1, 4], [3, 2]]\nFAILED test_sort_matrix_matrix_with_negative_numbers - assert [[1, -4], [-3, 2]] == [[-4, -3], [2, 1]]\nFAILED test_sort_matrix_matrix_with_zero - assert [[1, 0], [0, 2]] == [[0, 0], [2, 1]]",
+                "iterations": 0,
+                "total_tokens": 656,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t7.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_find_char_long_success - AssertionError: assert ['Hello', 'world', 'This', 'test', 'string', 'with', 'words', 'length', 'more'] == ['world', 'test', 'string', 'words', 'length', 'more']\nFAILED test_find_char_long_multiple_words - AssertionError: assert ['Hello', 'world', 'this', 'test', 'string', 'with', 'words', 'length', 'more'] == ['world', 'test', 'string', 'words', 'length', 'more']",
+                "iterations": 0,
+                "total_tokens": 596,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t4.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_heap_queue_largest_empty_list - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_heap_queue_largest_zero_n - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_heap_queue_largest_negative_n - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_heap_queue_largest_large_n - Failed: DID NOT RAISE <class 'ValueError'>",
+                "iterations": 0,
+                "total_tokens": 706,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t19.py",
+            "status": "failed",
+            "error": "Syntax error in generated test: SyntaxError: expected '('",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 0,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 8517
+            }
+        },
+        {
+            "file": "t3.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 6,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_is_not_prime_negative_numbers - ValueError: math domain error\nFAILED test_is_not_prime_non_integer - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 0,
+                "total_tokens": 588,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 10,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t13.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 7,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_count_common_non_list_input - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_count_common_non_string_input - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 0,
+                "total_tokens": 615,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 3,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t2.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_similar_elements_duplicates - assert (1, 2) == (1, 1, 2)\nFAILED test_similar_elements_none - TypeError: 'NoneType' object is not iterable\nFAILED test_similar_elements_type_error - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 0,
+                "total_tokens": 626,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 2,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t17.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 3,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_square_perimeter_negative - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_non_numeric - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 0,
+                "total_tokens": 426,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 3,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t11.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 8,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_remove_Occ_input_type_error_2 - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_remove_Occ_input_type_error_3 - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_remove_Occ_input_type_error_4 - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 0,
+                "total_tokens": 806,
+                "mutation_score_percent": 85.0,
+                "mutation_killed": 17,
+                "mutation_survived": 3
+            }
+        },
+        {
+            "file": "t10.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_small_nnum_negative_n - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_small_nnum_large_n - assert [1, 2, 3, 5, 7, 9] == [1, 2, 3, 5, 7]",
+                "iterations": 0,
+                "total_tokens": 703,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t1.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 3,
+                "n_failed_tests": 6,
+                "failed_tests_infos": "FAILED test_min_cost_success - assert 5 == 7\nFAILED test_min_cost_edge_case_min_m - assert 5 == 1\nFAILED test_min_cost_edge_case_max_m - assert 5 == 7\nFAILED test_min_cost_edge_case_min_n - assert 6 == 1\nFAILED test_min_cost_edge_case_max_n - assert 5 == 7\nFAILED test_min_cost_invalid_cost_type - IndexError: string index out of range",
+                "iterations": 0,
+                "total_tokens": 1041,
+                "mutation_score_percent": 34.04,
+                "mutation_killed": 16,
+                "mutation_survived": 31
+            }
+        },
+        {
+            "file": "t20.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 2,
+                "n_failed_tests": 6,
+                "failed_tests_infos": "FAILED test_multiples_of_num_success - assert [5, 10] == [10, 20]\nFAILED test_multiples_of_num_edge_case_m_negative - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_multiples_of_num_edge_case_n_zero - ValueError: range() arg 3 must not be zero\nFAILED test_multiples_of_num_edge_case_n_negative - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_multiples_of_num_empty_input - TypeError: 'list' object cannot be interpreted as an integer\nFAILED test_multiples_of_num_none_input - TypeError: unsupported operand type(s) for *: 'int' and 'NoneType'",
+                "iterations": 0,
+                "total_tokens": 662,
+                "mutation_score_percent": 75.0,
+                "mutation_killed": 3,
+                "mutation_survived": 1
+            }
+        },
+        {
+            "file": "t14.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 2,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_find_Volume_success - assert 12.0 == 24\nFAILED test_find_Volume_negative - Failed: DID NOT RAISE <class 'ZeroDivisionError'>",
+                "iterations": 0,
+                "total_tokens": 607,
+                "mutation_score_percent": 75.0,
+                "mutation_killed": 3,
+                "mutation_survived": 1
+            }
+        },
+        {
+            "file": "t6.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_differ_At_One_Bit_Pos_success - assert False == True\nFAILED test_differ_At_One_Bit_Pos_negative_numbers - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 0,
+                "total_tokens": 680,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 6,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t5.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 18,
+                "n_passed_tests": 2,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_count_ways_success - IndexError: list assignment index out of range\nFAILED test_count_ways_edge_cases - IndexError: list assignment index out of range\nFAILED test_count_ways_negative_input - IndexError: list assignment index out of range\nFAILED test_count_ways_large_input - assert 7424580412223196202895949384810803026794570617631909076111668818665385199533772702640636049290938823932530336092053295714677938324976257680329735042825922332254742656185337688282886926827702457299195194779497983305675993745796937417114740601377128195365234422911247446963166340427777721 == 1",
+                "iterations": 0,
+                "total_tokens": 810,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 39
+            }
+        }
+    ]
+}

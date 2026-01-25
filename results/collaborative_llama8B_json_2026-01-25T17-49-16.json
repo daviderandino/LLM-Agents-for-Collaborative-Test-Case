@@ -1,0 +1,278 @@
+{
+    "run_id": "collaborative_llama8B_json_2026-01-25T17-49-16",
+    "experiment_name": "collaborative_llama8B_json",
+    "timestamp": "2026-01-25T17-49-16",
+    "temperature": 0.0,
+    "results": [
+        {
+            "file": "t18.py",
+            "status": "error",
+            "error": "Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organization `org_01kfrk3haqfmk8hthhy19pf4f6` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 8790, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t16.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1456,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t15.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 6,
+                "n_failed_tests": 8,
+                "failed_tests_infos": "FAILED test_split_lowerstring_success[Hello - World-expected0] - AssertionError: assert ['e', 'l', 'l', 'o W', 'o', 'r', 'l', 'd'] == ['Hello', 'World']\nFAILED test_split_lowerstring_success[a123b4c-expected1] - AssertionError: assert ['a123', 'b4', 'c'] == ['a', '123b', '4c']\nFAILED test_split_lowerstring_single_lowercase_letter_with_non_lowercase_characters - AssertionError: assert ['a1', 'b2', 'c3'] == ['a', '1b', '2c', '3']\nFAILED test_split_lowerstring_multiple_lowercase_letters_with_non_lowercase_characters - AssertionError: assert ['a', 'b', 'c123', 'd', 'e', 'f'] == ['a', 'b', 'c', '123', 'd', 'e', 'f']\nFAILED test_split_lowerstring_success_2 - AssertionError: assert ['e', 'l', 'l', 'o W', 'o', 'r', 'l', 'd'] == ['Hello', 'World']\nFAILED test_split_lowerstring_success_3 - AssertionError: assert ['a123', 'b4', 'c'] == ['a', '123b', '4c']\nFAILED test_split_lowerstring_single_lowercase_letter_with_non_lowercase_characters_2 - AssertionError: assert ['a1', 'b2', 'c3'] == ['a', '1b', '2c', '3']\nFAILED test_split_lowerstring_multiple_lowercase_letters_with_non_lowercase_characters_2 - AssertionError: assert ['a', 'b', 'c123', 'd', 'e', 'f'] == ['a', 'b', 'c', '123', 'd', 'e', 'f']",
+                "iterations": 6,
+                "total_tokens": 6681,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t9.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 6,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1572,
+                "mutation_score_percent": 66.67,
+                "mutation_killed": 6,
+                "mutation_survived": 3
+            }
+        },
+        {
+            "file": "t8.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 3,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1177,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 4,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t12.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 5,
+                "total_tokens": 4890,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t7.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 6,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1440,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t4.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 5,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1600,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 1,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t19.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 67,
+                "n_passed_tests": 11,
+                "n_failed_tests": 5,
+                "failed_tests_infos": "FAILED test_is_duplicate[arraynums4-False] - assert True == False\nFAILED test_is_duplicate_non_list - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_is_duplicate_non_hashable - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_is_duplicate_non_list_type - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_is_duplicate_non_hashable_type - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 6,
+                "total_tokens": 9218,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 2
+            }
+        },
+        {
+            "file": "t3.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 57,
+                "n_passed_tests": 8,
+                "n_failed_tests": 8,
+                "failed_tests_infos": "FAILED test_is_not_prime_success[6-True] - Failed: DID NOT RAISE any of (<class 'ValueError'>, <class 'TypeError'>)\nFAILED test_is_not_prime_success[10000000000-False] - assert True == False\nFAILED test_is_not_prime_success[0-True] - Failed: DID NOT RAISE any of (<class 'ValueError'>, <class 'TypeError'>)\nFAILED test_is_not_prime_success[None-False] - TypeError: must be real number, not NoneType\nFAILED test_is_not_prime_zero - Failed: DID NOT RAISE <class 'ValueError'>\nFAILED test_is_not_prime_non_integer - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_is_not_prime_zero_success - assert False == True\nFAILED test_is_not_prime_non_numeric_success - TypeError: must be real number, not str",
+                "iterations": 6,
+                "total_tokens": 6586,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 10
+            }
+        },
+        {
+            "file": "t13.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "FAILED test_count_common_none_input - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_count_common_string_input - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_count_common_empty_string_input - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 6,
+                "total_tokens": 6163,
+                "mutation_score_percent": 66.67,
+                "mutation_killed": 2,
+                "mutation_survived": 1
+            }
+        },
+        {
+            "file": "t2.py",
+            "status": "error",
+            "error": "Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organization `org_01kfrk3haqfmk8hthhy19pf4f6` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 8448, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t17.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 8,
+                "n_failed_tests": 8,
+                "failed_tests_infos": "FAILED test_square_perimeter_string - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_list - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_float - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_non_integer - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_string_typeerror - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_list_typeerror - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_float_typeerror - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_square_perimeter_non_integer_typeerror - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 6,
+                "total_tokens": 6269,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 3,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t11.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 0,
+                "failed_tests_infos": "",
+                "iterations": 1,
+                "total_tokens": 1455,
+                "mutation_score_percent": 85.0,
+                "mutation_killed": 17,
+                "mutation_survived": 3
+            }
+        },
+        {
+            "file": "t10.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 0,
+                "n_passed_tests": 4,
+                "n_failed_tests": 2,
+                "failed_tests_infos": "FAILED test_small_nnum[list13-3-TypeError] - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_small_nnum[list15-3-TypeError] - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 6,
+                "total_tokens": 6017,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t1.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 54,
+                "n_passed_tests": 1,
+                "n_failed_tests": 8,
+                "failed_tests_infos": "FAILED test_min_cost_success[cost0-1-1-1] - IndexError: list index out of range\nFAILED test_min_cost_success[cost1-2-1-1] - IndexError: list index out of range\nFAILED test_min_cost_success[cost2-1-2-2] - IndexError: list index out of range\nFAILED test_min_cost_success[cost3-2-2-8] - IndexError: list index out of range\nFAILED test_min_cost_success[cost4-2-2-8] - IndexError: list index out of range\nFAILED test_min_cost_success[cost5-2-2-8] - IndexError: list index out of range\nFAILED test_min_cost_success[cost6-2-2-8] - IndexError: list index out of range\nFAILED test_min_cost_success[cost7-2-2-8] - IndexError: list index out of range",
+                "iterations": 6,
+                "total_tokens": 13725,
+                "mutation_score_percent": 10.64,
+                "mutation_killed": 5,
+                "mutation_survived": 42
+            }
+        },
+        {
+            "file": "t20.py",
+            "status": "error",
+            "error": "Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organization `org_01kfrk3haqfmk8hthhy19pf4f6` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 7072, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        },
+        {
+            "file": "t14.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 4,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_find_Volume_success[0-2-3-ZeroDivisionError] - Failed: DID NOT RAISE <class 'ZeroDivisionError'>\nFAILED test_find_Volume_success[0-0-0-ZeroDivisionError] - Failed: DID NOT RAISE <class 'ZeroDivisionError'>\nFAILED test_find_Volume_error_length - Failed: DID NOT RAISE <class 'ZeroDivisionError'>\nFAILED test_find_Volume_error_zero_input - Failed: DID NOT RAISE <class 'ZeroDivisionError'>",
+                "iterations": 6,
+                "total_tokens": 7274,
+                "mutation_score_percent": 0.0,
+                "mutation_killed": 0,
+                "mutation_survived": 4
+            }
+        },
+        {
+            "file": "t6.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 100,
+                "n_passed_tests": 9,
+                "n_failed_tests": 4,
+                "failed_tests_infos": "FAILED test_is_Power_Of_Two_error - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_differ_At_One_Bit_Pos_both_not_powers_of_two - assert False == True\nFAILED test_differ_At_One_Bit_Pos_both_powers_of_two_different - assert False == True\nFAILED test_differ_At_One_Bit_Pos_both_powers_of_two_different_correct - assert False == True",
+                "iterations": 6,
+                "total_tokens": 6664,
+                "mutation_score_percent": 100.0,
+                "mutation_killed": 6,
+                "mutation_survived": 0
+            }
+        },
+        {
+            "file": "t5.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 82,
+                "n_passed_tests": 4,
+                "n_failed_tests": 18,
+                "failed_tests_infos": "FAILED test_count_ways_success[0-1] - IndexError: list assignment index out of range\nFAILED test_count_ways_success[2-1] - assert 3 == 1\nFAILED test_count_ways_success[3-2] - assert 0 == 2\nFAILED test_count_ways_success[5-8] - assert 0 == 8\nFAILED test_count_ways_error - IndexError: list assignment index out of range\nFAILED test_count_ways_negative_integer - IndexError: list assignment index out of range\nFAILED test_count_ways_zero - IndexError: list assignment index out of range\nFAILED test_count_ways_two - assert 3 == 1\nFAILED test_count_ways_three - assert 0 == 2\nFAILED test_count_ways_five - assert 0 == 8\nFAILED test_count_ways_invalid_input - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_count_ways_invalid_input_type - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_count_ways_invalid_input_range - IndexError: list assignment index out of range\nFAILED test_count_ways_invalid_input_zero - IndexError: list assignment index out of range\nFAILED test_count_ways_invalid_input_one - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_count_ways_invalid_input_two - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_count_ways_invalid_input_three - Failed: DID NOT RAISE <class 'TypeError'>\nFAILED test_count_ways_invalid_input_five - Failed: DID NOT RAISE <class 'TypeError'>",
+                "iterations": 6,
+                "total_tokens": 10351,
+                "mutation_score_percent": 28.21,
+                "mutation_killed": 11,
+                "mutation_survived": 28
+            }
+        }
+    ]
+}
