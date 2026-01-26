@@ -1,0 +1,23 @@
+{
+    "run_id": "single_llama70B_2026-01-26T14-34-47",
+    "experiment_name": "single_llama70B",
+    "timestamp": "2026-01-26T14-34-47",
+    "temperature": 0.2,
+    "results": [
+        {
+            "file": "complex_logic.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 85,
+                "n_passed_tests": 8,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "",
+                "iterations": 0,
+                "total_tokens": 3298,
+                "mutation_score_percent": null,
+                "mutation_killed": null,
+                "mutation_survived": null
+            }
+        }
+    ]
+}
