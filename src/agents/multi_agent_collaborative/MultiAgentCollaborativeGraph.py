@@ -81,7 +81,7 @@ class MultiAgentCollaborativeGraph:
             "n_passed_tests": 0,
             "n_failed_tests": 0,
             "iterations": 0,
-            "max_iterations": 10,
+            "max_iterations": 5,
             "total_tokens": 0 
         }
 
@@ -526,7 +526,7 @@ class MultiAgentCollaborativeGraph:
             return "fix-tests"  
 
         current_cov = state.get("coverage_percent", 0)
-        if current_cov < 100:
+        if current_cov < 97:
             return "replan" 
 
         return "end"
