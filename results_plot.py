@@ -178,7 +178,11 @@ def plot_metrics(aggregated_data, output_folder):
     Crea i grafici per coverage e mutation score con spaziatura tra i gruppi
     """
     # Ordine dei file (ordinamento alfabetico)
-    files = sorted(aggregated_data.keys())
+    
+    # Sort files: dNN files first (sorted), then complex_file last
+    dnn_files = sorted([f for f in aggregated_data.keys() if f.startswith('d') and f[1:3].isdigit()])
+    other_files = sorted([f for f in aggregated_data.keys() if not (f.startswith('d') and f[1:3].isdigit())])
+    files = dnn_files + other_files
     
     # Aggiungi "MEAN" come ultima posizione
     files_with_mean = files + ['MEAN']
