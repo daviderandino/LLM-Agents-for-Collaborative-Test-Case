@@ -78,6 +78,21 @@
                 "mutation_killed": 41,
                 "mutation_survived": 16
             }
+        },
+        {
+            "file": "complex_logic.py",
+            "status": "success",
+            "metrics": {
+                "coverage_percent": 74,
+                "n_passed_tests": 10,
+                "n_failed_tests": 3,
+                "failed_tests_infos": "",
+                "iterations": 6,
+                "total_tokens": 24184,
+                "mutation_score_percent": 21.71,
+                "mutation_killed": 28,
+                "mutation_survived": 101
+            }
         }
     ]
 }
