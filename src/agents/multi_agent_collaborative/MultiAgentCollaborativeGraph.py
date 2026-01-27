@@ -288,7 +288,7 @@ class MultiAgentCollaborativeGraph:
         is_append_mode = False
 
         # ---------------------------------------------------------
-        # 1. STRATEGY SELECTION
+        # STRATEGY SELECTION
         # ---------------------------------------------------------
 
         # CASE 1: First iteration
@@ -428,7 +428,7 @@ class MultiAgentCollaborativeGraph:
             }
 
         # ---------------------------------------------------------
-        # 2. EXECUTION
+        # EXECUTION
         # ---------------------------------------------------------
         self.logger.info(color_text(step_name, color))
 
@@ -445,7 +445,7 @@ class MultiAgentCollaborativeGraph:
         cleaned_tests = clean_llm_python(response.content)
 
         # ---------------------------------------------------------
-        # 3. MERGE / UPDATE
+        # MERGE / UPDATE
         # ---------------------------------------------------------
         final_test_code = ""
 

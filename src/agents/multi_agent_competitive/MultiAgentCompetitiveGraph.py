@@ -318,7 +318,7 @@ class MultiAgentCompetitiveGraph:
         base_code = state["generated_tests"]
 
         # ---------------------------------------------------------
-        # 1. SELEZIONE STRATEGIA
+        # SELEZIONE STRATEGIA
         # ---------------------------------------------------------
 
         # CASO 1: Prima iterazione
@@ -458,7 +458,7 @@ class MultiAgentCompetitiveGraph:
             }
 
         # ---------------------------------------------------------
-        # 2. ESECUZIONE
+        # ESECUZIONE
         # ---------------------------------------------------------
         self.logger.info(color_text(step_name, color))
 
@@ -474,7 +474,7 @@ class MultiAgentCompetitiveGraph:
         cleaned_tests = clean_llm_python(response.content)
 
         # ---------------------------------------------------------
-        # 3. MERGE / UPDATE
+        # MERGE / UPDATE
         # ---------------------------------------------------------
         final_test_code = ""
 
