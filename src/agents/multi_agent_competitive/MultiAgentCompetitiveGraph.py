@@ -89,7 +89,7 @@ class MultiAgentCompetitiveGraph:
             "n_passed_tests": 0,
             "n_failed_tests": 0,
             "iterations": 0,
-            "max_iterations": 10,
+            "max_iterations": 5,
             "total_tokens": 0,
             "dev_1_step_tokens": 0,
             "dev_2_step_tokens": 0
