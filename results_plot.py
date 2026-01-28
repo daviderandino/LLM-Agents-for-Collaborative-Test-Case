@@ -24,8 +24,8 @@ OUTPUT_FOLDER = './graphs'
 # File da ignorare (non saranno inclusi nei grafici)
 IGNORED_FILES = [
     # 'complex_logic.py',
-    'd01_bank_account.py',
-    "d03_stack.py",
+    #'d01_bank_account.py',
+    #"d03_stack.py",
     # 'd04_linked_list.py',
 ]
 
@@ -219,7 +219,7 @@ def plot_metrics(aggregated_data, output_folder):
     }
     
     # Crea figura con 2 subplot
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 6))
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 12))
     
     x = np.arange(len(files_with_mean))
     width = 0.1  # Larghezza delle barre
@@ -314,12 +314,20 @@ def plot_metrics(aggregated_data, output_folder):
     # Aggiungi una linea verticale prima di MEAN per separarlo
     ax2.axvline(x=len(files) - 0.5, color='gray', linestyle='--', linewidth=1, alpha=0.5)
     
+    plt.tight_layout()
+    plt.subplots_adjust(bottom=0.12, hspace=0.35)
+
     # Aggiungi legenda fuori dal grafico (in basso al centro)
     handles, labels = ax1.get_legend_handles_labels()
-    fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, -0.05), 
-               ncol=4, fontsize=9, frameon=True)
-    
-    plt.tight_layout()
+    fig.legend(
+        handles, 
+        labels,
+        loc='lower center', 
+        bbox_to_anchor=(0.5, -0.05), 
+        ncol=4,
+        fontsize=9,
+        frameon=True
+    )
     
     # Salva il grafico
     output_path = Path(output_folder)
@@ -329,7 +337,6 @@ def plot_metrics(aggregated_data, output_folder):
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"\nGrafico salvato in: {output_file}")
     
-    # Mostra anche a schermo (opzionale)
     plt.show()
 
 
