@@ -10,7 +10,6 @@ from collections import defaultdict
 # CONFIGURAZIONE
 # ============================================================================
 
-# Assicurati che questo percorso punti alla tua cartella con i file .json
 INPUT_FOLDER = './results' 
 OUTPUT_FOLDER = './graphs_tokens'
 
@@ -210,16 +209,20 @@ def plot_token_usage(aggregated_data, output_folder):
         bars[-1].set_edgecolor('black')
         bars[-1].set_linewidth(1.5)
         
-    # ax.set_xlabel('File', fontweight='bold', fontsize=11)
-    ax.set_ylabel('Total Tokens', fontweight='bold', fontsize=11)
+    # Imposta la scala logaritmica
+    ax.set_yscale('log')
+    
+    # Aggiorna l'etichetta e il titolo
+    ax.set_ylabel('Total Tokens (Log Scale)', fontweight='bold', fontsize=11)
     ax.set_title('Token Usage for File and Experiment', fontweight='bold', fontsize=13)
     
-    # Pulisci etichette asse X
+    # Etichette asse X
     clean_labels = [f.replace('.py', '') for f in files_with_mean]
     ax.set_xticks(x)
     ax.set_xticklabels(clean_labels, rotation=45, ha='right')
     
-    ax.grid(axis='y', alpha=0.3)
+    # Importante: 'which="both"' mostra la griglia anche per le suddivisioni logaritmiche minori
+    ax.grid(axis='y', alpha=0.3, which="both")
     
     # Linea separatrice per MEAN
     ax.axvline(x=len(files) - 0.5, color='gray', linestyle='--', linewidth=1, alpha=0.5)
