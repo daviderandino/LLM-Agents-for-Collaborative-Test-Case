@@ -314,7 +314,7 @@ def plot_metrics(aggregated_data, output_folder):
     # Aggiungi una linea verticale prima di MEAN per separarlo
     ax2.axvline(x=len(files) - 0.5, color='gray', linestyle='--', linewidth=1, alpha=0.5)
     
-    plt.subplots_adjust(bottom=0.25, hspace=0.6, left=0.1, right=0.95, top=0.95)
+    plt.subplots_adjust(bottom=0.25, hspace=0.8, left=0.1, right=0.95, top=0.95)
 
     # La legenda va spostata ancora più in basso dato che abbiamo alzato il margine bottom
     handles, labels = ax1.get_legend_handles_labels()
