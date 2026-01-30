@@ -5,7 +5,7 @@
     "temperature": 0.2,
     "results": [
         {
-            "file": "d10_hotel_reservation.py",
+            "file": "05_hotel.py",
             "status": "success",
             "metrics": {
                 "coverage_percent": 100,
@@ -20,7 +20,7 @@
             }
         },
         {
-            "file": "d07_library.py",
+            "file": "04_library.py",
             "status": "success",
             "metrics": {
                 "coverage_percent": 100,
@@ -35,7 +35,7 @@
             }
         },
         {
-            "file": "d03_stack.py",
+            "file": "02_stack.py",
             "status": "success",
             "metrics": {
                 "coverage_percent": 100,
@@ -50,7 +50,7 @@
             }
         },
         {
-            "file": "d01_bank_account.py",
+            "file": "01_bank.py",
             "status": "success",
             "metrics": {
                 "coverage_percent": 100,
@@ -65,7 +65,7 @@
             }
         },
         {
-            "file": "d04_linked_list.py",
+            "file": "03_linked_list.py",
             "status": "success",
             "metrics": {
                 "coverage_percent": 100,
@@ -80,7 +80,7 @@
             }
         },
         {
-            "file": "complex_logic.py",
+            "file": "06_complex_logic.py",
             "status": "success",
             "metrics": {
                 "coverage_percent": 99,

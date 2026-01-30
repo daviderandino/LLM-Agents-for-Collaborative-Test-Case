@@ -1,19 +1,11 @@
 import json
-import os
-import sys
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
 
-# ============================================================================
-# CONFIGURAZIONE
-# ============================================================================
-
 INPUT_FOLDER = './results' 
-OUTPUT_FOLDER = './graphs_tokens'
-
-# ============================================================================
+OUTPUT_FOLDER = './plots'
 
 def classify_experiment(experiment_name):
     """

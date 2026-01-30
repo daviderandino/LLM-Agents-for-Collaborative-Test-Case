@@ -1,36 +1,26 @@
-#!/usr/bin/env python3
 """
 Script per generare grafici da esperimenti di test automation
 Analizza file JSON e crea grafici comparativi per coverage e mutation score
 """
 
 import json
-import os
 import sys
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
 
-
-# ============================================================================
-# CONFIGURAZIONE
-# ============================================================================
-
 # Cartelle di input e output
 INPUT_FOLDER = './results'
-OUTPUT_FOLDER = './graphs'
+OUTPUT_FOLDER = './plots'
 
-# File da ignorare (non saranno inclusi nei grafici)
+# File da ignorare nel plot
 IGNORED_FILES = [
-    # 'complex_logic.py',
-    #'d01_bank_account.py',
-    #"d03_stack.py",
-    # 'd04_linked_list.py',
+    # '06_complex_logic.py',
+    # '01_bank.py',
+    # '02_stack.py',
+    # '03_linked_list.py'
 ]
-
-# ============================================================================
-
 
 def classify_experiment(experiment_name):
     """
@@ -179,10 +169,10 @@ def plot_metrics(aggregated_data, output_folder):
     """
     # Ordine dei file (ordinamento alfabetico)
     
-    # Sort files: dNN files first (sorted), then complex_file last
-    dnn_files = sorted([f for f in aggregated_data.keys() if f.startswith('d') and f[1:3].isdigit()])
-    other_files = sorted([f for f in aggregated_data.keys() if not (f.startswith('d') and f[1:3].isdigit())])
-    files = dnn_files + other_files
+    # Sort files: NN_ files first (sorted), then special files last
+    numbered_files = sorted([f for f in aggregated_data.keys() if len(f) >= 2 and f[:2].isdigit()])
+    other_files = sorted([f for f in aggregated_data.keys() if not (len(f) >= 2 and f[:2].isdigit())])
+    files = numbered_files + other_files
     
     # Aggiungi "MEAN" come ultima posizione
     files_with_mean = files + ['MEAN']
@@ -322,19 +312,7 @@ def plot_metrics(aggregated_data, output_folder):
         handles, 
         labels,
         loc='lower center', 
-        bbox_to_anchor=(0.5, 0.02), # Alzato leggermente rispetto al bordo assoluto
-        ncol=4,
-        fontsize=9,
-        frameon=True
-    )
-
-    # Aggiungi legenda fuori dal grafico (in basso al centro)
-    handles, labels = ax1.get_legend_handles_labels()
-    fig.legend(
-        handles, 
-        labels,
-        loc='lower center', 
-        bbox_to_anchor=(0.5, -0.05), 
+        bbox_to_anchor=(0.5, 0.02),
         ncol=4,
         fontsize=9,
         frameon=True
@@ -344,7 +322,7 @@ def plot_metrics(aggregated_data, output_folder):
     output_path = Path(output_folder)
     output_path.mkdir(parents=True, exist_ok=True)
     
-    output_file = output_path / 'experiment_comparison.png'
+    output_file = output_path / 'experiments_comparison.png'
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"\nGrafico salvato in: {output_file}")
     
