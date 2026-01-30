@@ -273,9 +273,9 @@ def plot_metrics(aggregated_data, output_folder):
         bars[-1].set_edgecolor('black')
         bars[-1].set_linewidth(1.5)
     
-    ax1.set_xlabel('File', fontweight='bold', fontsize=11)
+    # ax1.set_xlabel('File', fontweight='bold', fontsize=11)
     ax1.set_ylabel('Coverage %', fontweight='bold', fontsize=11)
-    ax1.set_title('Test Coverage per File ed Esperimento', fontweight='bold', fontsize=13)
+    ax1.set_title('Test Coverage', fontweight='bold', fontsize=13)
     ax1.set_xticks(x)
     ax1.set_xticklabels(files_with_mean, rotation=45, ha='right')
     ax1.grid(axis='y', alpha=0.3)
@@ -303,9 +303,9 @@ def plot_metrics(aggregated_data, output_folder):
         bars[-1].set_edgecolor('black')
         bars[-1].set_linewidth(1.5)
     
-    ax2.set_xlabel('File', fontweight='bold', fontsize=11)
+    # ax2.set_xlabel('File', fontweight='bold', fontsize=11)
     ax2.set_ylabel('Mutation Score %', fontweight='bold', fontsize=11)
-    ax2.set_title('Mutation Score per File ed Esperimento', fontweight='bold', fontsize=13)
+    ax2.set_title('Mutation Score', fontweight='bold', fontsize=13)
     ax2.set_xticks(x)
     ax2.set_xticklabels(files_with_mean, rotation=45, ha='right')
     ax2.grid(axis='y', alpha=0.3)
@@ -314,8 +314,19 @@ def plot_metrics(aggregated_data, output_folder):
     # Aggiungi una linea verticale prima di MEAN per separarlo
     ax2.axvline(x=len(files) - 0.5, color='gray', linestyle='--', linewidth=1, alpha=0.5)
     
-    plt.tight_layout()
-    plt.subplots_adjust(bottom=0.12, hspace=0.35)
+    plt.subplots_adjust(bottom=0.25, hspace=0.6, left=0.1, right=0.95, top=0.95)
+
+    # La legenda va spostata ancora più in basso dato che abbiamo alzato il margine bottom
+    handles, labels = ax1.get_legend_handles_labels()
+    fig.legend(
+        handles, 
+        labels,
+        loc='lower center', 
+        bbox_to_anchor=(0.5, 0.02), # Alzato leggermente rispetto al bordo assoluto
+        ncol=4,
+        fontsize=9,
+        frameon=True
+    )
 
     # Aggiungi legenda fuori dal grafico (in basso al centro)
     handles, labels = ax1.get_legend_handles_labels()
