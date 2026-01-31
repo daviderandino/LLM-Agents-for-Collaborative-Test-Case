@@ -150,24 +150,6 @@ python -m pytest data/output_tests/baseline/test_bank_account.py
 
     - **Test Coverage**: Run the generated tests and measure how much of the original code they touched (Line Coverage or Branch Coverage).
 
-    - **Mutation Testing**: Use a tool (like **mutmut**) that inserts fake bugs in the original code. If the agents' tests fail, it means they're good (they "caught" the bug). If they still pass, the tests are weak.
-
-## In summary:
-- Input: Take a Python function (e.g. calculate_discount).
-
-- Baseline Execution: The single LLM generates test_discount_v1.py.
-
-- Multi-Agent Execution:
-
-    - Tester Agent generates a draft.
-
-    - Reviewer Agent says: "Missing the negative discount case".
-
-    - Tester Agent generates test_discount_final.py.
-
-    Comparison:
-
-    - Run pytest --cov on both files.
-
-    - If the Multi-Agent has 100% coverage and the Baseline 80%, you've won (and proven the thesis).
+    - **Mutation Testing**: Use a tool (**mutmut**) that inserts fake bugs in the original code. If the agents' tests fail, it means they're good (they "caught" the bug). If they still pass, the tests are weak.
+    - 
 - TO RUN: python run.py --config configs/experiments/{experiment_name}.yaml
