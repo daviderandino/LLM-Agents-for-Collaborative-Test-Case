@@ -47,47 +47,6 @@ After running experiments:
 3. **View metrics visualization**:
    Open and run `metrics_aggregation.ipynb` to see aggregated metrics by experiment with charts.
 
-## PROJECT STRUCTURE
-
-```
-LLM-Agents-for-Collaborative-Test-Case/
-├── configs/                                            -> YAML configuration files for projects
-│   └── experiments/
-│       └── ...
-├── data/
-│   ├── input_code/                                     -> Target .py files to test
-│   └── output_tests/                                   -> Generated tests
-├── results/                                            -> Test results (JSON files)
-│   └── ...
-├── src/
-│   ├── agents/                                         -> Agent architectures
-│   │   ├── multi_agent_collaborative/
-│   │   │   ├── MultiAgentCollaborativeGraph.py
-│   │   │   └── multi_agent_collaborative_runner.py
-│   │   ├── multi_agent_competitive/
-│   │   │   ├── MultiAgentCompetitiveGraph.py
-│   │   │   └── multi_agent_competitive_runner.py
-│   │   └── single_agent/
-│   │       ├── llm_factory.py
-│   │       ├── SingleAgentChain.py
-│   │       └── single_agent_runner.py
-│   ├── utils/
-│   │   ├── code_parser.py
-│   │   ├── file_manager.py
-│   │   ├── mutmut_runner.py
-│   │   ├── plot_metrics.py
-│   │   └── pytest_runner.py                            
-│   ├── ConfigManager.py                                -> Experiment configuration management
-│   ├── experiment_runner.py                            -> Entrypoint to run experiments
-│   └── tracker.py                                      -> Stats collection management
-├── experiments.ipynb                                   -> Main experiment notebook
-├── metrics_aggregation.ipynb                           -> Aggregates and visualizes metrics from CSV
-├── mutation_injection.ipynb                            -> Runs mutation testing on generated tests
-├── export_metrics_as_csv.py                            -> Exports results to CSV format
-├── README.md
-└── requirements.txt
-```
-
 ## Packages Overview
 
 ### LLM and Agent Management
@@ -179,7 +138,7 @@ python -m pytest data/output_tests/baseline/test_bank_account.py
 
 - **Collaborative**: Agent A writes the test, Agent B suggests improvements ("Could you add a test for empty strings?"), Agent A corrects.
 
-- **Competitive** (Optional but recommended): Agent A writes the test, Agent B actively seeks to find errors in the test or uncovered cases, challenging Agent A.
+- **Competitive**: Agent A writes the test, Agent B actively seeks to find errors in the test or uncovered cases, challenging Agent A.
 
 ## 3. The Data (Code Under Test)
 - Select 10-20 functions from public datasets or open-source snippets.
