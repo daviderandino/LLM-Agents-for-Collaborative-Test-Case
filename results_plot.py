@@ -349,7 +349,7 @@ def plot_metrics(aggregated_data, output_folder):
     output_path = Path(output_folder)
     output_path.mkdir(parents=True, exist_ok=True)
     
-    output_file = output_path / 'experiment_comparison.png'
+    output_file = output_path / 'experiments_comparison.png'
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"\nGrafico salvato in: {output_file}")
     
