@@ -14,8 +14,6 @@ Go to https://console.groq.com/keys and generate an API_KEY, then put in on the 
 GROQ_API_KEY = my_key
 ```
 
-### HOW TO RUN
-
 #### Option 1: Run Experiments via Command Line
 
 ```bash
