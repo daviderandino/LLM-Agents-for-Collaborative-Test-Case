@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Script per generare grafici da esperimenti di test automation
 Analizza file JSON e crea grafici comparativi per coverage e mutation score
@@ -12,25 +11,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
 
-
-# ============================================================================
-# CONFIGURAZIONE
-# ============================================================================
-
 # Cartelle di input e output
 INPUT_FOLDER = './results'
-OUTPUT_FOLDER = './graphs'
+OUTPUT_FOLDER = './plots'
 
 # File da ignorare (non saranno inclusi nei grafici)
 IGNORED_FILES = [
-    # 'complex_logic.py',
-    #'d01_bank_account.py',
-    #"d03_stack.py",
-    # 'd04_linked_list.py',
+    # 'd01_bank.py',
+    # 'd02_stack.py',
+    # 'd03_linked_list.py',
+    # 'd04_library.py',
+    # 'd05_hotel.py',
+    # 'd06_complex_logic.py',
 ]
-
-# ============================================================================
-
 
 def classify_experiment(experiment_name):
     """
@@ -53,7 +46,7 @@ def classify_experiment(experiment_name):
     
     # Modelli strong e weak
     strong_models = ['gptoss120b', 'llama70b']
-    weak_models = ['gptoss20b', 'llama17b', 'llamascout17b']
+    weak_models = ['gptoss20b', 'llamascout17b']
     
     # Conta i modelli
     strong_count = sum(1 for model in strong_models if model in name_lower)
@@ -259,7 +252,7 @@ def plot_metrics(aggregated_data, output_folder):
         for i, exp_type in enumerate(group):
             positions[exp_type] = current_offset
             current_offset += width
-        # Aggiungi spaziatura dopo ogni gruppo (tranne l'ultimo)
+        # Aggiunge spaziatura dopo ogni gruppo (tranne l'ultimo)
         if group_idx < len(experiment_groups) - 1:
             current_offset += group_spacing
     
@@ -286,7 +279,7 @@ def plot_metrics(aggregated_data, output_folder):
         for filename in files:
             value = aggregated_data[filename].get(exp_type, {}).get('coverage', 0)
             coverage_values.append(value)
-        # Aggiungi il valore medio alla fine
+        
         coverage_values.append(mean_coverage[exp_type])
         
         offset = base_offset + offset_adjustment
@@ -294,7 +287,7 @@ def plot_metrics(aggregated_data, output_folder):
                 label=exp_labels.get(exp_type, exp_type),
                 color=colors.get(exp_type, '#666666'))
         
-        # Rendi la barra MEAN più scura
+        # Barra MEAN più scura
         bars[-1].set_alpha(0.7)
         bars[-1].set_edgecolor('black')
         bars[-1].set_linewidth(1.5)
@@ -307,7 +300,7 @@ def plot_metrics(aggregated_data, output_folder):
     ax1.grid(axis='y', alpha=0.3)
     ax1.set_ylim(0, 105)
     
-    # Aggiungi una linea verticale prima di MEAN per separarlo
+    # Linea verticale prima di MEAN per separarlo
     ax1.axvline(x=len(files) - 0.5, color='gray', linestyle='--', linewidth=1, alpha=0.5)
     
     # Plot Mutation Score
@@ -316,7 +309,7 @@ def plot_metrics(aggregated_data, output_folder):
         for filename in files:
             value = aggregated_data[filename].get(exp_type, {}).get('mutation', 0)
             mutation_values.append(value)
-        # Aggiungi il valore medio alla fine
+        
         mutation_values.append(mean_mutation[exp_type])
         
         offset = base_offset + offset_adjustment
@@ -324,7 +317,6 @@ def plot_metrics(aggregated_data, output_folder):
                 label=exp_labels.get(exp_type, exp_type),
                 color=colors.get(exp_type, '#666666'))
         
-        # Rendi la barra MEAN più scura
         bars[-1].set_alpha(0.7)
         bars[-1].set_edgecolor('black')
         bars[-1].set_linewidth(1.5)
@@ -337,25 +329,23 @@ def plot_metrics(aggregated_data, output_folder):
     ax2.grid(axis='y', alpha=0.3)
     ax2.set_ylim(0, 105)
     
-    # Aggiungi una linea verticale prima di MEAN per separarlo
     ax2.axvline(x=len(files) - 0.5, color='gray', linestyle='--', linewidth=1, alpha=0.5)
     
-    plt.subplots_adjust(bottom=0.25, hspace=0.6, left=0.1, right=0.95, top=0.95)
+    plt.subplots_adjust(bottom=0.25, hspace=0.45, left=0.1, right=0.95, top=0.95)
 
-    # Aggiungi legenda fuori dal grafico (in basso al centro)
+    # Aggiunge legenda fuori dal grafico (in basso al centro)
     # Calcolo il numero di colonne per la legenda (5 colonne per 10 items è buono)
     handles, labels = ax1.get_legend_handles_labels()
     fig.legend(
         handles, 
         labels,
         loc='lower center', 
-        bbox_to_anchor=(0.5, 0.01), 
+        bbox_to_anchor=(0.5, 0.08), 
         ncol=5,
         fontsize=9,
         frameon=True
     )
     
-    # Salva il grafico
     output_path = Path(output_folder)
     output_path.mkdir(parents=True, exist_ok=True)
     

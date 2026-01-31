@@ -26,7 +26,7 @@ def classify_experiment(experiment_name):
     
     # Modelli strong e weak
     strong_models = ['gptoss120b', 'llama70b']
-    weak_models = ['gptoss20b', 'llama17b', 'llamascout17b']
+    weak_models = ['gptoss20b', 'llamascout17b']
     
     # Conta i modelli presenti nel nome
     strong_count = sum(1 for model in strong_models if model in name_lower)
@@ -233,7 +233,6 @@ def plot_token_usage(aggregated_data, output_folder):
     
     plt.subplots_adjust(bottom=0.25, left=0.1, right=0.95, top=0.9)
     
-    # Salvataggio
     output_path = Path(output_folder)
     output_path.mkdir(parents=True, exist_ok=True)
     output_file = output_path / 'token_usage_comparison.png'
