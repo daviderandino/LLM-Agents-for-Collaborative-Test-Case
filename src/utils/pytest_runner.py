@@ -82,11 +82,9 @@ def analyze_pytest_output(stdout, stderr, exit_code):
     for line in stdout.splitlines():
         clean_line = line.strip()
         
-        # FIX 1: Check both FAILED and ERROR
         if clean_line.startswith(("FAILED", "ERROR")):
             match = re.search(fail_pattern, clean_line)
             if match:
-                # FIX 2: Updated indices
                 status = match.group(1)    # "FAILED" or "ERROR"
                 test_name = match.group(2) # The test name
                 error_msg = match.group(3) # The rest of the line
