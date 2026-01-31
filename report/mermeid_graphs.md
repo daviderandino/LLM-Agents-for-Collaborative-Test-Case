@@ -275,3 +275,69 @@ flowchart TB
     style EndSuccess fill:#ffe1e1
 ```
 
+## 6. General workflow variant
+
+```mermaid
+---
+config:
+  flowchart:
+    nodeSpacing: 10
+    rankSpacing: 40
+    padding: 5
+  layout: dagre
+  theme: redux
+  look: classic
+---
+flowchart TB
+    StartNode(("Start")) --> PlannerNode(["PLANNER NODE"])
+    PlannerNode --> CheckIter{{"Check Iteration"}}
+    CheckIter -- "Iteration == 0" --> PlanGen["Planner:<br>Generate Tests from Scratch"]
+    CheckIter -- Iteration > 0 --> PlanNew["Planner:<br>Plan new tests"]
+    PlanGen --> DevNode(["DEVELOPER NODE"])
+    PlanNew --> DevNode
+    DevNode --> CheckGen{{"Check Test Generation Case"}}
+    CheckGen -- "Iteration == 0" --> DevGenScratch["Developer:<br>Generate from scratch"]
+    CheckGen -- Failed Tests --> DevFixFailed["Developer:<br>Fix failed Tests"]
+    CheckGen -- Syntax/Pytest Error --> DevFixPytest["Developer:<br>Fix pytest errors"]
+    CheckGen -- Append New Tests --> DevAppend["Developer:<br>Append new tests"]
+    DevGenScratch --> ExecNode(["EXECUTION NODE"])
+    DevFixFailed --> ExecNode
+    DevFixPytest --> ExecNode
+    DevAppend --> ExecNode
+    ExecNode --> ExecAction["Execution:<br>execute pytest"]
+    ExecAction --> CheckState{{"Check State"}}
+    CheckState -- Max Iterations Exceeded --> EndNode(("End"))
+    CheckState -- Coverage &lt; 100% --> Replan["Replan"]
+    CheckState -- Test failed --> FixTests["Fix Tests"]
+    CheckState -- All Tests Passed --> EndNode
+    Replan -.-> PlannerNode
+    FixTests -.-> DevNode
+    EndNode --> Mutation["Compute  Mutation Score"]
+
+     StartNode:::start
+     PlannerNode:::plan
+     CheckIter:::decision
+     PlanGen:::plan
+     PlanNew:::plan
+     DevNode:::dev
+     CheckGen:::decision
+     DevGenScratch:::dev
+     DevFixFailed:::dev
+     DevFixPytest:::dev
+     DevAppend:::dev
+     ExecNode:::exec
+     ExecAction:::exec
+     CheckState:::decision
+     Replan:::state
+     FixTests:::state
+     EndNode:::term
+     Mutation:::term
+    classDef start fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef plan fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000
+    classDef dev fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef exec fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
+    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,stroke-dasharray: 5 5,color:#000
+    classDef term fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
+    classDef state fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#000
+
+```
