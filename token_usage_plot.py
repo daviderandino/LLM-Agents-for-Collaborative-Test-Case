@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Script per generare grafici del consumo di token da esperimenti di test automation.
 Analizza file JSON, calcola le medie e crea grafici comparativi con scala logaritmica.
@@ -6,25 +5,19 @@ Utilizza le etichette specifiche: Planner+, Worker+, ecc.
 """
 
 import json
-import os
 import sys
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
 
-# ============================================================================
-# CONFIGURAZIONE
-# ============================================================================
-
 # Cartelle di input e output
 INPUT_FOLDER = './results'
-OUTPUT_FOLDER = './graphs'
+OUTPUT_FOLDER = './plots'
 
 # File da ignorare (non saranno inclusi nei grafici)
 IGNORED_FILES = []
 
-# ============================================================================
 
 def classify_experiment(experiment_name):
     """
@@ -43,7 +36,7 @@ def classify_experiment(experiment_name):
         return None, None
     
     strong_models = ['gptoss120b', 'llama70b']
-    weak_models = ['gptoss20b', 'llama17b', 'llamascout17b']
+    weak_models = ['gptoss20b', 'llamascout17b']
     
     strong_count = sum(1 for model in strong_models if model in name_lower)
     weak_count = sum(1 for model in weak_models if model in name_lower)
@@ -211,13 +204,13 @@ def plot_tokens(aggregated_data, output_folder):
 
     # Legenda e Layout
     plt.subplots_adjust(bottom=0.25)
-    ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25), 
+    ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.3), 
               ncol=5, fontsize=9, frameon=True, fancybox=True, shadow=True)
     
     output_path = Path(output_folder)
     output_path.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path / 'token_usage_comparison_log.png', dpi=300, bbox_inches='tight')
-    print(f"Grafico salvato in: {output_path / 'token_usage_comparison_log.png'}")
+    plt.savefig(output_path / 'token_usage_comparison.png', dpi=300, bbox_inches='tight')
+    print(f"Grafico salvato in: {output_path / 'token_usage_comparison.png'}")
     plt.show()
 
 def main():
