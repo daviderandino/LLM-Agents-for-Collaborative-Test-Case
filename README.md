@@ -14,8 +14,6 @@ Go to https://console.groq.com/keys and generate an API_KEY, then put in on the 
 GROQ_API_KEY = my_key
 ```
 
-### HOW TO RUN
-
 #### Option 1: Run Experiments via Command Line
 
 ```bash
@@ -46,47 +44,6 @@ After running experiments:
 
 3. **View metrics visualization**:
    Open and run `metrics_aggregation.ipynb` to see aggregated metrics by experiment with charts.
-
-## PROJECT STRUCTURE
-
-```
-LLM-Agents-for-Collaborative-Test-Case/
-├── configs/                                            -> YAML configuration files for projects
-│   └── experiments/
-│       └── ...
-├── data/
-│   ├── input_code/                                     -> Target .py files to test
-│   └── output_tests/                                   -> Generated tests
-├── results/                                            -> Test results (JSON files)
-│   └── ...
-├── src/
-│   ├── agents/                                         -> Agent architectures
-│   │   ├── multi_agent_collaborative/
-│   │   │   ├── MultiAgentCollaborativeGraph.py
-│   │   │   └── multi_agent_collaborative_runner.py
-│   │   ├── multi_agent_competitive/
-│   │   │   ├── MultiAgentCompetitiveGraph.py
-│   │   │   └── multi_agent_competitive_runner.py
-│   │   └── single_agent/
-│   │       ├── llm_factory.py
-│   │       ├── SingleAgentChain.py
-│   │       └── single_agent_runner.py
-│   ├── utils/
-│   │   ├── code_parser.py
-│   │   ├── file_manager.py
-│   │   ├── mutmut_runner.py
-│   │   ├── plot_metrics.py
-│   │   └── pytest_runner.py                            
-│   ├── ConfigManager.py                                -> Experiment configuration management
-│   ├── experiment_runner.py                            -> Entrypoint to run experiments
-│   └── tracker.py                                      -> Stats collection management
-├── experiments.ipynb                                   -> Main experiment notebook
-├── metrics_aggregation.ipynb                           -> Aggregates and visualizes metrics from CSV
-├── mutation_injection.ipynb                            -> Runs mutation testing on generated tests
-├── export_metrics_as_csv.py                            -> Exports results to CSV format
-├── README.md
-└── requirements.txt
-```
 
 ## Packages Overview
 
@@ -152,65 +109,5 @@ Each experiment creates a JSON file in `results/` with:
 - Strategy focuses on diverse test generation approaches
 
 --------------
-
-## 1. The Scientific Objective
-Answer these research questions:
-
-- Do collaborative AI agents generate more complete and varied tests compared to a single LLM? 
-
-- Which collaboration "patterns" work best (e.g. helpful friends vs. harsh critics)? 
-
-## 2. The Software
-Implement two distinct systems to compare them:
-
-### A. The Baseline (Single-Agent) (It's a simple script):
-
-- Takes a function as input (e.g. validate_email).
-
-- Asks an LLM : "Write unit tests for this function".
-
-- Saves the result as is.
-```bash
-python -m pytest data/output_tests/baseline/test_bank_account.py 
-```
-
-### B. The Multi-Agent System. A system with at least 2 distinct roles that interact. Test different "patterns":
-
-
-- **Collaborative**: Agent A writes the test, Agent B suggests improvements ("Could you add a test for empty strings?"), Agent A corrects.
-
-- **Competitive** (Optional but recommended): Agent A writes the test, Agent B actively seeks to find errors in the test or uncovered cases, challenging Agent A.
-
-## 3. The Data (Code Under Test)
-- Select 10-20 functions from public datasets or open-source snippets.
-
-- You don't have to write the code to test (you download/find that).
-
-- The system must generate tests for that code.
-
-## 4. The Evaluation (How you score points)
-- It's not enough to generate code; you must demonstrate that it works. The document requires at least one of these methods:
-
-    - **Test Coverage**: Run the generated tests and measure how much of the original code they touched (Line Coverage or Branch Coverage).
-
-    - **Mutation Testing**: Use a tool (like **mutmut**) that inserts fake bugs in the original code. If the agents' tests fail, it means they're good (they "caught" the bug). If they still pass, the tests are weak.
-
-## In summary:
-- Input: Take a Python function (e.g. calculate_discount).
-
-- Baseline Execution: The single LLM generates test_discount_v1.py.
-
-- Multi-Agent Execution:
-
-    - Tester Agent generates a draft.
-
-    - Reviewer Agent says: "Missing the negative discount case".
-
-    - Tester Agent generates test_discount_final.py.
-
-    Comparison:
-
-    - Run pytest --cov on both files.
-
-    - If the Multi-Agent has 100% coverage and the Baseline 80%, you've won (and proven the thesis).
+   
 - TO RUN: python run.py --config configs/experiments/{experiment_name}.yaml
